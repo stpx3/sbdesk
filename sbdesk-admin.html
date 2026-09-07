@@ -18,7 +18,14 @@ body{ background:var(--bg); color:var(--text); font-family:'Space Grotesk',sans-
 .mark{ font-size:17px; font-weight:700; }
 .mark span{ color:var(--amber); font-family:'IBM Plex Mono',monospace; font-size:11px; margin-left:8px; border:1px solid var(--border); padding:2px 8px; }
 .save-btn{ font-family:'IBM Plex Mono',monospace; font-size:12px; background:var(--amber); color:#0B0F14; border:none; padding:9px 16px; cursor:pointer; font-weight:600; }
-.notice{ font-size:12px; color:var(--text-faint); background:var(--panel-alt); border:1px solid var(--border); padding:10px 14px; margin-bottom:24px; line-height:1.5; }
+.save-btn:disabled{ opacity:0.5; cursor:default; }
+.status-msg{ font-family:'IBM Plex Mono',monospace; font-size:12px; margin-bottom:20px; padding:10px 14px; border:1px solid var(--border); background:var(--panel-alt); }
+.status-msg.ok{ color:var(--bull); border-color:var(--bull); }
+.status-msg.err{ color:var(--bear); border-color:var(--bear); }
+
+.pw-row{ display:flex; gap:8px; margin-bottom:24px; }
+.pw-row input{ flex:1; background:var(--panel-alt); border:1px solid var(--border); color:var(--text); font-family:'IBM Plex Mono',monospace; font-size:13px; padding:9px 12px; }
+.pw-row button{ font-family:'IBM Plex Mono',monospace; font-size:12px; background:var(--panel-alt); border:1px solid var(--border); color:var(--text-dim); padding:9px 14px; cursor:pointer; }
 
 .section-label{ font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:10px; }
 
@@ -51,10 +58,14 @@ body{ background:var(--bg); color:var(--text); font-family:'Space Grotesk',sans-
 <div class="wrap">
   <div class="topbar">
     <div class="mark">SB Desk<span>admin</span></div>
-    <button class="save-btn" id="saveBtn">save & publish</button>
+    <button class="save-btn" id="saveBtn" disabled>save & publish</button>
   </div>
 
-  <div class="notice">This screen is where you'll do the actual morning update once. Right now it doesn't push to the live page yet — that wiring happens once hosting + a backend are in place. Think of this as the workflow you'll use every day, being locked down first.</div>
+  <div class="pw-row">
+    <input type="password" id="pwInput" placeholder="Admin password">
+    <button id="loadBtn">load</button>
+  </div>
+  <div id="statusMsg"></div>
 
   <div class="section-label">Current trade</div>
   <div class="trade-row">
@@ -72,9 +83,27 @@ body{ background:var(--bg); color:var(--text); font-family:'Space Grotesk',sans-
 </div>
 
 <script>
+const API_BASE = 'https://sbdesk-api.onrender.com';
 const tfs=['1m','5m','15m','1h','4h','1D'];
 const state={}; tfs.forEach(t=>state[t]={grade:'neutral', note:'', img:null});
 let tradePos='FLAT', tradeImg=null;
+let adminPassword='';
+
+const statusMsg=document.getElementById('statusMsg');
+const saveBtn=document.getElementById('saveBtn');
+function showStatus(msg, kind){
+  statusMsg.textContent=msg;
+  statusMsg.className='status-msg '+(kind||'');
+}
+
+function fileToDataUrl(file){
+  return new Promise((resolve, reject)=>{
+    const reader=new FileReader();
+    reader.onload=()=>resolve(reader.result);
+    reader.onerror=reject;
+    reader.readAsDataURL(file);
+  });
+}
 
 const tradeShot=document.getElementById('tradeShot');
 const tradeFile=document.getElementById('tradeFile');
@@ -85,8 +114,11 @@ document.querySelectorAll('#tradePos .pos-btn').forEach(btn=>{
   });
 });
 tradeShot.addEventListener('click',()=>tradeFile.click());
-tradeFile.addEventListener('change',()=>{
-  if(tradeFile.files[0]){ tradeImg=URL.createObjectURL(tradeFile.files[0]); tradeShot.innerHTML=`<img src="${tradeImg}">`; }
+tradeFile.addEventListener('change', async ()=>{
+  if(tradeFile.files[0]){
+    tradeImg=await fileToDataUrl(tradeFile.files[0]);
+    tradeShot.innerHTML=`<img src="${tradeImg}">`;
+  }
 });
 
 const tfGrid=document.getElementById('tfGrid');
@@ -108,7 +140,7 @@ function renderGrid(){
     });
     c.querySelector('.card-shot').addEventListener('click',()=>{
       const inp=document.createElement('input'); inp.type='file'; inp.accept='image/*';
-      inp.onchange=()=>{ if(inp.files[0]){ s.img=URL.createObjectURL(inp.files[0]); renderGrid(); } };
+      inp.onchange=async ()=>{ if(inp.files[0]){ s.img=await fileToDataUrl(inp.files[0]); renderGrid(); } };
       inp.click();
     });
     c.querySelector('.card-note').addEventListener('input',(e)=>{ s.note=e.target.value; });
@@ -117,8 +149,56 @@ function renderGrid(){
 }
 renderGrid();
 
-document.getElementById('saveBtn').addEventListener('click',()=>{
-  alert('This is a workflow preview — once the backend is wired up, this button will push everything to the live sbdesk.com page.');
+function setTradePosition(pos){
+  tradePos=pos;
+  document.querySelectorAll('#tradePos .pos-btn').forEach(b=>b.classList.toggle('active', b.dataset.pos===pos));
+}
+
+document.getElementById('loadBtn').addEventListener('click', async ()=>{
+  const pw=document.getElementById('pwInput').value.trim();
+  if(!pw){ showStatus('Enter the admin password first.', 'err'); return; }
+  adminPassword=pw;
+  showStatus('Loading current state…', '');
+  try{
+    const res=await fetch(`${API_BASE}/api/state`);
+    const data=await res.json();
+    if(data.trade){
+      setTradePosition(data.trade.position || 'FLAT');
+      tradeImg=data.trade.img || null;
+      tradeShot.innerHTML = tradeImg ? `<img src="${tradeImg}">` : 'click to upload broker/MNQ screenshot';
+    }
+    if(data.timeframes){
+      tfs.forEach(t=>{
+        if(data.timeframes[t]) state[t]=data.timeframes[t];
+      });
+      renderGrid();
+    }
+    saveBtn.disabled=false;
+    showStatus('Loaded. Make your edits, then save & publish.', 'ok');
+  }catch(err){
+    showStatus('Failed to load state: '+err.message, 'err');
+    console.error(err);
+  }
+});
+
+saveBtn.addEventListener('click', async ()=>{
+  if(!adminPassword){ showStatus('Load with your password first.', 'err'); return; }
+  saveBtn.disabled=true;
+  showStatus('Saving…', '');
+  const payload={ trade:{ position:tradePos, img:tradeImg }, timeframes:state };
+  try{
+    const res=await fetch(`${API_BASE}/api/admin/save`, {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json', 'x-admin-password':adminPassword },
+      body: JSON.stringify(payload)
+    });
+    if(res.status===401){ showStatus('Wrong password — not saved.', 'err'); saveBtn.disabled=false; return; }
+    if(!res.ok){ throw new Error('server returned '+res.status); }
+    showStatus('Published. The live site now shows this.', 'ok');
+  }catch(err){
+    showStatus('Failed to save: '+err.message, 'err');
+  }
+  saveBtn.disabled=false;
 });
 </script>
 </body>
