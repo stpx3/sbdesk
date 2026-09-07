@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SB Desk — daily NQ bias</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+:root{
+  --bg:#0B0F14; --panel:#141A21; --panel-alt:#1B232C; --border:#262F39;
+  --text:#E7ECF1; --text-dim:#8B96A3; --text-faint:#59636F;
+  --bull:#4FD1A0; --bear:#E2594F; --amber:#D9A441;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+body{ background:var(--bg); color:var(--text); font-family:'Space Grotesk',sans-serif; }
+.topline{ height:2px; background:linear-gradient(90deg,var(--amber),transparent 60%); }
+.wrap{ max-width:980px; margin:0 auto; padding:36px 24px 70px; }
+
+.topbar{ display:flex; justify-content:space-between; align-items:flex-start; padding-bottom:20px; border-bottom:1px solid var(--border); margin-bottom:28px; flex-wrap:wrap; gap:12px; }
+.mark{ font-size:19px; font-weight:700; }
+.mark span{ color:var(--text-faint); font-weight:400; }
+.mark-sub{ font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--text-faint); margin-top:5px; }
+.status{ font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--text-dim); display:flex; align-items:center; gap:8px; flex-wrap:wrap; padding-top:2px; }
+.dot{ width:7px; height:7px; border-radius:50%; background:var(--bull); box-shadow:0 0 0 3px rgba(79,209,160,0.15); }
+.pos-toggle{ margin-left:10px; display:inline-flex; gap:4px; }
+.pos-btn{ font-family:'IBM Plex Mono',monospace; font-size:11px; background:var(--panel-alt); border:1px solid var(--border); color:var(--text-faint); padding:4px 10px; cursor:pointer; }
+.pos-btn:hover{ color:var(--text-dim); }
+.pos-btn.active[data-pos="FLAT"]{ background:var(--panel-alt); color:var(--text-dim); border-color:var(--text-faint); }
+.pos-btn.active[data-pos="LONG"]{ background:rgba(79,209,160,0.12); color:var(--bull); border-color:var(--bull); }
+.pos-btn.active[data-pos="SHORT"]{ background:rgba(226,89,79,0.12); color:var(--bear); border-color:var(--bear); }
+
+.summary{ display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:22px; flex-wrap:wrap; gap:16px; }
+.summary h1{ font-size:14px; font-weight:500; color:var(--text-dim); margin-bottom:8px; }
+.summary-state{ font-size:34px; font-weight:700; }
+.summary-state.bull{ color:var(--bull); } .summary-state.bear{ color:var(--bear); } .summary-state.mixed{ color:var(--amber); }
+.summary-meta{ font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--text-faint); text-align:right; }
+
+.grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border); border:1px solid var(--border); margin-bottom:24px; }
+.card{ background:var(--panel); padding:14px; }
+.card-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+.card-tf{ font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600; }
+.card-grade{ font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--text-faint); border:1px solid var(--border); padding:2px 7px; cursor:pointer; }
+.card-grade.bull{ color:var(--bull); border-color:var(--bull); }
+.card-grade.bear{ color:var(--bear); border-color:var(--bear); }
+.card-thumb{ width:100%; aspect-ratio:16/10; background:var(--panel-alt); border:1px solid var(--border); position:relative; display:flex; align-items:center; justify-content:center; color:var(--text-faint); font-size:11px; overflow:hidden; margin-bottom:10px; cursor:pointer; }
+.card-thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+.card-thumb .change-btn{
+  position:absolute; bottom:6px; right:6px; font-family:'IBM Plex Mono',monospace; font-size:10px;
+  background:rgba(20,26,33,0.9); border:1px solid var(--border); color:var(--text); padding:3px 7px;
+  opacity:0; transition:opacity 0.15s ease;
+}
+.card-thumb:hover .change-btn{ opacity:1; }
+.card-note{ font-size:12px; color:var(--text-dim); line-height:1.5; min-height:32px; }
+.card-note.empty{ color:var(--text-faint); font-style:italic; }
+@media (max-width:700px){ .grid{ grid-template-columns:repeat(2,1fr); } }
+@media (max-width:480px){ .grid{ grid-template-columns:1fr; } }
+
+.trade-section{ background:var(--panel); border:1px solid var(--border); padding:18px; margin-bottom:24px; }
+.trade-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+.trade-title{ font-size:14px; font-weight:600; }
+.trade-pos-label{ font-family:'IBM Plex Mono',monospace; font-size:12px; padding:3px 10px; border:1px solid var(--border); color:var(--text-faint); }
+.trade-pos-label.long{ border-color:var(--bull); color:var(--bull); }
+.trade-pos-label.short{ border-color:var(--bear); color:var(--bear); }
+.trade-flat-note{ font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--text-faint); padding:20px 0; text-align:center; }
+.trade-shot{ width:100%; aspect-ratio:16/7; background:var(--panel-alt); border:1px solid var(--border); position:relative; display:flex; align-items:center; justify-content:center; color:var(--text-faint); font-size:12px; cursor:pointer; overflow:hidden; }
+.trade-shot img{ width:100%; height:100%; object-fit:cover; display:block; }
+.trade-shot .change-btn{ position:absolute; bottom:6px; right:6px; font-family:'IBM Plex Mono',monospace; font-size:10px; background:rgba(20,26,33,0.9); border:1px solid var(--border); color:var(--text); padding:3px 7px; opacity:0; transition:opacity 0.15s ease; }
+.trade-shot:hover .change-btn{ opacity:1; }
+
+.footnote{ font-size:12px; color:var(--text-faint); line-height:1.6; border-top:1px solid var(--border); padding-top:18px; }
+
+.lightbox{ position:fixed; inset:0; background:rgba(6,8,11,0.94); display:none; align-items:center; justify-content:center; z-index:1000; overflow:hidden; touch-action:none; }
+.lightbox.open{ display:flex; }
+.lightbox img{ max-width:92vw; max-height:92vh; user-select:none; -webkit-user-drag:none; transform-origin:center center; cursor:grab; transition:transform 0.06s ease-out; }
+.lightbox img.grabbing{ cursor:grabbing; transition:none; }
+.lightbox-close{ position:fixed; top:20px; right:24px; font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--text-dim); background:var(--panel-alt); border:1px solid var(--border); padding:7px 12px; cursor:pointer; z-index:1001; }
+.lightbox-close:hover{ color:var(--text); }
+.lightbox-hint{ position:fixed; bottom:20px; left:50%; transform:translateX(-50%); font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--text-faint); z-index:1001; pointer-events:none; text-align:center; }
+</style>
+</head>
+<body>
+<div class="topline"></div>
+<div class="wrap">
+  <div class="topbar">
+    <div>
+      <div class="mark">SB<span> Desk</span></div>
+      <div class="mark-sub">two-person desk — every session graded by hand</div>
+    </div>
+    <div class="status">
+      <span class="dot"></span> live · NQ · <span id="clock">—</span>
+      <span class="pos-toggle" id="posToggle">
+        <button data-pos="FLAT" class="pos-btn active">flat</button>
+        <button data-pos="LONG" class="pos-btn">long</button>
+        <button data-pos="SHORT" class="pos-btn">short</button>
+      </span>
+    </div>
+  </div>
+
+  <div class="trade-section" id="tradeSection">
+    <div class="trade-head">
+      <div class="trade-title">Current trade</div>
+      <div class="trade-pos-label" id="tradePosLabel">flat</div>
+    </div>
+    <div id="tradeBody"></div>
+  </div>
+
+  <div class="summary">
+    <div><h1>Today's bias</h1><div class="summary-state mixed" id="stateLabel">—</div></div>
+    <div class="summary-meta">all timeframes at a glance<br>click a card to grade or upload</div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="footnote">Screenshots and notes are stored locally in this session only. Click an uploaded chart to zoom.</div>
+</div>
+
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose">✕ close</button>
+  <img id="lightboxImg" src="">
+  <div class="lightbox-hint">scroll or pinch to zoom · drag to pan · double-click/tap to reset</div>
+</div>
+
+<script>
+const tfs=['1m','5m','15m','1h','4h','1D'];
+const state={}; tfs.forEach(t=>state[t]={grade:'neutral',note:'',img:null});
+const grid=document.getElementById('grid'); const stateLabel=document.getElementById('stateLabel');
+
+// clock
+const clockEl=document.getElementById('clock');
+function tickClock(){ clockEl.textContent=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'}); }
+tickClock(); setInterval(tickClock,1000);
+
+// favicon + position + blink
+function setFavicon(color){
+  const c=document.createElement('canvas'); c.width=32; c.height=32;
+  const ctx=c.getContext('2d'); ctx.beginPath(); ctx.arc(16,16,13,0,Math.PI*2); ctx.fillStyle=color; ctx.fill();
+  let link=document.querySelector("link[rel~='icon']");
+  if(!link){ link=document.createElement('link'); link.rel='icon'; document.head.appendChild(link); }
+  link.href=c.toDataURL('image/png');
+}
+let blinkInterval=null, blinkOn=false, baseTitle='SB Desk — daily NQ bias';
+function stopBlink(){ if(blinkInterval){ clearInterval(blinkInterval); blinkInterval=null; } blinkOn=false; }
+function startBlink(){ stopBlink(); blinkInterval=setInterval(()=>{ blinkOn=!blinkOn; document.title=blinkOn?baseTitle:'· · ·'; },900); }
+document.addEventListener('visibilitychange',()=>{
+  const pos=document.querySelector('.pos-btn.active')?.dataset.pos || 'FLAT';
+  if(pos==='FLAT') return;
+  if(document.hidden){ startBlink(); } else { stopBlink(); document.title=baseTitle; }
+});
+function setPosition(pos){
+  document.querySelectorAll('.pos-btn').forEach(b=>b.classList.toggle('active', b.dataset.pos===pos));
+  stopBlink();
+  if(pos==='LONG'){ baseTitle='🟢 LONG · NQ · SB Desk'; setFavicon('#4FD1A0'); }
+  else if(pos==='SHORT'){ baseTitle='🔴 SHORT · NQ · SB Desk'; setFavicon('#E2594F'); }
+  else { baseTitle='SB Desk — daily NQ bias'; setFavicon('#8B96A3'); }
+  document.title=baseTitle;
+  if(pos!=='FLAT' && document.hidden) startBlink();
+  renderTradeSection(pos);
+}
+document.querySelectorAll('.pos-btn').forEach(btn=>btn.addEventListener('click',()=>setPosition(btn.dataset.pos)));
+
+// current trade section
+const tradeImages = { LONG:null, SHORT:null };
+const tradePosLabel=document.getElementById('tradePosLabel');
+const tradeBody=document.getElementById('tradeBody');
+function renderTradeSection(pos){
+  tradePosLabel.textContent=pos.toLowerCase();
+  tradePosLabel.className='trade-pos-label '+(pos==='LONG'?'long':pos==='SHORT'?'short':'');
+  if(pos==='FLAT'){
+    tradeBody.innerHTML='<div class="trade-flat-note">No open position right now.</div>';
+    return;
+  }
+  const img=tradeImages[pos];
+  tradeBody.innerHTML=`<div class="trade-shot" id="tradeShot">${img?`<img src="${img}"><button class="change-btn">change</button>`:'click to upload position screenshot (broker/MNQ)'}</div>`;
+  const shotEl=document.getElementById('tradeShot');
+  const changeBtn=shotEl.querySelector('.change-btn');
+  if(changeBtn){
+    changeBtn.addEventListener('click',(e)=>{ e.stopPropagation(); pickTradeFile(pos); });
+    shotEl.addEventListener('click',(e)=>{ if(e.target===changeBtn) return; openLightbox(img); });
+  } else {
+    shotEl.addEventListener('click',()=>pickTradeFile(pos));
+  }
+}
+function pickTradeFile(pos){
+  const inp=document.createElement('input'); inp.type='file'; inp.accept='image/*';
+  inp.onchange=()=>{ if(inp.files[0]){ tradeImages[pos]=URL.createObjectURL(inp.files[0]); renderTradeSection(pos); } };
+  inp.click();
+}
+setPosition('FLAT');
+
+// grid logic
+function cycle(g){ const o=['neutral','bull','bear']; return o[(o.indexOf(g)+1)%3]; }
+function gradeText(g){ return g==='bull'?'Bullish':g==='bear'?'Bearish':'grade'; }
+function updateSummary(){
+  const gs=tfs.map(t=>state[t].grade).filter(g=>g!=='neutral');
+  if(!gs.length){ stateLabel.textContent='—'; stateLabel.className='summary-state mixed'; return; }
+  const b=gs.filter(g=>g==='bull').length, r=gs.filter(g=>g==='bear').length;
+  if(b>r){ stateLabel.textContent='Bullish'; stateLabel.className='summary-state bull'; }
+  else if(r>b){ stateLabel.textContent='Bearish'; stateLabel.className='summary-state bear'; }
+  else { stateLabel.textContent='Mixed'; stateLabel.className='summary-state mixed'; }
+}
+function render(){
+  grid.innerHTML='';
+  tfs.forEach(t=>{
+    const s=state[t];
+    const c=document.createElement('div'); c.className='card';
+    c.innerHTML=`<div class="card-head"><div class="card-tf">${t}</div><div class="card-grade ${s.grade!=='neutral'?s.grade:''}">${gradeText(s.grade)}</div></div>
+      <div class="card-thumb">${s.img?`<img src="${s.img}"><button class="change-btn">change</button>`:'click to upload'}</div>
+      <div class="card-note ${s.note?'':'empty'}">${s.note||'no notes yet'}</div>`;
+    c.querySelector('.card-grade').addEventListener('click',(e)=>{ e.stopPropagation(); s.grade=cycle(s.grade); render(); updateSummary(); });
+    const thumb=c.querySelector('.card-thumb');
+    const changeBtn=c.querySelector('.change-btn');
+    if(changeBtn){
+      changeBtn.addEventListener('click',(e)=>{ e.stopPropagation(); pickFile(t); });
+      thumb.addEventListener('click',(e)=>{ if(e.target===changeBtn) return; openLightbox(s.img); });
+    } else {
+      thumb.addEventListener('click',()=>pickFile(t));
+    }
+    grid.appendChild(c);
+  });
+}
+function pickFile(t){
+  const inp=document.createElement('input'); inp.type='file'; inp.accept='image/*';
+  inp.onchange=()=>{ if(inp.files[0]){ state[t].img=URL.createObjectURL(inp.files[0]); render(); } };
+  inp.click();
+}
+render(); updateSummary();
+
+// lightbox with mouse + touch zoom/pan
+const lightbox=document.getElementById('lightbox'), lightboxImg=document.getElementById('lightboxImg'), lightboxClose=document.getElementById('lightboxClose');
+let zoom=1, panX=0, panY=0, isDragging=false, dragStartX=0, dragStartY=0;
+function applyTransform(){ lightboxImg.style.transform=`scale(${zoom}) translate(${panX}px, ${panY}px)`; }
+function openLightbox(url){ if(!url) return; lightboxImg.src=url; zoom=1; panX=0; panY=0; applyTransform(); lightbox.classList.add('open'); }
+function closeLightbox(){ lightbox.classList.remove('open'); }
+lightboxClose.addEventListener('click', closeLightbox);
+lightbox.addEventListener('click',(e)=>{ if(e.target===lightbox) closeLightbox(); });
+document.addEventListener('keydown',(e)=>{ if(e.key==='Escape') closeLightbox(); });
+lightbox.addEventListener('wheel',(e)=>{
+  e.preventDefault();
+  zoom=Math.min(5, Math.max(1, zoom + (e.deltaY<0?0.18:-0.18)));
+  if(zoom===1){ panX=0; panY=0; }
+  applyTransform();
+}, {passive:false});
+lightboxImg.addEventListener('dblclick',()=>{ if(zoom===1){ zoom=2.4; } else { zoom=1; panX=0; panY=0; } applyTransform(); });
+lightboxImg.addEventListener('mousedown',(e)=>{
+  if(zoom===1) return;
+  isDragging=true; lightboxImg.classList.add('grabbing');
+  dragStartX=e.clientX-panX*zoom; dragStartY=e.clientY-panY*zoom;
+});
+window.addEventListener('mousemove',(e)=>{
+  if(!isDragging) return;
+  panX=(e.clientX-dragStartX)/zoom; panY=(e.clientY-dragStartY)/zoom;
+  applyTransform();
+});
+window.addEventListener('mouseup',()=>{ isDragging=false; lightboxImg.classList.remove('grabbing'); });
+
+// touch: pinch to zoom, drag to pan, double-tap to reset
+let touchStartDist=0, touchStartZoom=1, lastTapTime=0, touchDragging=false, touchStartX=0, touchStartY=0;
+function dist(t1,t2){ return Math.hypot(t1.clientX-t2.clientX, t1.clientY-t2.clientY); }
+lightboxImg.addEventListener('touchstart',(e)=>{
+  if(e.touches.length===2){
+    touchStartDist=dist(e.touches[0], e.touches[1]);
+    touchStartZoom=zoom;
+  } else if(e.touches.length===1){
+    const now=Date.now();
+    if(now-lastTapTime<300){
+      if(zoom===1){ zoom=2.4; } else { zoom=1; panX=0; panY=0; }
+      applyTransform();
+    }
+    lastTapTime=now;
+    if(zoom>1){
+      touchDragging=true;
+      touchStartX=e.touches[0].clientX-panX*zoom;
+      touchStartY=e.touches[0].clientY-panY*zoom;
+    }
+  }
+}, {passive:true});
+lightboxImg.addEventListener('touchmove',(e)=>{
+  if(e.touches.length===2){
+    e.preventDefault();
+    const d=dist(e.touches[0], e.touches[1]);
+    zoom=Math.min(5, Math.max(1, touchStartZoom * (d/touchStartDist)));
+    if(zoom===1){ panX=0; panY=0; }
+    applyTransform();
+  } else if(e.touches.length===1 && touchDragging){
+    panX=(e.touches[0].clientX-touchStartX)/zoom;
+    panY=(e.touches[0].clientY-touchStartY)/zoom;
+    applyTransform();
+  }
+}, {passive:false});
+lightboxImg.addEventListener('touchend',()=>{ touchDragging=false; });
+</script>
+</body>
+</html>
