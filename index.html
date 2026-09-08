@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SB Desk — daily NQ bias</title>
+<title>SB Desk — daily bias</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 :root{
@@ -16,7 +16,7 @@ body{ background:var(--bg); color:var(--text); font-family:'Space Grotesk',sans-
 .topline{ height:2px; background:linear-gradient(90deg,var(--amber),transparent 60%); }
 .wrap{ max-width:980px; margin:0 auto; padding:36px 24px 70px; }
 
-.topbar{ display:flex; justify-content:space-between; align-items:flex-start; padding-bottom:20px; border-bottom:1px solid var(--border); margin-bottom:28px; flex-wrap:wrap; gap:12px; }
+.topbar{ display:flex; justify-content:space-between; align-items:flex-start; padding-bottom:20px; border-bottom:1px solid var(--border); margin-bottom:20px; flex-wrap:wrap; gap:12px; }
 .mark{ font-size:19px; font-weight:700; }
 .mark span{ color:var(--text-faint); font-weight:400; }
 .mark-sub{ font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--text-faint); margin-top:5px; }
@@ -25,6 +25,11 @@ body{ background:var(--bg); color:var(--text); font-family:'Space Grotesk',sans-
 .pos-pill{ font-family:'IBM Plex Mono',monospace; font-size:11px; padding:4px 10px; border:1px solid var(--border); color:var(--text-faint); margin-left:8px; }
 .pos-pill.long{ border-color:var(--bull); color:var(--bull); }
 .pos-pill.short{ border-color:var(--bear); color:var(--bear); }
+
+.instrument-row{ display:flex; gap:6px; margin-bottom:28px; }
+.instrument-btn{ font-family:'IBM Plex Mono',monospace; font-size:13px; background:var(--panel-alt); border:1px solid var(--border); color:var(--text-dim); padding:8px 16px; cursor:pointer; }
+.instrument-btn.active{ color:var(--text); border-color:var(--amber); background:var(--panel); }
+.no-data-note{ font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--text-faint); padding:40px 0; text-align:center; }
 
 .trade-section{ background:var(--panel); border:1px solid var(--border); padding:18px; margin-bottom:24px; }
 .trade-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
@@ -78,27 +83,16 @@ body{ background:var(--bg); color:var(--text); font-family:'Space Grotesk',sans-
       <div class="mark-sub">two-person desk — every session graded by hand</div>
     </div>
     <div class="status">
-      <span class="dot"></span> live · NQ · <span id="clock">—</span>
+      <span class="dot"></span> live · <span id="instLabel">—</span> · <span id="clock">—</span>
       <span class="pos-pill" id="posPill">flat</span>
     </div>
   </div>
 
-  <div class="trade-section" id="tradeSection">
-    <div class="trade-head">
-      <div class="trade-title">Current trade</div>
-    </div>
-    <div id="tradeBody"><div class="loading-note">loading…</div></div>
-    <div class="trade-history" id="tradeHistory"></div>
+  <div class="instrument-row" id="instrumentRow"></div>
+
+  <div id="content">
+    <div class="loading-note">loading…</div>
   </div>
-
-  <div class="summary">
-    <div><h1>Today's bias</h1><div class="summary-state mixed" id="stateLabel">—</div></div>
-    <div class="summary-meta" id="summaryMeta">loading…</div>
-  </div>
-
-  <div class="grid" id="grid"><div class="loading-note">loading…</div></div>
-
-  <div class="footnote">Live data — published by the desk. Click an uploaded chart to zoom.</div>
 </div>
 
 <div class="lightbox" id="lightbox">
@@ -110,6 +104,13 @@ body{ background:var(--bg); color:var(--text); font-family:'Space Grotesk',sans-
 <script>
 const API_BASE = 'https://sbdesk-api.onrender.com';
 const tfs=['1m','5m','15m','1h','4h','1D'];
+const INSTRUMENTS=[
+  { key:'NQ', label:'Nasdaq' },
+  { key:'GOLD', label:'Gold' },
+  { key:'DOW', label:'Dow' },
+];
+let fullState=null;
+let currentInstrument='NQ';
 
 const clockEl=document.getElementById('clock');
 function tickClock(){ clockEl.textContent=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'}); }
@@ -122,7 +123,7 @@ function setFavicon(color){
   if(!link){ link=document.createElement('link'); link.rel='icon'; document.head.appendChild(link); }
   link.href=c.toDataURL('image/png');
 }
-let blinkInterval=null, blinkOn=false, baseTitle='SB Desk — daily NQ bias';
+let blinkInterval=null, blinkOn=false, baseTitle='SB Desk — daily bias';
 function stopBlink(){ if(blinkInterval){ clearInterval(blinkInterval); blinkInterval=null; } blinkOn=false; }
 function startBlink(){ stopBlink(); blinkInterval=setInterval(()=>{ blinkOn=!blinkOn; document.title=blinkOn?baseTitle:'· · ·'; },900); }
 let currentPos='FLAT';
@@ -130,37 +131,112 @@ document.addEventListener('visibilitychange',()=>{
   if(currentPos==='FLAT') return;
   if(document.hidden){ startBlink(); } else { stopBlink(); document.title=baseTitle; }
 });
-function applyPosition(pos){
+function applyPosition(pos, instLabel){
   currentPos=pos;
   const pill=document.getElementById('posPill');
   pill.textContent=pos.toLowerCase();
   pill.className='pos-pill '+(pos==='LONG'?'long':pos==='SHORT'?'short':'');
   stopBlink();
-  if(pos==='LONG'){ baseTitle='🟢 LONG · NQ · SB Desk'; setFavicon('#4FD1A0'); }
-  else if(pos==='SHORT'){ baseTitle='🔴 SHORT · NQ · SB Desk'; setFavicon('#E2594F'); }
-  else { baseTitle='SB Desk — daily NQ bias'; setFavicon('#8B96A3'); }
+  if(pos==='LONG'){ baseTitle=`🟢 LONG · ${instLabel} · SB Desk`; setFavicon('#4FD1A0'); }
+  else if(pos==='SHORT'){ baseTitle=`🔴 SHORT · ${instLabel} · SB Desk`; setFavicon('#E2594F'); }
+  else { baseTitle='SB Desk — daily bias'; setFavicon('#8B96A3'); }
   document.title=baseTitle;
   if(pos!=='FLAT' && document.hidden) startBlink();
 }
 
 function gradeText(g){ return g==='bull'?'Bullish':g==='bear'?'Bearish':'—'; }
 
-function renderTrade(trade){
-  const body=document.getElementById('tradeBody');
-  if(!trade || trade.position==='FLAT'){
-    body.innerHTML='<div class="trade-flat-note">No open position right now.</div>';
-  } else if(trade.img){
-    body.innerHTML=`<div class="trade-shot" id="tradeShotImg"><img src="${trade.img}"></div>`;
-    document.getElementById('tradeShotImg').addEventListener('click',()=>openLightbox(trade.img));
-  } else {
-    body.innerHTML='<div class="trade-flat-note">Position open — screenshot coming soon.</div>';
+function hasData(inst){
+  if(!inst) return false;
+  if(inst.trade && (inst.trade.position!=='FLAT' || inst.trade.img)) return true;
+  return tfs.some(t=>{
+    const s=inst.timeframes && inst.timeframes[t];
+    return s && (s.grade!=='neutral' || (s.note && s.note.trim()) || s.img);
+  });
+}
+
+function renderInstrumentTabs(){
+  const row=document.getElementById('instrumentRow');
+  const available=INSTRUMENTS.filter(i=>hasData(fullState[i.key]));
+  row.innerHTML='';
+  available.forEach(i=>{
+    const btn=document.createElement('button');
+    btn.className='instrument-btn'+(i.key===currentInstrument?' active':'');
+    btn.textContent=i.label;
+    btn.addEventListener('click',()=>{ currentInstrument=i.key; renderInstrumentTabs(); renderContent(); });
+    row.appendChild(btn);
+  });
+  return available;
+}
+
+function renderContent(){
+  const inst=fullState[currentInstrument];
+  const label=(INSTRUMENTS.find(i=>i.key===currentInstrument)||{}).label || currentInstrument;
+  document.getElementById('instLabel').textContent=label;
+
+  if(!hasData(inst)){
+    document.getElementById('content').innerHTML='<div class="no-data-note">Nothing published for this instrument yet.</div>';
+    applyPosition('FLAT', label);
+    return;
   }
 
-  const histEl=document.getElementById('tradeHistory');
-  const history=(trade && trade.history) || [];
-  if(!history.length){ histEl.innerHTML=''; return; }
+  applyPosition(inst.trade.position || 'FLAT', label);
+
+  const historyHtml = renderHistoryHtml(inst.trade.history || []);
+  let tradeBodyHtml;
+  if(inst.trade.position==='FLAT'){
+    tradeBodyHtml='<div class="trade-flat-note">No open position right now.</div>';
+  } else if(inst.trade.img){
+    tradeBodyHtml=`<div class="trade-shot" id="tradeShotImg"><img src="${inst.trade.img}"></div>`;
+  } else {
+    tradeBodyHtml='<div class="trade-flat-note">Position open — screenshot coming soon.</div>';
+  }
+
+  const grades=tfs.map(t=>inst.timeframes[t]?.grade).filter(g=>g && g!=='neutral');
+  let stateText='—', stateClass='mixed';
+  if(grades.length){
+    const b=grades.filter(g=>g==='bull').length, r=grades.filter(g=>g==='bear').length;
+    if(b>r){ stateText='Bullish'; stateClass='bull'; }
+    else if(r>b){ stateText='Bearish'; stateClass='bear'; }
+    else { stateText='Mixed'; stateClass='mixed'; }
+  }
+
+  const gridHtml=tfs.map(t=>{
+    const s=inst.timeframes[t] || { grade:'neutral', note:'', img:null };
+    return `<div class="card">
+      <div class="card-head"><div class="card-tf">${t}</div><div class="card-grade ${s.grade!=='neutral'?s.grade:''}">${gradeText(s.grade)}</div></div>
+      <div class="card-thumb" data-img="${s.img?'1':''}" data-tf="${t}">${s.img?`<img src="${s.img}">`:'no chart posted yet'}</div>
+      <div class="card-note ${s.note?'':'empty'}">${s.note||'no notes yet'}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('content').innerHTML=`
+    <div class="trade-section">
+      <div class="trade-head"><div class="trade-title">Current trade</div></div>
+      <div>${tradeBodyHtml}</div>
+      <div class="trade-history">${historyHtml}</div>
+    </div>
+    <div class="summary">
+      <div><h1>Today's bias</h1><div class="summary-state ${stateClass}">${stateText}</div></div>
+      <div class="summary-meta">${inst.updatedAt ? 'last updated '+new Date(inst.updatedAt).toLocaleString('en-GB') : 'not yet published'}</div>
+    </div>
+    <div class="grid">${gridHtml}</div>
+    <div class="footnote">Live data — published by the desk. Click an uploaded chart to zoom.</div>
+  `;
+
+  if(inst.trade.img){
+    document.getElementById('tradeShotImg').addEventListener('click',()=>openLightbox(inst.trade.img));
+  }
+  document.querySelectorAll('.card-thumb[data-img="1"]').forEach(el=>{
+    const t=el.dataset.tf;
+    el.addEventListener('click',()=>openLightbox(inst.timeframes[t].img));
+  });
+}
+
+function renderHistoryHtml(history){
+  if(!history.length) return '';
   const recent=history.slice(-5);
-  histEl.innerHTML = recent.map((h,i)=>{
+  return recent.map((h,i)=>{
     const time=new Date(h.at).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
     const cls=h.position==='LONG'?'long':h.position==='SHORT'?'short':'';
     const item=`<span class="hist-item ${cls}">${h.position.toLowerCase()} ${time}</span>`;
@@ -168,52 +244,27 @@ function renderTrade(trade){
   }).join('');
 }
 
-function renderSummary(timeframes){
-  const grades=tfs.map(t=>timeframes[t]?.grade).filter(g=>g && g!=='neutral');
-  const stateLabel=document.getElementById('stateLabel');
-  if(!grades.length){ stateLabel.textContent='—'; stateLabel.className='summary-state mixed'; return; }
-  const b=grades.filter(g=>g==='bull').length, r=grades.filter(g=>g==='bear').length;
-  if(b>r){ stateLabel.textContent='Bullish'; stateLabel.className='summary-state bull'; }
-  else if(r>b){ stateLabel.textContent='Bearish'; stateLabel.className='summary-state bear'; }
-  else { stateLabel.textContent='Mixed'; stateLabel.className='summary-state mixed'; }
-}
-
-function renderGrid(timeframes){
-  const grid=document.getElementById('grid');
-  grid.innerHTML='';
-  tfs.forEach(t=>{
-    const s=timeframes[t] || { grade:'neutral', note:'', img:null };
-    const c=document.createElement('div'); c.className='card';
-    c.innerHTML=`<div class="card-head"><div class="card-tf">${t}</div><div class="card-grade ${s.grade!=='neutral'?s.grade:''}">${gradeText(s.grade)}</div></div>
-      <div class="card-thumb">${s.img?`<img src="${s.img}">`:'no chart posted yet'}</div>
-      <div class="card-note ${s.note?'':'empty'}">${s.note||'no notes yet'}</div>`;
-    if(s.img){
-      c.querySelector('.card-thumb').addEventListener('click',()=>openLightbox(s.img));
-    }
-    grid.appendChild(c);
-  });
-}
-
 async function loadState(){
   try{
     const res=await fetch(`${API_BASE}/api/state`);
-    const data=await res.json();
-    applyPosition((data.trade && data.trade.position) || 'FLAT');
-    renderTrade(data.trade);
-    renderSummary(data.timeframes || {});
-    renderGrid(data.timeframes || {});
-    const meta=document.getElementById('summaryMeta');
-    meta.innerHTML = data.updatedAt
-      ? `last updated ${new Date(data.updatedAt).toLocaleString('en-GB')}`
-      : 'not yet published';
+    fullState=await res.json();
+    const available=renderInstrumentTabs();
+    if(!available.find(i=>i.key===currentInstrument) && available.length){
+      currentInstrument=available[0].key;
+      renderInstrumentTabs();
+    }
+    if(!available.length){
+      document.getElementById('content').innerHTML='<div class="no-data-note">Nothing published yet.</div>';
+      return;
+    }
+    renderContent();
   }catch(err){
-    document.getElementById('grid').innerHTML='<div class="loading-note">Could not load live data — check back shortly.</div>';
-    document.getElementById('tradeBody').innerHTML='<div class="trade-flat-note">Could not load.</div>';
+    document.getElementById('content').innerHTML='<div class="loading-note">Could not load live data — check back shortly.</div>';
     console.error(err);
   }
 }
 loadState();
-setInterval(loadState, 60000); // refresh every minute so visitors see updates without reloading
+setInterval(loadState, 60000);
 
 // lightbox with mouse + touch zoom/pan
 const lightbox=document.getElementById('lightbox'), lightboxImg=document.getElementById('lightboxImg'), lightboxClose=document.getElementById('lightboxClose');

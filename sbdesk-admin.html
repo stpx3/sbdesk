@@ -14,18 +14,17 @@
 *{box-sizing:border-box; margin:0; padding:0;}
 body{ background:var(--bg); color:var(--text); font-family:'Space Grotesk',sans-serif; }
 .wrap{ max-width:760px; margin:0 auto; padding:32px 24px 80px; }
-.topbar{ display:flex; justify-content:space-between; align-items:center; padding-bottom:18px; border-bottom:1px solid var(--border); margin-bottom:24px; }
+.topbar{ display:flex; justify-content:space-between; align-items:center; padding-bottom:18px; border-bottom:1px solid var(--border); margin-bottom:20px; }
 .mark{ font-size:17px; font-weight:700; }
 .mark span{ color:var(--amber); font-family:'IBM Plex Mono',monospace; font-size:11px; margin-left:8px; border:1px solid var(--border); padding:2px 8px; }
 .save-btn{ font-family:'IBM Plex Mono',monospace; font-size:12px; background:var(--amber); color:#0B0F14; border:none; padding:9px 16px; cursor:pointer; font-weight:600; }
-.save-btn:disabled{ opacity:0.5; cursor:default; }
 .status-msg{ font-family:'IBM Plex Mono',monospace; font-size:12px; margin-bottom:20px; padding:10px 14px; border:1px solid var(--border); background:var(--panel-alt); }
 .status-msg.ok{ color:var(--bull); border-color:var(--bull); }
 .status-msg.err{ color:var(--bear); border-color:var(--bear); }
 
-.pw-row{ display:flex; gap:8px; margin-bottom:24px; }
-.pw-row input{ flex:1; background:var(--panel-alt); border:1px solid var(--border); color:var(--text); font-family:'IBM Plex Mono',monospace; font-size:13px; padding:9px 12px; }
-.pw-row button{ font-family:'IBM Plex Mono',monospace; font-size:12px; background:var(--panel-alt); border:1px solid var(--border); color:var(--text-dim); padding:9px 14px; cursor:pointer; }
+.instrument-row{ display:flex; gap:6px; margin-bottom:24px; }
+.instrument-btn{ font-family:'IBM Plex Mono',monospace; font-size:13px; background:var(--panel-alt); border:1px solid var(--border); color:var(--text-dim); padding:8px 16px; cursor:pointer; flex:1; }
+.instrument-btn.active{ color:var(--text); border-color:var(--amber); background:var(--panel); }
 
 .section-label{ font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:10px; }
 
@@ -49,7 +48,6 @@ body{ background:var(--bg); color:var(--text); font-family:'Space Grotesk',sans-
 .grade-opt.active[data-g="bear"]{ color:var(--bear); border-color:var(--bear); }
 .grade-opt.active[data-g="neutral"]{ color:var(--text-dim); border-color:var(--text-faint); }
 .card-shot{ width:100%; aspect-ratio:16/10; background:var(--panel-alt); border:1px dashed var(--border); position:relative; display:flex; align-items:center; justify-content:center; color:var(--text-faint); font-size:11px; cursor:pointer; overflow:hidden; margin-bottom:10px; }
-.card-shot img{ width:100%; height:100%; object-fit:cover; }
 .card-note{ width:100%; background:var(--panel-alt); border:1px solid var(--border); color:var(--text); font-family:'Space Grotesk',sans-serif; font-size:13px; padding:9px 10px; min-height:56px; resize:vertical; }
 .card-note::placeholder{ color:var(--text-faint); }
 @media (max-width:560px){ .grid{ grid-template-columns:1fr; } }
@@ -79,6 +77,12 @@ body{ background:var(--bg); color:var(--text); font-family:'Space Grotesk',sans-
 
   <div id="statusMsg"></div>
 
+  <div class="instrument-row" id="instrumentRow">
+    <button class="instrument-btn active" data-inst="NQ">Nasdaq</button>
+    <button class="instrument-btn" data-inst="GOLD">Gold</button>
+    <button class="instrument-btn" data-inst="DOW">Dow</button>
+  </div>
+
   <div class="section-label">Current trade</div>
   <div class="trade-row">
     <div class="trade-pos" id="tradePos">
@@ -86,7 +90,7 @@ body{ background:var(--bg); color:var(--text); font-family:'Space Grotesk',sans-
       <button class="pos-btn" data-pos="LONG">long</button>
       <button class="pos-btn" data-pos="SHORT">short</button>
     </div>
-    <div class="shot" id="tradeShot">click to upload broker/MNQ screenshot</div>
+    <div class="shot" id="tradeShot">click to upload broker screenshot</div>
     <input type="file" id="tradeFile" accept="image/*" style="display:none">
   </div>
 
@@ -97,8 +101,17 @@ body{ background:var(--bg); color:var(--text); font-family:'Space Grotesk',sans-
 <script>
 const API_BASE = 'https://sbdesk-api.onrender.com';
 const tfs=['1m','5m','15m','1h','4h','1D'];
-const state={}; tfs.forEach(t=>state[t]={grade:'neutral', note:'', img:null});
-let tradePos='FLAT', tradeImg=null;
+const INSTRUMENTS=['NQ','GOLD','DOW'];
+
+function emptyTimeframes(){
+  const o={}; tfs.forEach(t=> o[t]={grade:'neutral', note:'', img:null}); return o;
+}
+function emptyInstrumentState(){
+  return { trade:{ position:'FLAT', img:null, history:[] }, timeframes: emptyTimeframes() };
+}
+
+let fullState={}; INSTRUMENTS.forEach(k=> fullState[k]=emptyInstrumentState());
+let currentInstrument='NQ';
 let adminPassword='';
 
 const statusMsg=document.getElementById('statusMsg');
@@ -119,68 +132,84 @@ function fileToDataUrl(file){
 
 const tradeShot=document.getElementById('tradeShot');
 const tradeFile=document.getElementById('tradeFile');
-document.querySelectorAll('#tradePos .pos-btn').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    tradePos=btn.dataset.pos;
-    document.querySelectorAll('#tradePos .pos-btn').forEach(b=>b.classList.toggle('active', b===btn));
-  });
-});
-tradeShot.addEventListener('click',(e)=>{ if(e.target.classList.contains('remove-btn')) return; tradeFile.click(); });
-tradeFile.addEventListener('change', async ()=>{
-  if(tradeFile.files[0]){
-    tradeImg=await fileToDataUrl(tradeFile.files[0]);
-    renderTradeShot();
-  }
-});
+const tradePos=document.getElementById('tradePos');
+const tfGrid=document.getElementById('tfGrid');
+
+function currentSlice(){ return fullState[currentInstrument]; }
+
 function renderTradeShot(){
-  tradeShot.innerHTML = tradeImg
-    ? `<button class="remove-btn" id="removeTradeShot">remove</button><img src="${tradeImg}">`
-    : 'click to upload broker/MNQ screenshot';
-  if(tradeImg){
+  const s=currentSlice();
+  tradeShot.innerHTML = s.trade.img
+    ? `<button class="remove-btn" id="removeTradeShot">remove</button><img src="${s.trade.img}">`
+    : 'click to upload broker screenshot';
+  if(s.trade.img){
     document.getElementById('removeTradeShot').addEventListener('click',(e)=>{
-      e.stopPropagation(); tradeImg=null; renderTradeShot();
+      e.stopPropagation(); s.trade.img=null; renderTradeShot();
     });
   }
 }
+tradeShot.addEventListener('click',(e)=>{ if(e.target.classList.contains('remove-btn')) return; tradeFile.click(); });
+tradeFile.addEventListener('change', async ()=>{
+  if(tradeFile.files[0]){
+    currentSlice().trade.img = await fileToDataUrl(tradeFile.files[0]);
+    renderTradeShot();
+  }
+});
+tradePos.querySelectorAll('.pos-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    currentSlice().trade.position = btn.dataset.pos;
+    tradePos.querySelectorAll('.pos-btn').forEach(b=>b.classList.toggle('active', b===btn));
+  });
+});
 
-const tfGrid=document.getElementById('tfGrid');
 function renderGrid(){
+  const s=currentSlice();
   tfGrid.innerHTML='';
   tfs.forEach(t=>{
-    const s=state[t];
+    const tf=s.timeframes[t];
     const c=document.createElement('div'); c.className='card';
     c.innerHTML=`<div class="card-head"><div class="card-tf">${t}</div>
         <div class="grade-select">
-          <button class="grade-opt ${s.grade==='bull'?'active':''}" data-g="bull">bull</button>
-          <button class="grade-opt ${s.grade==='bear'?'active':''}" data-g="bear">bear</button>
-          <button class="grade-opt ${s.grade==='neutral'?'active':''}" data-g="neutral">–</button>
+          <button class="grade-opt ${tf.grade==='bull'?'active':''}" data-g="bull">bull</button>
+          <button class="grade-opt ${tf.grade==='bear'?'active':''}" data-g="bear">bear</button>
+          <button class="grade-opt ${tf.grade==='neutral'?'active':''}" data-g="neutral">–</button>
         </div></div>
-      <div class="card-shot">${s.img?`<button class="remove-btn" data-remove="${t}">remove</button><img src="${s.img}">`:'click to upload'}</div>
-      <textarea class="card-note" placeholder="Notes for ${t}...">${s.note}</textarea>`;
+      <div class="card-shot">${tf.img?`<button class="remove-btn" data-remove="${t}">remove</button><img src="${tf.img}">`:'click to upload'}</div>
+      <textarea class="card-note" placeholder="Notes for ${t}...">${tf.note}</textarea>`;
     c.querySelectorAll('.grade-opt').forEach(btn=>{
-      btn.addEventListener('click',()=>{ s.grade=btn.dataset.g; renderGrid(); });
+      btn.addEventListener('click',()=>{ tf.grade=btn.dataset.g; renderGrid(); });
     });
     const removeBtn=c.querySelector('.remove-btn');
     if(removeBtn){
-      removeBtn.addEventListener('click',(e)=>{ e.stopPropagation(); s.img=null; renderGrid(); });
+      removeBtn.addEventListener('click',(e)=>{ e.stopPropagation(); tf.img=null; renderGrid(); });
     }
     c.querySelector('.card-shot').addEventListener('click',(e)=>{
       if(e.target.classList.contains('remove-btn')) return;
       const inp=document.createElement('input'); inp.type='file'; inp.accept='image/*';
-      inp.onchange=async ()=>{ if(inp.files[0]){ s.img=await fileToDataUrl(inp.files[0]); renderGrid(); } };
+      inp.onchange=async ()=>{ if(inp.files[0]){ tf.img=await fileToDataUrl(inp.files[0]); renderGrid(); } };
       inp.click();
     });
-    c.querySelector('.card-note').addEventListener('input',(e)=>{ s.note=e.target.value; });
+    c.querySelector('.card-note').addEventListener('input',(e)=>{ tf.note=e.target.value; });
     tfGrid.appendChild(c);
   });
 }
-renderGrid();
 
-function setTradePosition(pos){
-  tradePos=pos;
-  document.querySelectorAll('#tradePos .pos-btn').forEach(b=>b.classList.toggle('active', b.dataset.pos===pos));
+function renderInstrumentPanel(){
+  const s=currentSlice();
+  tradePos.querySelectorAll('.pos-btn').forEach(b=>b.classList.toggle('active', b.dataset.pos===s.trade.position));
+  renderTradeShot();
+  renderGrid();
 }
 
+document.querySelectorAll('.instrument-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    currentInstrument=btn.dataset.inst;
+    document.querySelectorAll('.instrument-btn').forEach(b=>b.classList.toggle('active', b===btn));
+    renderInstrumentPanel();
+  });
+});
+
+// login
 const loginBtn=document.getElementById('loginBtn');
 const loginPwInput=document.getElementById('loginPwInput');
 const loginStatus=document.getElementById('loginStatus');
@@ -193,15 +222,8 @@ async function attemptLogin(){
   loginBtn.disabled=true;
   loginStatus.textContent='Checking…';
   try{
-    const res=await fetch(`${API_BASE}/api/admin/login`, {
-      method:'POST',
-      headers:{ 'x-admin-password':pw }
-    });
-    if(res.status===401){
-      loginStatus.textContent='Wrong password.';
-      loginBtn.disabled=false;
-      return;
-    }
+    const res=await fetch(`${API_BASE}/api/admin/login`, { method:'POST', headers:{ 'x-admin-password':pw } });
+    if(res.status===401){ loginStatus.textContent='Wrong password.'; loginBtn.disabled=false; return; }
     if(!res.ok) throw new Error('server returned '+res.status);
     adminPassword=pw;
     loginScreen.classList.add('hidden');
@@ -220,18 +242,11 @@ async function loadCurrentState(){
   try{
     const res=await fetch(`${API_BASE}/api/state`);
     const data=await res.json();
-    if(data.trade){
-      setTradePosition(data.trade.position || 'FLAT');
-      tradeImg=data.trade.img || null;
-      renderTradeShot();
-    }
-    if(data.timeframes){
-      tfs.forEach(t=>{
-        if(data.timeframes[t]) state[t]=data.timeframes[t];
-      });
-      renderGrid();
-    }
-    showStatus('Loaded. Make your edits, then save & publish.', 'ok');
+    INSTRUMENTS.forEach(k=>{
+      if(data[k]) fullState[k]={ trade: data[k].trade || {position:'FLAT', img:null, history:[]}, timeframes: data[k].timeframes || emptyTimeframes() };
+    });
+    renderInstrumentPanel();
+    showStatus('Loaded. Pick an instrument tab, make edits, then save & publish.', 'ok');
   }catch(err){
     showStatus('Failed to load state: '+err.message, 'err');
     console.error(err);
@@ -239,10 +254,11 @@ async function loadCurrentState(){
 }
 
 saveBtn.addEventListener('click', async ()=>{
-  if(!adminPassword){ showStatus('Load with your password first.', 'err'); return; }
+  if(!adminPassword){ showStatus('Not logged in.', 'err'); return; }
   saveBtn.disabled=true;
   showStatus('Saving…', '');
-  const payload={ trade:{ position:tradePos, img:tradeImg }, timeframes:state };
+  const s=currentSlice();
+  const payload={ instrument: currentInstrument, trade: s.trade, timeframes: s.timeframes };
   try{
     const res=await fetch(`${API_BASE}/api/admin/save`, {
       method:'POST',
@@ -251,7 +267,7 @@ saveBtn.addEventListener('click', async ()=>{
     });
     if(res.status===401){ showStatus('Wrong password — not saved.', 'err'); saveBtn.disabled=false; return; }
     if(!res.ok){ throw new Error('server returned '+res.status); }
-    showStatus('Published. The live site now shows this.', 'ok');
+    showStatus(`Published ${currentInstrument}. The live site now shows this.`, 'ok');
   }catch(err){
     showStatus('Failed to save: '+err.message, 'err');
   }
