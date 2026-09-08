@@ -52,19 +52,30 @@ body{ background:var(--bg); color:var(--text); font-family:'Space Grotesk',sans-
 .card-note{ width:100%; background:var(--panel-alt); border:1px solid var(--border); color:var(--text); font-family:'Space Grotesk',sans-serif; font-size:13px; padding:9px 10px; min-height:56px; resize:vertical; }
 .card-note::placeholder{ color:var(--text-faint); }
 @media (max-width:560px){ .grid{ grid-template-columns:1fr; } }
+
+.login-screen{ max-width:360px; margin:120px auto 0; text-align:center; }
+.login-screen .mark{ margin-bottom:24px; }
+.login-screen input{ width:100%; background:var(--panel-alt); border:1px solid var(--border); color:var(--text); font-family:'IBM Plex Mono',monospace; font-size:14px; padding:11px 14px; margin-bottom:10px; }
+.login-screen button{ width:100%; font-family:'IBM Plex Mono',monospace; font-size:13px; background:var(--amber); color:#0B0F14; border:none; padding:11px; cursor:pointer; font-weight:600; }
+.login-screen button:disabled{ opacity:0.5; }
+.hidden{ display:none !important; }
 </style>
 </head>
 <body>
-<div class="wrap">
+
+<div class="login-screen" id="loginScreen">
+  <div class="mark">SB Desk<span>admin</span></div>
+  <input type="password" id="loginPwInput" placeholder="Admin password">
+  <button id="loginBtn">log in</button>
+  <div id="loginStatus" style="margin-top:14px; font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--bear);"></div>
+</div>
+
+<div class="wrap hidden" id="adminWrap">
   <div class="topbar">
     <div class="mark">SB Desk<span>admin</span></div>
-    <button class="save-btn" id="saveBtn" disabled>save & publish</button>
+    <button class="save-btn" id="saveBtn">save & publish</button>
   </div>
 
-  <div class="pw-row">
-    <input type="password" id="pwInput" placeholder="Admin password">
-    <button id="loadBtn">load</button>
-  </div>
   <div id="statusMsg"></div>
 
   <div class="section-label">Current trade</div>
@@ -154,10 +165,41 @@ function setTradePosition(pos){
   document.querySelectorAll('#tradePos .pos-btn').forEach(b=>b.classList.toggle('active', b.dataset.pos===pos));
 }
 
-document.getElementById('loadBtn').addEventListener('click', async ()=>{
-  const pw=document.getElementById('pwInput').value.trim();
-  if(!pw){ showStatus('Enter the admin password first.', 'err'); return; }
-  adminPassword=pw;
+const loginBtn=document.getElementById('loginBtn');
+const loginPwInput=document.getElementById('loginPwInput');
+const loginStatus=document.getElementById('loginStatus');
+const loginScreen=document.getElementById('loginScreen');
+const adminWrap=document.getElementById('adminWrap');
+
+async function attemptLogin(){
+  const pw=loginPwInput.value.trim();
+  if(!pw){ loginStatus.textContent='Enter a password.'; return; }
+  loginBtn.disabled=true;
+  loginStatus.textContent='Checking…';
+  try{
+    const res=await fetch(`${API_BASE}/api/admin/login`, {
+      method:'POST',
+      headers:{ 'x-admin-password':pw }
+    });
+    if(res.status===401){
+      loginStatus.textContent='Wrong password.';
+      loginBtn.disabled=false;
+      return;
+    }
+    if(!res.ok) throw new Error('server returned '+res.status);
+    adminPassword=pw;
+    loginScreen.classList.add('hidden');
+    adminWrap.classList.remove('hidden');
+    await loadCurrentState();
+  }catch(err){
+    loginStatus.textContent='Login failed: '+err.message;
+    loginBtn.disabled=false;
+  }
+}
+loginBtn.addEventListener('click', attemptLogin);
+loginPwInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter') attemptLogin(); });
+
+async function loadCurrentState(){
   showStatus('Loading current state…', '');
   try{
     const res=await fetch(`${API_BASE}/api/state`);
@@ -173,13 +215,12 @@ document.getElementById('loadBtn').addEventListener('click', async ()=>{
       });
       renderGrid();
     }
-    saveBtn.disabled=false;
     showStatus('Loaded. Make your edits, then save & publish.', 'ok');
   }catch(err){
     showStatus('Failed to load state: '+err.message, 'err');
     console.error(err);
   }
-});
+}
 
 saveBtn.addEventListener('click', async ()=>{
   if(!adminPassword){ showStatus('Load with your password first.', 'err'); return; }
