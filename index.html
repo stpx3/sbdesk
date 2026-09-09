@@ -45,6 +45,7 @@ body{ background:var(--bg); color:var(--text); font-family:'Space Grotesk',sans-
 
 .summary{ display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:22px; flex-wrap:wrap; gap:16px; }
 .summary h1{ font-size:14px; font-weight:500; color:var(--text-dim); margin-bottom:8px; }
+.summary h1 .group-tag{ font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--text-faint); margin-left:6px; }
 .summary-state{ font-size:34px; font-weight:700; }
 .summary-state.bull{ color:var(--bull); } .summary-state.bear{ color:var(--bear); } .summary-state.mixed{ color:var(--amber); }
 .summary-meta{ font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--text-faint); text-align:right; }
@@ -103,7 +104,9 @@ body{ background:var(--bg); color:var(--text); font-family:'Space Grotesk',sans-
 
 <script>
 const API_BASE = 'https://sbdesk-api.onrender.com';
-const tfs=['1m','5m','15m','1h','4h','1D'];
+const tfs=['1m','15m','1h','4h','1D'];
+const DAILY_BIAS_TFS=['1h','4h','1D'];
+const TRADE_TFS=['1m','15m','1h'];
 const INSTRUMENTS=[
   { key:'NQ', label:'Nasdaq' },
   { key:'GOLD', label:'Gold' },
@@ -169,6 +172,26 @@ function renderInstrumentTabs(){
   return available;
 }
 
+function summaryFor(inst, tfList){
+  const grades=tfList.map(t=>inst.timeframes[t]?.grade).filter(g=>g && g!=='neutral');
+  if(!grades.length) return { text:'—', cls:'mixed' };
+  const b=grades.filter(g=>g==='bull').length, r=grades.filter(g=>g==='bear').length;
+  if(b>r) return { text:'Bullish', cls:'bull' };
+  if(r>b) return { text:'Bearish', cls:'bear' };
+  return { text:'Mixed', cls:'mixed' };
+}
+
+function gridFor(inst, tfList){
+  return tfList.map(t=>{
+    const s=inst.timeframes[t] || { grade:'neutral', note:'', img:null };
+    return `<div class="card">
+      <div class="card-head"><div class="card-tf">${t}</div><div class="card-grade ${s.grade!=='neutral'?s.grade:''}">${gradeText(s.grade)}</div></div>
+      <div class="card-thumb" data-img="${s.img?'1':''}" data-tf="${t}">${s.img?`<img src="${s.img}">`:'no chart posted yet'}</div>
+      <div class="card-note ${s.note?'':'empty'}">${s.note||'no notes yet'}</div>
+    </div>`;
+  }).join('');
+}
+
 function renderContent(){
   const inst=fullState[currentInstrument];
   const label=(INSTRUMENTS.find(i=>i.key===currentInstrument)||{}).label || currentInstrument;
@@ -192,23 +215,8 @@ function renderContent(){
     tradeBodyHtml='<div class="trade-flat-note">Position open — screenshot coming soon.</div>';
   }
 
-  const grades=tfs.map(t=>inst.timeframes[t]?.grade).filter(g=>g && g!=='neutral');
-  let stateText='—', stateClass='mixed';
-  if(grades.length){
-    const b=grades.filter(g=>g==='bull').length, r=grades.filter(g=>g==='bear').length;
-    if(b>r){ stateText='Bullish'; stateClass='bull'; }
-    else if(r>b){ stateText='Bearish'; stateClass='bear'; }
-    else { stateText='Mixed'; stateClass='mixed'; }
-  }
-
-  const gridHtml=tfs.map(t=>{
-    const s=inst.timeframes[t] || { grade:'neutral', note:'', img:null };
-    return `<div class="card">
-      <div class="card-head"><div class="card-tf">${t}</div><div class="card-grade ${s.grade!=='neutral'?s.grade:''}">${gradeText(s.grade)}</div></div>
-      <div class="card-thumb" data-img="${s.img?'1':''}" data-tf="${t}">${s.img?`<img src="${s.img}">`:'no chart posted yet'}</div>
-      <div class="card-note ${s.note?'':'empty'}">${s.note||'no notes yet'}</div>
-    </div>`;
-  }).join('');
+  const dailySummary=summaryFor(inst, DAILY_BIAS_TFS);
+  const tradeSummary=summaryFor(inst, TRADE_TFS);
 
   document.getElementById('content').innerHTML=`
     <div class="trade-section">
@@ -216,11 +224,18 @@ function renderContent(){
       <div>${tradeBodyHtml}</div>
       <div class="trade-history">${historyHtml}</div>
     </div>
+
     <div class="summary">
-      <div><h1>Today's bias</h1><div class="summary-state ${stateClass}">${stateText}</div></div>
+      <div><h1>Daily bias <span class="group-tag">1h · 4h · 1D</span></h1><div class="summary-state ${dailySummary.cls}">${dailySummary.text}</div></div>
       <div class="summary-meta">${inst.updatedAt ? 'last updated '+new Date(inst.updatedAt).toLocaleString('en-GB') : 'not yet published'}</div>
     </div>
-    <div class="grid">${gridHtml}</div>
+    <div class="grid">${gridFor(inst, DAILY_BIAS_TFS)}</div>
+
+    <div class="summary">
+      <div><h1>Trade setup <span class="group-tag">1m · 15m · 1h</span></h1><div class="summary-state ${tradeSummary.cls}">${tradeSummary.text}</div></div>
+    </div>
+    <div class="grid">${gridFor(inst, TRADE_TFS)}</div>
+
     <div class="footnote">Live data — published by the desk. Click an uploaded chart to zoom.</div>
   `;
 
