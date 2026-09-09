@@ -163,36 +163,62 @@ tradePos.querySelectorAll('.pos-btn').forEach(btn=>{
   });
 });
 
-function renderGrid(){
+const TRADE_TFS=['1m','5m','15m','1h'];
+const BIAS_TFS=['1h','4h','1D'];
+
+function cardFor(t){
   const s=currentSlice();
-  tfGrid.innerHTML='';
-  tfs.forEach(t=>{
-    const tf=s.timeframes[t];
-    const c=document.createElement('div'); c.className='card';
-    c.innerHTML=`<div class="card-head"><div class="card-tf">${t}</div>
-        <div class="grade-select">
-          <button class="grade-opt ${tf.grade==='bull'?'active':''}" data-g="bull">bull</button>
-          <button class="grade-opt ${tf.grade==='bear'?'active':''}" data-g="bear">bear</button>
-          <button class="grade-opt ${tf.grade==='neutral'?'active':''}" data-g="neutral">–</button>
-        </div></div>
-      <div class="card-shot">${tf.img?`<button class="remove-btn" data-remove="${t}">remove</button><img src="${tf.img}">`:'click to upload'}</div>
-      <textarea class="card-note" placeholder="Notes for ${t}...">${tf.note}</textarea>`;
-    c.querySelectorAll('.grade-opt').forEach(btn=>{
-      btn.addEventListener('click',()=>{ tf.grade=btn.dataset.g; renderGrid(); });
-    });
-    const removeBtn=c.querySelector('.remove-btn');
-    if(removeBtn){
-      removeBtn.addEventListener('click',(e)=>{ e.stopPropagation(); tf.img=null; renderGrid(); });
-    }
-    c.querySelector('.card-shot').addEventListener('click',(e)=>{
-      if(e.target.classList.contains('remove-btn')) return;
-      const inp=document.createElement('input'); inp.type='file'; inp.accept='image/*';
-      inp.onchange=async ()=>{ if(inp.files[0]){ tf.img=await fileToDataUrl(inp.files[0]); renderGrid(); } };
-      inp.click();
-    });
-    c.querySelector('.card-note').addEventListener('input',(e)=>{ tf.note=e.target.value; });
-    tfGrid.appendChild(c);
+  if(!s.timeframes[t]) s.timeframes[t]={grade:'neutral', note:'', img:null};
+  const tf=s.timeframes[t];
+  const c=document.createElement('div'); c.className='card';
+  c.innerHTML=`<div class="card-head"><div class="card-tf">${t}</div>
+      <div class="grade-select">
+        <button class="grade-opt ${tf.grade==='bull'?'active':''}" data-g="bull">bull</button>
+        <button class="grade-opt ${tf.grade==='bear'?'active':''}" data-g="bear">bear</button>
+        <button class="grade-opt ${tf.grade==='neutral'?'active':''}" data-g="neutral">–</button>
+      </div></div>
+    <div class="card-shot">${tf.img?`<button class="remove-btn">remove</button><img src="${tf.img}">`:'click to upload'}</div>
+    <textarea class="card-note" data-tf="${t}" placeholder="Notes for ${t}...">${tf.note}</textarea>`;
+  c.querySelectorAll('.grade-opt').forEach(btn=>{
+    btn.addEventListener('click',()=>{ tf.grade=btn.dataset.g; renderGrid(); });
   });
+  const removeBtn=c.querySelector('.remove-btn');
+  if(removeBtn){
+    removeBtn.addEventListener('click',(e)=>{ e.stopPropagation(); tf.img=null; renderGrid(); });
+  }
+  c.querySelector('.card-shot').addEventListener('click',(e)=>{
+    if(e.target.classList.contains('remove-btn')) return;
+    const inp=document.createElement('input'); inp.type='file'; inp.accept='image/*';
+    inp.onchange=async ()=>{ if(inp.files[0]){ tf.img=await fileToDataUrl(inp.files[0]); renderGrid(); } };
+    inp.click();
+  });
+  c.querySelector('.card-note').addEventListener('input',(e)=>{
+    tf.note=e.target.value;
+    // 1h appears in both groups — keep the twin textarea in sync
+    document.querySelectorAll(`.card-note[data-tf="${t}"]`).forEach(el=>{
+      if(el!==e.target) el.value=e.target.value;
+    });
+  });
+  return c;
+}
+
+function renderGrid(){
+  tfGrid.innerHTML='';
+
+  const tradeLabel=document.createElement('div');
+  tradeLabel.className='section-label';
+  tradeLabel.style.gridColumn='1 / -1';
+  tradeLabel.textContent='Current trade — 1m · 5m · 15m · 1h';
+  tfGrid.appendChild(tradeLabel);
+  TRADE_TFS.forEach(t=> tfGrid.appendChild(cardFor(t)));
+
+  const biasLabel=document.createElement('div');
+  biasLabel.className='section-label';
+  biasLabel.style.gridColumn='1 / -1';
+  biasLabel.style.marginTop='18px';
+  biasLabel.textContent='Daily bias — 1h · 4h · 1D';
+  tfGrid.appendChild(biasLabel);
+  BIAS_TFS.forEach(t=> tfGrid.appendChild(cardFor(t)));
 }
 
 function renderInstrumentPanel(){
@@ -244,7 +270,10 @@ async function loadCurrentState(){
     const res=await fetch(`${API_BASE}/api/state`);
     const data=await res.json();
     INSTRUMENTS.forEach(k=>{
-      if(data[k]) fullState[k]={ trade: data[k].trade || {position:'FLAT', img:null, history:[]}, timeframes: data[k].timeframes || emptyTimeframes() };
+      if(data[k]) fullState[k]={
+        trade: data[k].trade || {position:'FLAT', img:null, history:[]},
+        timeframes: { ...emptyTimeframes(), ...(data[k].timeframes || {}) }
+      };
     });
     renderInstrumentPanel();
     showStatus('Loaded. Pick an instrument tab, make edits, then save & publish.', 'ok');

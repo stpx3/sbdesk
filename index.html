@@ -31,6 +31,14 @@ body{ background:var(--bg); color:var(--text); font-family:'Space Grotesk',sans-
 .instrument-btn.active{ color:var(--text); border-color:var(--amber); background:var(--panel); }
 .no-data-note{ font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--text-faint); padding:40px 0; text-align:center; }
 
+.legend-toggle{ font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--text-faint); background:none; border:1px solid var(--border); padding:5px 11px; cursor:pointer; margin-bottom:20px; }
+.legend-toggle:hover{ color:var(--text-dim); }
+.legend-panel{ display:none; background:var(--panel); border:1px solid var(--border); padding:16px 18px; margin-bottom:20px; font-size:13px; line-height:1.6; color:var(--text-dim); }
+.legend-panel.open{ display:block; }
+.legend-panel dt{ font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--text); font-weight:600; margin-top:10px; }
+.legend-panel dt:first-child{ margin-top:0; }
+.legend-panel dd{ margin:2px 0 0; }
+
 .trade-section{ background:var(--panel); border:1px solid var(--border); padding:18px; margin-bottom:24px; }
 .trade-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
 .trade-title{ font-size:14px; font-weight:600; }
@@ -100,6 +108,20 @@ body{ background:var(--bg); color:var(--text); font-family:'Space Grotesk',sans-
 
   <div class="instrument-row" id="instrumentRow"></div>
 
+  <button class="legend-toggle" id="legendToggle">how to read this ⓘ</button>
+  <dl class="legend-panel" id="legendPanel">
+    <dt>Daily bias (1h · 4h · 1D)</dt>
+    <dd>The overall directional read for the session, built from the higher timeframes. This is the "should I be looking long or short today" call.</dd>
+    <dt>Current trade (1m · 5m · 15m · 1h)</dt>
+    <dd>Where the actual entry gets timed. The 1m chart is shown by default since it's the most immediate; 5m/15m/1h are one click away for the fuller execution picture. If a screenshot is shown at the top, that's proof of a real open position on the desk's own broker — not a simulation.</dd>
+    <dt>Grade badges</dt>
+    <dd><span style="color:var(--bull)">Bullish</span> / <span style="color:var(--bear)">Bearish</span> / <span style="color:var(--text-faint)">—</span> (no clear read yet) for each timeframe.</dd>
+    <dt>Position tag</dt>
+    <dd>flat / long / short shows whether the desk currently has a position open, with a short history of recent changes underneath.</dd>
+    <dt>Charts</dt>
+    <dd>Click any uploaded chart to zoom — scroll or pinch to zoom further, drag to pan.</dd>
+  </dl>
+
   <div id="content">
     <div class="loading-note">loading…</div>
   </div>
@@ -123,6 +145,13 @@ const INSTRUMENTS=[
 ];
 let fullState=null;
 let currentInstrument='NQ';
+
+const legendToggle=document.getElementById('legendToggle');
+const legendPanel=document.getElementById('legendPanel');
+legendToggle.addEventListener('click',()=>{
+  const open=legendPanel.classList.toggle('open');
+  legendToggle.textContent = open ? 'hide explanation ▾' : 'how to read this ⓘ';
+});
 
 const clockEl=document.getElementById('clock');
 function tickClock(){ clockEl.textContent=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'}); }
@@ -286,6 +315,14 @@ async function loadState(){
   try{
     const res=await fetch(`${API_BASE}/api/state`);
     fullState=await res.json();
+    // backfill any missing timeframe keys so rendering can't break
+    ['NQ','GOLD','DOW'].forEach(k=>{
+      if(!fullState[k]) fullState[k]={ trade:{position:'FLAT',img:null,history:[]}, timeframes:{} };
+      if(!fullState[k].trade) fullState[k].trade={position:'FLAT',img:null,history:[]};
+      const tfObj=fullState[k].timeframes || {};
+      tfs.forEach(t=>{ if(!tfObj[t]) tfObj[t]={grade:'neutral', note:'', img:null}; });
+      fullState[k].timeframes=tfObj;
+    });
     const available=renderInstrumentTabs();
     if(!available.find(i=>i.key===currentInstrument) && available.length){
       currentInstrument=available[0].key;
