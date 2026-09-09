@@ -113,7 +113,7 @@ body{ background:var(--bg); color:var(--text); font-family:'Space Grotesk',sans-
     <dt>Daily bias (1h · 4h · 1D)</dt>
     <dd>The overall directional read for the session, built from the higher timeframes. This is the "should I be looking long or short today" call.</dd>
     <dt>Current trade (1m · 5m · 15m · 1h)</dt>
-    <dd>Where the actual entry gets timed. The 1m chart is shown by default since it's the most immediate; 5m/15m/1h are one click away for the fuller execution picture. If a screenshot is shown at the top, that's proof of a real open position on the desk's own broker — not a simulation.</dd>
+    <dd>Where the actual entry gets timed. The 1m chart is shown by default since it's the most immediate; 5m/15m/1h are one click away for the fuller execution picture. Note the 1h here is a separate read from the 1h in Daily bias — same timeframe, different purpose. If a screenshot is shown at the top, that's proof of a real open position on the desk's own broker — not a simulation.</dd>
     <dt>Grade badges</dt>
     <dd><span style="color:var(--bull)">Bullish</span> / <span style="color:var(--bear)">Bearish</span> / <span style="color:var(--text-faint)">—</span> (no clear read yet) for each timeframe.</dd>
     <dt>Position tag</dt>
@@ -135,9 +135,10 @@ body{ background:var(--bg); color:var(--text); font-family:'Space Grotesk',sans-
 
 <script>
 const API_BASE = 'https://sbdesk-api.onrender.com';
-const tfs=['1m','5m','15m','1h','4h','1D'];
+const tfs=['1m','5m','15m','1h_trade','1h','4h','1D'];
 const DAILY_BIAS_TFS=['1h','4h','1D'];
-const TRADE_EXTRA_TFS=['5m','15m','1h'];
+const TRADE_EXTRA_TFS=['5m','15m','1h_trade'];
+function tfLabel(t){ return t==='1h_trade' ? '1h' : t; }
 const INSTRUMENTS=[
   { key:'NQ', label:'Nasdaq' },
   { key:'GOLD', label:'Gold' },
@@ -223,7 +224,7 @@ function gridFor(inst, tfList){
   return tfList.map(t=>{
     const s=inst.timeframes[t] || { grade:'neutral', note:'', img:null };
     return `<div class="card">
-      <div class="card-head"><div class="card-tf">${t}</div><div class="card-grade ${s.grade!=='neutral'?s.grade:''}">${gradeText(s.grade)}</div></div>
+      <div class="card-head"><div class="card-tf">${tfLabel(t)}</div><div class="card-grade ${s.grade!=='neutral'?s.grade:''}">${gradeText(s.grade)}</div></div>
       <div class="card-thumb" data-img="${s.img?'1':''}" data-tf="${t}">${s.img?`<img src="${s.img}">`:'no chart posted yet'}</div>
       <div class="card-note ${s.note?'':'empty'}">${s.note||'no notes yet'}</div>
     </div>`;

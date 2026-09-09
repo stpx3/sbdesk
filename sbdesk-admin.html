@@ -101,7 +101,7 @@ body{ background:var(--bg); color:var(--text); font-family:'Space Grotesk',sans-
 
 <script>
 const API_BASE = 'https://sbdesk-api.onrender.com';
-const tfs=['1m','5m','15m','1h','4h','1D'];
+const tfs=['1m','5m','15m','1h_trade','1h','4h','1D'];
 const INSTRUMENTS=['NQ','GOLD','DOW'];
 
 function emptyTimeframes(){
@@ -163,22 +163,23 @@ tradePos.querySelectorAll('.pos-btn').forEach(btn=>{
   });
 });
 
-const TRADE_TFS=['1m','5m','15m','1h'];
+const TRADE_TFS=['1m','5m','15m','1h_trade'];
 const BIAS_TFS=['1h','4h','1D'];
+function tfLabel(t){ return t==='1h_trade' ? '1h' : t; }
 
 function cardFor(t){
   const s=currentSlice();
   if(!s.timeframes[t]) s.timeframes[t]={grade:'neutral', note:'', img:null};
   const tf=s.timeframes[t];
   const c=document.createElement('div'); c.className='card';
-  c.innerHTML=`<div class="card-head"><div class="card-tf">${t}</div>
+  c.innerHTML=`<div class="card-head"><div class="card-tf">${tfLabel(t)}</div>
       <div class="grade-select">
         <button class="grade-opt ${tf.grade==='bull'?'active':''}" data-g="bull">bull</button>
         <button class="grade-opt ${tf.grade==='bear'?'active':''}" data-g="bear">bear</button>
         <button class="grade-opt ${tf.grade==='neutral'?'active':''}" data-g="neutral">–</button>
       </div></div>
     <div class="card-shot">${tf.img?`<button class="remove-btn">remove</button><img src="${tf.img}">`:'click to upload'}</div>
-    <textarea class="card-note" data-tf="${t}" placeholder="Notes for ${t}...">${tf.note}</textarea>`;
+    <textarea class="card-note" data-tf="${t}" placeholder="Notes for ${tfLabel(t)}...">${tf.note}</textarea>`;
   c.querySelectorAll('.grade-opt').forEach(btn=>{
     btn.addEventListener('click',()=>{ tf.grade=btn.dataset.g; renderGrid(); });
   });
@@ -194,10 +195,6 @@ function cardFor(t){
   });
   c.querySelector('.card-note').addEventListener('input',(e)=>{
     tf.note=e.target.value;
-    // 1h appears in both groups — keep the twin textarea in sync
-    document.querySelectorAll(`.card-note[data-tf="${t}"]`).forEach(el=>{
-      if(el!==e.target) el.value=e.target.value;
-    });
   });
   return c;
 }
