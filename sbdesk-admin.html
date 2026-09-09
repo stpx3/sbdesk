@@ -39,7 +39,7 @@ body{ background:var(--bg); color:var(--text); font-family:'Space Grotesk',sans-
 .remove-btn{ position:absolute; top:6px; right:6px; font-family:'IBM Plex Mono',monospace; font-size:10px; background:rgba(226,89,79,0.15); border:1px solid var(--bear); color:var(--bear); padding:3px 8px; cursor:pointer; z-index:2; }
 
 .grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-.card{ background:var(--panel); border:1px solid var(--border); padding:14px; }
+.card{ background:var(--panel); border:1px solid var(--border); padding:14px; min-width:0; }
 .card-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
 .card-tf{ font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600; }
 .grade-select{ display:flex; gap:4px; }
@@ -48,6 +48,7 @@ body{ background:var(--bg); color:var(--text); font-family:'Space Grotesk',sans-
 .grade-opt.active[data-g="bear"]{ color:var(--bear); border-color:var(--bear); }
 .grade-opt.active[data-g="neutral"]{ color:var(--text-dim); border-color:var(--text-faint); }
 .card-shot{ width:100%; aspect-ratio:16/10; background:var(--panel-alt); border:1px dashed var(--border); position:relative; display:flex; align-items:center; justify-content:center; color:var(--text-faint); font-size:11px; cursor:pointer; overflow:hidden; margin-bottom:10px; }
+.card-shot img{ width:100%; height:100%; object-fit:cover; display:block; }
 .card-note{ width:100%; background:var(--panel-alt); border:1px solid var(--border); color:var(--text); font-family:'Space Grotesk',sans-serif; font-size:13px; padding:9px 10px; min-height:56px; resize:vertical; }
 .card-note::placeholder{ color:var(--text-faint); }
 @media (max-width:560px){ .grid{ grid-template-columns:1fr; } }
