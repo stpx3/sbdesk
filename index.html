@@ -43,6 +43,15 @@ body{ background:var(--bg); color:var(--text); font-family:'Space Grotesk',sans-
 .trade-history .hist-item.short{ color:var(--bear); border-color:var(--bear); }
 .trade-history .hist-arrow{ color:var(--text-faint); }
 
+.main-tf{ margin-top:16px; padding-top:16px; border-top:1px solid var(--border); }
+.main-tf-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+.main-tf-label{ font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--text-dim); font-weight:600; }
+.expand-toggle{ font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--text-faint); background:none; border:1px solid var(--border); padding:4px 10px; cursor:pointer; }
+.expand-toggle:hover{ color:var(--text-dim); }
+.extra-tf-grid{ display:none; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border); border:1px solid var(--border); margin-top:12px; }
+.extra-tf-grid.open{ display:grid; }
+@media (max-width:560px){ .extra-tf-grid{ grid-template-columns:1fr; } }
+
 .summary{ display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:22px; flex-wrap:wrap; gap:16px; }
 .summary h1{ font-size:14px; font-weight:500; color:var(--text-dim); margin-bottom:8px; }
 .summary h1 .group-tag{ font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--text-faint); margin-left:6px; }
@@ -104,9 +113,9 @@ body{ background:var(--bg); color:var(--text); font-family:'Space Grotesk',sans-
 
 <script>
 const API_BASE = 'https://sbdesk-api.onrender.com';
-const tfs=['1m','15m','1h','4h','1D'];
+const tfs=['1m','5m','15m','1h','4h','1D'];
 const DAILY_BIAS_TFS=['1h','4h','1D'];
-const TRADE_TFS=['1m','15m','1h'];
+const TRADE_EXTRA_TFS=['5m','15m','1h'];
 const INSTRUMENTS=[
   { key:'NQ', label:'Nasdaq' },
   { key:'GOLD', label:'Gold' },
@@ -216,13 +225,25 @@ function renderContent(){
   }
 
   const dailySummary=summaryFor(inst, DAILY_BIAS_TFS);
-  const tradeSummary=summaryFor(inst, TRADE_TFS);
+  const main=inst.timeframes['1m'] || { grade:'neutral', note:'', img:null };
 
   document.getElementById('content').innerHTML=`
     <div class="trade-section">
       <div class="trade-head"><div class="trade-title">Current trade</div></div>
       <div>${tradeBodyHtml}</div>
       <div class="trade-history">${historyHtml}</div>
+
+      <div class="main-tf">
+        <div class="main-tf-head">
+          <div class="main-tf-label">1m — <span class="card-grade ${main.grade!=='neutral'?main.grade:''}" style="margin-left:4px;">${gradeText(main.grade)}</span></div>
+          <button class="expand-toggle" id="extraToggle">show 5m · 15m · 1h ▸</button>
+        </div>
+        <div class="card" style="padding:0;">
+          <div class="card-thumb" data-img="${main.img?'1':''}" data-tf="1m" style="margin-bottom:0;">${main.img?`<img src="${main.img}">`:'no chart posted yet'}</div>
+        </div>
+        <div class="card-note ${main.note?'':'empty'}" style="margin-top:8px;">${main.note||'no notes yet'}</div>
+        <div class="extra-tf-grid" id="extraGrid">${gridFor(inst, TRADE_EXTRA_TFS)}</div>
+      </div>
     </div>
 
     <div class="summary">
@@ -231,13 +252,15 @@ function renderContent(){
     </div>
     <div class="grid">${gridFor(inst, DAILY_BIAS_TFS)}</div>
 
-    <div class="summary">
-      <div><h1>Trade setup <span class="group-tag">1m · 15m · 1h</span></h1><div class="summary-state ${tradeSummary.cls}">${tradeSummary.text}</div></div>
-    </div>
-    <div class="grid">${gridFor(inst, TRADE_TFS)}</div>
-
     <div class="footnote">Live data — published by the desk. Click an uploaded chart to zoom.</div>
   `;
+
+  const extraToggle=document.getElementById('extraToggle');
+  const extraGrid=document.getElementById('extraGrid');
+  extraToggle.addEventListener('click',()=>{
+    const open=extraGrid.classList.toggle('open');
+    extraToggle.textContent = open ? 'hide 5m · 15m · 1h ▾' : 'show 5m · 15m · 1h ▸';
+  });
 
   if(inst.trade.img){
     document.getElementById('tradeShotImg').addEventListener('click',()=>openLightbox(inst.trade.img));
