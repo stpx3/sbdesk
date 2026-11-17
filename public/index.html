@@ -531,15 +531,22 @@ document.getElementById('sugForm').onsubmit=function(e){e.preventDefault();var f
    .then(function(r){return r.json().then(function(o){if(!r.ok)throw new Error(o.error||'Error');});})
    .then(function(){f.reset();m.className='sugmsg ok';m.textContent='Thank you. The desk will read it.';},function(err){m.className='sugmsg err';m.textContent=err.message;})
    .then(function(){b.disabled=false;});};
-if(/(^|; )nf_jwt=/.test(document.cookie))fetch('/api/me',{credentials:'same-origin',cache:'no-store'}).then(function(r){return r.json();}).then(function(m){
-  document.getElementById('login').hidden=true;
-  if(m.admin)document.getElementById('adm').hidden=false;
-  if(m.member){document.getElementById('getacc').hidden=true;if(!m.admin)document.getElementById('memtag').hidden=false;}
-},function(){});
-document.getElementById('reading').innerHTML='<p class="by">Loading notes…</p>';
-fetch('/api/notes',{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();})
-  .then(function(d){IS_MEMBER=!!d.member;setNotes(d.notes);},function(){loadErr='Notes could not be loaded. Refresh the page.';})
-  .then(route);
+// returning users: renew the login (tokens last 1 h) before asking for notes, so early access keeps working
+function loadNotes(){
+  document.getElementById('reading').innerHTML='<p class="by">Loading notes…</p>';
+  return fetch('/api/notes',{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();})
+    .then(function(d){IS_MEMBER=!!d.member;setNotes(d.notes);},function(){loadErr='Notes could not be loaded. Refresh the page.';})
+    .then(route);
+}
+var hasLogin=/(^|; )nf_jwt=/.test(document.cookie);try{hasLogin=hasLogin||!!localStorage.getItem('gotrue.user');}catch(_){}
+if(hasLogin){var sc=document.createElement('script');sc.src='/js/auth.js';
+  sc.onload=function(){window.SBAuth.me().then(function(m){
+    if(m.loggedIn){document.getElementById('login').hidden=true;
+      if(m.admin)document.getElementById('adm').hidden=false;
+      if(m.member){document.getElementById('getacc').hidden=true;if(!m.admin)document.getElementById('memtag').hidden=false;}}
+  }).then(loadNotes,loadNotes);};
+  sc.onerror=loadNotes;document.head.appendChild(sc);
+}else loadNotes();
 })();
 </script>
 </body>

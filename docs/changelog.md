@@ -4,6 +4,9 @@
 
 
 
+
+## 2026-11-17 (19): login stays alive
+- Bug: a login token lasts 1 h; after that the server saw a returning user (and early-access buyers) as logged out until they logged in again. Now the Desk and the early-access page renew the token first (`SBAuth.fresh`, called by `SBAuth.me`), then load notes.
 ## 2026-11-17 (18): early-access page for Candor users
 - Stipe: the page looked scammy and should say it is for Candor users. New page: same header as the site, title "Early access for Candor users", Everyone vs Candor users, how it works with code CANDOR, an honest "Why is it free?" (Candor commission), firm suggestions (partner firms), names in the footer. Buttons elsewhere: "Candor user? See it now".
 - Logged-in admins are no longer sent to the admin page automatically (Stipe ended up there while testing with Google); the page says who is logged in and offers the admin panel or log out.

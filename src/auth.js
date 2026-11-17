@@ -4,7 +4,19 @@ import {
   requestPasswordRecovery, recoverPassword, refreshSession, updateUser,
 } from '@netlify/identity';
 
+// A login token lasts one hour. Renew it (with the refresh token) before asking
+// the server who we are; otherwise a returning user looks logged out.
+async function fresh() {
+  try {
+    const u = await getUser();
+    if (!u) return null;
+    await refreshSession();
+    return u;
+  } catch { return null; }
+}
+
 async function me() {
+  await fresh();
   try {
     const r = await fetch('/api/me', { credentials: 'same-origin', cache: 'no-store' });
     return r.ok ? await r.json() : { admin: false };
@@ -52,5 +64,5 @@ async function signOut(to) {
 
 window.SBAuth = {
   getUser, login, signup, oauthLogin, handleAuthCallback, acceptInvite, requestPasswordRecovery, recoverPassword, updateUser,
-  me, requireAdmin, post, notes, signOut,
+  me, fresh, requireAdmin, post, notes, signOut,
 };
