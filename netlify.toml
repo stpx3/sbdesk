@@ -33,6 +33,11 @@
     X-Robots-Tag = "noindex, nofollow"
 
 [[headers]]
+  for = "/obavijest-forma.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
   for = "/api/*"
   [headers.values]
     Cache-Control = "no-store"

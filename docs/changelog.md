@@ -1,5 +1,8 @@
 # Changelog
 
+
+## 2026-11-17 (15): email on new early-access request
+- A new request sends one Netlify Forms submission (form `novi-zahtjev`, hidden page `obavijest-forma.html`); a Forms email notification sends it to the admins. Failure never blocks the request.
 ## 2026-11-17 (14): 24 h lock kept, Candor link
 - Decided: keep the 24 h lock; SB Desk is both archive and daily tool.
 - Locked notes (Desk and `/n/` page) and the early-access page link to Candor with `utm_source=sbdesk`.

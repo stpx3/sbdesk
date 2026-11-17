@@ -9,6 +9,17 @@ const listAll = async (store) => {
   return (await Promise.all(blobs.map((b) => store.get(b.key, { type: 'json' })))).filter(Boolean);
 };
 
+// Email to the admins about a new request: one Netlify Forms submission
+// (form "novi-zahtjev" in public/obavijest-forma.html); the email itself is a
+// form notification set in Netlify. Never blocks the request if it fails.
+const notifyAdmins = async (req, f) => {
+  try {
+    const origin = process.env.URL || new URL(req.url).origin;
+    const body = new URLSearchParams({ 'form-name': 'novi-zahtjev', ...f, odobri: origin + '/admin.html' });
+    await fetch(origin + '/obavijest-forma.html', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: body.toString() });
+  } catch (e) { console.log('notify failed', e && e.message); }
+};
+
 export default async (req) => {
   const reqs = requestsStore(), mem = membersStore();
 
@@ -45,7 +56,9 @@ export default async (req) => {
   const firm = clip(d.firm, 60), order = clip(d.order, 80);
   if (!firm) return fail('Choose the firm.');
   if (order.length < 3) return fail('Enter your order number.');
-  await reqs.setJSON(v.email, { email: v.email, firm, order, note: clip(d.note, 300), at: new Date().toISOString(), t: nyNow() });
+  const note = clip(d.note, 300), t = nyNow();
+  await reqs.setJSON(v.email, { email: v.email, firm, order, note, at: new Date().toISOString(), t });
+  await notifyAdmins(req, { email: v.email, firma: firm, narudzba: order, napomena: note, vrijeme: t.replace('T', ' ') + ' NY' });
   return json({ ok: true, pending: true });
 };
 
