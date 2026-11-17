@@ -176,7 +176,7 @@ function linkRow(tf,links,state,update){
   }
   inp.addEventListener('input',check);inp.addEventListener('paste',function(){setTimeout(check,0);});
   el.querySelector('.clr').onclick=function(){inp.value='';check();inp.focus();};
-  state[tf]='empty';return {el:el,setTf:function(t){tf=t;el.querySelector('.lab').textContent=t;inp.placeholder='zalijepi link za '+t;if(inp.value.trim())check();}};
+  state[tf]='empty';return {el:el,setTf:function(t){if(t===tf)return;tf=t;el.querySelector('.lab').textContent=t;inp.placeholder='zalijepi link za '+t;inp.value='';msg.textContent='';check();}};
 }
 TFS.forEach(function(tf){box.appendChild(linkRow(tf,links,state,function(){update();}).el);});
 
