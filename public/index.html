@@ -387,7 +387,7 @@ function render(){
     (navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(function(){cl.textContent='Copied';},function(){prompt('Link to this note:',u);});};
   var locked=NOTES.filter(function(x){return x.locked;}),mb=document.getElementById('memb');
   mb.hidden=!locked.length||IS_MEMBER;
-  if(locked.length&&!IS_MEMBER)mb.innerHTML='<span><b>'+locked.length+'</b> new note'+(locked.length>1?'s':'')+' for members</span><span>opens to everyone '+opensTxt(locked[0])+'</span><a href="pristup.html">Get access →</a>';
+  if(locked.length&&!IS_MEMBER)mb.innerHTML='<span><b>'+locked.length+'</b> new note'+(locked.length>1?'s':'')+' for members</span><span>· opens to everyone '+opensTxt(locked[0])+'</span><a href="pristup.html">Get access →</a>';
   // wire
   var list=NOTES.slice().reverse(),h='',lastDay='';
   list.forEach(function(x){var d=x.t.slice(0,10);if(d!==lastDay){h+='<div class="day">'+dayLabel(x.t)+'</div>';lastDay=d;}

@@ -25,7 +25,10 @@ export default async (req) => {
         opensIn: LOCK_HOURS * 60 - age,
       };
     });
-    return json({ notes: out, member: full, lockHours: LOCK_HOURS });
+    const res = json({ notes: out, member: full, lockHours: LOCK_HOURS });
+    // Candor shows the latest public note in a small box: allow other sites to read the public list
+    if (!full) res.headers.set('Access-Control-Allow-Origin', '*');
+    return res;
   }
 
   if (req.method !== 'POST') return fail('Method not allowed', 405);
