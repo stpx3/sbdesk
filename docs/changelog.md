@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-11-17 (12): After keeps the link
+- Reverts (11): switching the After timeframe keeps the pasted link and saves it under the timeframe selected when you press the button (emptying the field lost Stipe's link). The button now reads "Objavi After · 1m" (the selected timeframe).
+
 ## 2026-11-17 (11): After timeframe switch
 - Posting an After: switching the timeframe (e.g. 1H -> 1m) now empties the link field and its preview, so a 1H chart can no longer end up saved as the 1m After.
 

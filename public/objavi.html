@@ -176,7 +176,7 @@ function linkRow(tf,links,state,update){
   }
   inp.addEventListener('input',check);inp.addEventListener('paste',function(){setTimeout(check,0);});
   el.querySelector('.clr').onclick=function(){inp.value='';check();inp.focus();};
-  state[tf]='empty';return {el:el,setTf:function(t){if(t===tf)return;tf=t;el.querySelector('.lab').textContent=t;inp.placeholder='zalijepi link za '+t;inp.value='';msg.textContent='';check();}};
+  state[tf]='empty';return {el:el,setTf:function(t){tf=t;el.querySelector('.lab').textContent=t;inp.placeholder='zalijepi link za '+t;check();}};
 }
 TFS.forEach(function(tf){box.appendChild(linkRow(tf,links,state,function(){update();}).el);});
 
@@ -240,14 +240,14 @@ function nupdate(){
   var miss=[],st=nstate[ntf];
   if(!pickedNote())miss.push('odaberi analizu');
   if(st==='bad')miss.push('popravi crveni link');else if(st==='wait')miss.push('pričekaj da se slika učita');else if(st!=='ok')miss.push('zalijepi link grafa');
-  var g=document.getElementById('ngo');g.disabled=miss.length>0;
+  var g=document.getElementById('ngo');g.disabled=miss.length>0;g.textContent='Objavi After · '+ntf;
   document.getElementById('nneed').textContent=miss.length?'Još: '+miss.join(', ')+'.':'Sve je spremno.';
 }
 document.getElementById('g').onsubmit=function(e){
   e.preventDefault();if(document.getElementById('ngo').disabled)return;
   var g=document.getElementById('ngo'),nn=document.getElementById('nneed');g.disabled=true;g.textContent='Objavljujem…';nn.className='need';
   SBAuth.post('/api/after',{id:pickedNote().id,tf:ntf,link:nlinks[ntf],body:document.getElementById('nbody').value.trim()})
-    .then(showDone,function(err){g.disabled=false;g.textContent='Objavi After';nn.className='need err';nn.textContent='✗ '+err.message;});
+    .then(showDone,function(err){g.disabled=false;g.textContent='Objavi After · '+ntf;nn.className='need err';nn.textContent='✗ '+err.message;});
 };
 })();
 </script>
