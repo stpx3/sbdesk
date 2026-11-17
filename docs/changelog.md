@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-11-17 (2)
+- Author shown on every note: in the reading header, the Research Wire and the Archive.
+- Suggestions: small form (footer link → #suggest), max 5 per hour per visitor, hidden bot field. Read and delete on the admin page.
+- Method page: one colour per timeframe (TradingView colours: 1m red, 5m yellow, 15m purple, 1H light blue, 4H dark blue, 1D orange) with a visual legend; double top and double bottom named as the two main patterns (Stipe's words). Timeframe chips on the Desk use the same colours.
+- Glossary: Double bottom added.
+
 ## 2026-11-17
 - Code moved to GitHub (this repo). The old daily-bias site stays on branch `stari-daily-bias`.
 - Real accounts: Netlify Identity, invite only; admins = Stipe and Bernard (env var `ADMINS`).
