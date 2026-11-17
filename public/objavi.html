@@ -216,7 +216,7 @@ tabA.onclick=function(){tab(false);};tabB.onclick=function(){tab(true);};
 var want=location.hash.indexOf('#zavrsilo')===0?decodeURIComponent(location.hash.slice(9).replace(/^=/,'')):null;
 if(want!==null){tab(true);document.querySelector('.top small').textContent='AFTER · NQ';document.getElementById('toAfter').style.display='none';}
 function esc(v){return String(v==null?'':v).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
-var all=[],nlinks={},nstate={},ntf=null,row=null;
+var all=[],nlinks={},nstate={},ntf=null,rows={};
 function pickedNote(){var r=document.querySelector('[name=pick]:checked');return r?all[+r.value]:null;}
 function initAfter(list){
 
@@ -227,13 +227,16 @@ function tfsOf(n){return n.ideas?TFS.filter(function(t){return n.ideas[t];}):[n.
 document.getElementById('pick').innerHTML=all.length?all.map(function(n,i){var d=new Date(n.t.slice(0,10)+'T12:00:00Z').toLocaleDateString('hr-HR',{day:'numeric',month:'numeric',timeZone:'UTC'});
   return '<label><input type="radio" name="pick" value="'+i+'"'+(i===wi?' checked':'')+'><span><span class="when">'+d+' '+n.t.slice(11,16)+' · '+tfsOf(n).join(' ')+'</span><br><span class="ttl">'+esc(n.title)+'</span>'+(n.now?'<br><span class="has">već ima After (novi zamijeni stari)</span>':'')+'</span></label>';}).join(''):'<p style="padding:12px">Još nema objava.</p>';
 var ntfBox=document.getElementById('ntf');
+// one link field per timeframe (like a new note): switching shows that timeframe's own field
 function setNtf(t){ntf=t;[].forEach.call(ntfBox.querySelectorAll('button'),function(b){b.setAttribute('aria-pressed',b.textContent===t);});
-  if(!row){row=linkRow(t,nlinks,nstate,nupdate);document.getElementById('nbox').appendChild(row.el);}else{Object.keys(nlinks).forEach(function(k){delete nlinks[k];});Object.keys(nstate).forEach(function(k){delete nstate[k];});nstate[t]='empty';row.setTf(t);}
+  if(!rows[t]){rows[t]=linkRow(t,nlinks,nstate,nupdate);document.getElementById('nbox').appendChild(rows[t].el);}
+  Object.keys(rows).forEach(function(k){rows[k].el.style.display=k===t?'':'none';});
   nupdate();}
+function resetRows(){Object.keys(rows).forEach(function(k){rows[k].el.remove();});rows={};nlinks={};nstate={};}
 ntfBox.innerHTML=TFS.map(function(t){return '<button type="button">'+t+'</button>';}).join('');
 [].forEach.call(ntfBox.querySelectorAll('button'),function(b){b.onclick=function(){setNtf(b.textContent);};});
 function defaultTf(){var n=pickedNote();return n?tfsOf(n)[0]:'15m';}
-[].forEach.call(document.querySelectorAll('[name=pick]'),function(r){r.onchange=function(){setNtf(defaultTf());};});
+[].forEach.call(document.querySelectorAll('[name=pick]'),function(r){r.onchange=function(){resetRows();setNtf(defaultTf());};});
 setNtf(defaultTf());
 }
 function nupdate(){
