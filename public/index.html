@@ -152,8 +152,17 @@ footer.f a{color:inherit;text-decoration:underline}
 body.dark .avatar{color:var(--blue)}
 .person h3{margin:0;font:700 17px var(--serif)}.person .role{font:12px var(--mono);color:var(--muted);margin-bottom:8px}
 table.arch{width:100%;border-collapse:collapse}
-.arch td{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
-.arch td:first-child{font:13px var(--mono);white-space:nowrap;color:var(--muted);width:120px}
+.arch .aday{font:700 13px var(--ui);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:22px 0 6px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.arch .aday:first-child{margin-top:6px}
+.arow{display:flex;gap:14px;align-items:flex-start;padding:11px 10px;margin:0 -10px;border-radius:3px;text-decoration:none;color:var(--ink)}
+.arow:hover{background:var(--soft)}
+.arow .at{font:600 14px var(--mono);color:var(--muted);min-width:46px;padding-top:1px}
+.arow .ab{flex:1;min-width:0}
+.arow .ati{font-size:16px;font-weight:600;line-height:1.35;color:var(--ink)}
+.arow:hover .ati{text-decoration:underline}
+.arow .am{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:5px;font-size:13px;color:var(--muted)}
+.arow .tfp{font:600 11px var(--mono);padding:1px 6px 1px 5px;border:1px solid var(--line);border-left:3px solid;border-radius:2px;color:var(--ink)}
+.arow.lk .ati{color:var(--muted);font-weight:500}
 .badge{display:inline-block;font:600 10px var(--ui);letter-spacing:.06em;background:var(--navy);color:#fff;padding:2px 6px;border-radius:2px;margin-right:6px;vertical-align:1px}
 .smp{font:10px var(--mono);letter-spacing:.06em;color:var(--ne);border:1px solid var(--ne);padding:0 4px}
 .tag.now{color:var(--up);border-color:var(--up);font-weight:700}
@@ -185,8 +194,7 @@ footer.f{border-top:1px solid var(--line);padding:14px 18px;font-size:12px;color
 }
 .lockc{margin:12px 0 0;font-size:13px;opacity:.85}.lockc a{color:inherit;text-decoration:underline}
 .afilt{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 6px}
-.afilt input[type=search],.afilt select{font:14px var(--ui);padding:8px 10px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:2px}
-.afilt input[type=search]{flex:1 1 220px;min-width:0}
+.afilt select{font:14px var(--ui);padding:8px 10px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:2px}
 .afilt .aba{font-size:13px;color:var(--muted);display:flex;gap:6px;align-items:center}
 .acount{font:12px var(--mono);color:var(--muted);margin:4px 0 8px}
 .gal{display:grid;gap:22px}
@@ -241,13 +249,12 @@ footer.f{border-top:1px solid var(--line);padding:14px 18px;font-size:12px;color
 <section id="p-archive" hidden><div class="doc">
   <h1>Archive</h1><p class="lede">Every note, in order. Nothing removed.</p>
   <div class="afilt" role="search">
-    <input type="search" id="aq" placeholder="Search notes, e.g. double top" aria-label="Search notes">
     <select id="atf" aria-label="Timeframe"><option value="">All timeframes</option></select>
     <select id="akind" aria-label="Type"><option value="">All types</option></select>
     <label class="aba"><input type="checkbox" id="aba"> Before / After only</label>
   </div>
   <p class="acount" id="acount"></p>
-  <table class="arch" id="archAll"></table>
+  <div class="arch" id="archAll"></div>
 </div></section>
 
 <!-- BEFORE / AFTER -->
@@ -386,7 +393,7 @@ function render(){
   if(!n){document.getElementById('mode').innerHTML='';document.getElementById('tfs').hidden=true;document.getElementById('cTitle').textContent='NQ';document.getElementById('cMeta').textContent='';
     document.getElementById('chart').innerHTML='<div class="empty" style="padding:60px 20px;text-align:center">'+(loadErr||'No notes yet.')+'</div>';document.getElementById('fnote').textContent='';
     document.getElementById('reading').innerHTML='<h3>First note coming soon.</h3>';document.getElementById('wire').innerHTML='<p class="empty" style="padding:18px">No notes yet.</p>';
-    document.getElementById('count').textContent='00 notes';document.getElementById('upd').hidden=true;document.getElementById('archAll').innerHTML='<tr><td>No notes yet.</td></tr>';return;}
+    document.getElementById('count').textContent='00 notes';document.getElementById('upd').hidden=true;document.getElementById('archAll').innerHTML='<p class="empty">No notes yet.</p>';return;}
   if(n.locked){drawLocked(n);}else{
   if(!state.tf)state.tf=n.tf;
   if(state.mode==='live'||(state.mode==='now'&&!n.now))state.mode='note';
@@ -448,18 +455,24 @@ function render(){
   }
   drawArchive();drawGallery();
 }
-function arText(x){return [x.title,x.body,x.kind,x.by,x.now&&x.now.body,tfsOf(x).join(' ')].join(' ').toLowerCase();}
+function dayLong(t){return new Date(t.slice(0,10)+'T12:00:00Z').toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:'UTC'});}
 function drawArchive(){
-  var q=(document.getElementById('aq').value||'').trim().toLowerCase(),tf=document.getElementById('atf').value,kd=document.getElementById('akind').value,ba=document.getElementById('aba').checked;
+  var tf=document.getElementById('atf').value,kd=document.getElementById('akind').value,ba=document.getElementById('aba').checked;
   var ks=document.getElementById('akind');if(ks.options.length<2){NOTES.map(function(x){return x.kind;}).filter(function(k,i,a){return k&&a.indexOf(k)===i;}).forEach(function(k){var o=document.createElement('option');o.value=k;o.textContent=k;ks.appendChild(o);});}
-  var all=NOTES.slice().reverse(),words=q.split(/\s+/).filter(Boolean);
-  var list=all.filter(function(x){if(tf&&tfsOf(x).indexOf(tf)<0)return false;if(kd&&x.kind!==kd)return false;if(ba&&!x.now)return false;var t=arText(x);return words.every(function(w){return t.indexOf(w)>=0;});});
-  document.getElementById('acount').textContent=(q||tf||kd||ba)?list.length+' of '+all.length+' notes':all.length+' notes';
-  document.getElementById('archAll').innerHTML=list.length?list.map(function(x){return '<tr><td>'+x.t.slice(5,10).replace('-','.')+' '+hm(x.t)+'</td><td>'+tfsOf(x).join(' · ')+' · '+esc(x.kind)+(x.by?' · '+esc(x.by):'')+' · <a href="/n/'+esc(x.key)+'" data-id="'+x.id+'" data-key="'+esc(x.key)+'">'+(x.locked?'New note · public '+opensTxt(x):esc(x.title))+'</a>'+(x.now?' <span class="tag now">BEFORE / AFTER</span>':'')+'</td></tr>';}).join(''):'<tr><td></td><td>No notes match. Try fewer words.</td></tr>';
-  [].forEach.call(document.querySelectorAll('#archAll a[data-id]'),function(a){a.onclick=function(ev){if(ev.metaKey||ev.ctrlKey)return;ev.preventDefault();go('/#note/'+a.getAttribute('data-key'));};});
+  var all=NOTES.slice().reverse();
+  var list=all.filter(function(x){if(tf&&tfsOf(x).indexOf(tf)<0)return false;if(kd&&x.kind!==kd)return false;if(ba&&!x.now)return false;return true;});
+  document.getElementById('acount').textContent=(tf||kd||ba)?list.length+' of '+all.length+' notes':all.length+' notes';
+  var h='',day='';
+  list.forEach(function(x){var d=x.t.slice(0,10);if(d!==day){day=d;h+='<div class="aday">'+dayLong(x.t)+'</div>';}
+    h+='<a class="arow'+(x.locked?' lk':'')+'" href="/n/'+esc(x.key)+'" data-key="'+esc(x.key)+'"><span class="at">'+hm(x.t)+'</span><span class="ab">'+
+      '<span class="ati">'+(x.locked?'New note · public '+opensTxt(x):esc(x.title))+'</span>'+
+      '<span class="am">'+tfsOf(x).map(function(t){return '<span class="tfp" style="border-left-color:var(--c'+t+')">'+t+'</span>';}).join('')+
+      '<span>'+esc(x.kind)+(x.by?' · '+esc(x.by):'')+'</span>'+(x.now?'<span class="tag now">BEFORE / AFTER</span>':'')+(x.locked?'<span class="tag mem">EARLY ACCESS</span>':'')+'</span></span></a>';});
+  document.getElementById('archAll').innerHTML=h||'<p class="empty">No notes match these filters.</p>';
+  [].forEach.call(document.querySelectorAll('#archAll a[data-key]'),function(a){a.onclick=function(ev){if(ev.metaKey||ev.ctrlKey)return;ev.preventDefault();go('/#note/'+a.getAttribute('data-key'));};});
 }
 (function(){var s=document.getElementById('atf');TFS.forEach(function(t){var o=document.createElement('option');o.value=t;o.textContent=t;s.appendChild(o);});
-  ['aq','atf','akind','aba'].forEach(function(id){var e=document.getElementById(id);e.oninput=e.onchange=drawArchive;});})();
+  ['atf','akind','aba'].forEach(function(id){var e=document.getElementById(id);e.oninput=e.onchange=drawArchive;});})();
 function gFig(label,t,link,tf){var im=snapImg(link);return '<figure>'+(im?'<img src="'+esc(im)+'" alt="NQ '+esc(tf)+' chart, '+label+'" loading="lazy">':'<a class="gx" href="'+esc(link||'#')+'" target="_blank" rel="noopener">Open the '+esc(tf)+' chart on TradingView</a>')+'<figcaption><b>'+label+'</b> · '+esc(tf)+' · '+when(t)+'</figcaption></figure>';}
 function drawGallery(){
   var list=NOTES.filter(function(x){return x.now&&!x.locked;}).reverse(),g=document.getElementById('gal');

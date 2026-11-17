@@ -15,7 +15,7 @@ console.log('built public/js/auth.js');
 // address and that section open. Generated at build; not kept in git.
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 const PAGES = [
-  ['archive', 'p-archive', 'Archive · SB Desk', 'Every SB Desk note on NQ (Nasdaq futures), in order. Search by word, timeframe or type. Nothing removed.'],
+  ['archive', 'p-archive', 'Archive · SB Desk', 'Every SB Desk note on NQ (Nasdaq futures), in order. Filter by timeframe or type. Nothing removed.'],
   ['before-after', 'p-gallery', 'Before / After · SB Desk', 'NQ charts from SB Desk notes next to what the market did later. Hits and misses stay up the same way.'],
   ['method', 'p-method', 'Method · SB Desk', 'How SB Desk reads NQ: waves made objective with MACD, one colour per timeframe, double tops and double bottoms.'],
   ['about', 'p-about', 'About · SB Desk', 'SB Desk is a father-and-son NQ research desk in Split, owned by Bernard Pupačić.'],

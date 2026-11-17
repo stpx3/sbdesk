@@ -69,7 +69,7 @@ Agreed, but needs Stipe:
 - **24 h lock**: Stipe decided to keep it (17 Nov): Candor purchases come first. Added: locked notes link straight to Candor. Keep approvals fast so buyers do not get access only after a note is public.
 - **"Objective" must be shown, not only claimed**: the Method page needs the rules (what starts a wave, what ends it, what happens in unclear cases, same rules on every timeframe) with one marked chart. If some parts stay discretionary, say so.
 - **Method, About, Archive as their own pages**: done 17 Nov (`/method`, `/about`, `/archive`, `/before-after`).
-- **Archive search / filters**: done 17 Nov. Latest notes above the chart on the phone: Stipe does not want it.
+- **Archive filters**: done 17 Nov (Stipe removed the text search: not wanted). Latest notes above the chart on the phone: Stipe does not want it.
 - **Posting rhythm**: wanted, Stipe first has to settle his routine.
 - **A rhythm** (for example before the New York open + after the session) and Before / After posts that also show misses.
 - **Strategic question, decided (17 Nov)**: both, archive + method for credibility and a daily tool for traders. Next: a posting rhythm and the daily-tool features below.

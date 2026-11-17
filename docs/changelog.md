@@ -2,6 +2,9 @@
 
 
 
+
+## 2026-11-17 (17): archive without search
+- Stipe: the search box is removed. Archive grouped by day ("Tuesday, 10 November 2026"), time on the left, title, timeframe chips in the timeframe colours, type, author, Before / After tag. Filters (timeframe, type, Before / After only) stay.
 ## 2026-11-17 (16): own addresses, archive search, Before / After page
 - Every section has its own address: `/archive/`, `/before-after/`, `/method/`, `/about/`, `/suggestions/`, `/privacy/` (with the trailing slash, as Netlify serves them) (own title, description and canonical; generated from `index.html` by `build.mjs`, not kept in git). Old links like `/#method/double-top` move to `/method/#double-top`. In-site links change the address without reloading.
 - Archive: search (all words must match: title, text, type, author, timeframe), timeframe and type filters, "Before / After only".
