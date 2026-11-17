@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-11-17 (7)
+- Light theme uses the same fonts as the dark theme (Stipe: fonts looked different).
+- **Automatic backup**: scheduled function `backup` saves every note, the early-access list and open requests each day into Blobs store `backups` (last 60 days). Admin page: "Backup" section with download links (`/api/backups`).
+- **Before / After picture for X**: on the Admin page, notes with an After chart get "Slika za X": a 1600×900 PNG (SB Desk seal, BEFORE and AFTER charts with times, title, `sbdesk.com/n/<id>`, "Analysis only · not a signal"). Chart images come through `/api/img` (only TradingView snapshot images allowed).
+
 ## 2026-11-17 (6): site check and phone fixes
 - **One status line** at the top of the Desk instead of three pieces: a gold "NEW NOTE · time · how long ago" bar (with "See it now →" for visitors when it is in early access) when the newest note is under 24 h old; otherwise one quiet "Updated X ago · notes dd.mm. – dd.mm.". The bar is there from the first paint, so nothing jumps when notes load.
 - **"Log in"** link in the header for everyone not logged in (→ `pristup.html`); admins who log in there go straight to the Admin page.

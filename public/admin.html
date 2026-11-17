@@ -43,6 +43,9 @@ body.wait .page{visibility:hidden}
 .rq .meta{font:12px var(--mono);color:var(--muted)}.rq .em{font-weight:700}
 .rq .acts{display:flex;gap:8px}
 .rq button{padding:9px 12px;font:700 13px var(--ui);border-radius:3px;cursor:pointer;border:1px solid var(--line);background:none;color:var(--ink)}
+.acts2{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.xbtn{background:none;cursor:pointer;font:700 14px var(--ui)}
+#baks a{display:inline-block;margin:4px 10px 4px 0;font:13px var(--mono);color:var(--gold)}
 .rq button.yes{background:var(--up);border-color:var(--up);color:#000}
 @media(max-width:620px){.rq{grid-template-columns:1fr}}
 @media(max-width:620px){.row{grid-template-columns:1fr}.btn{text-align:center}}
@@ -64,6 +67,9 @@ body.wait .page{visibility:hidden}
     <h2>Prijedlozi posjetitelja <span id="sugN"></span></h2>
     <p class="hint">Ono što ljudi pošalju preko "Suggestions" na dnu stranice.</p>
     <div id="sugs"></div>
+    <h2>Backup</h2>
+    <p class="hint">Stranica sama sprema kopiju svih objava svaki dan (zadnjih 60 dana). Klik skida tu kopiju.</p>
+    <div id="baks"></div>
     <h2>Članovi <span id="memN"></span></h2>
     <p class="hint">Vide nove analize odmah. Ostali ih vide 24 sata kasnije.</p>
     <div id="mems"></div>
@@ -84,7 +90,7 @@ document.getElementById('bak').onclick=function(){SBAuth.notes().then(function(n
 SBAuth.requireAdmin().then(function(m){if(!m)return;
   document.body.classList.remove('wait');
   document.getElementById('who').textContent='Prijavljen: '+m.name;
-  load();migrate();loadSugs();loadAccess();
+  load();migrate();loadSugs();loadAccess();loadBaks();
 });
 function load(){
   el.innerHTML='<p class="empty">Učitavam…</p>';
@@ -97,9 +103,42 @@ function draw(notes){
     var tf=TFS.filter(function(t){return x.ideas&&x.ideas[t];}).join(' · ');
     return '<div class="row"><div class="when">'+x.t.slice(8,10)+'.'+x.t.slice(5,7)+'.'+x.t.slice(0,4)+'<br>'+x.t.slice(11,16)+' NY</div>'+
       '<div><div class="ttl">'+esc(x.title)+(x.now?'<span class="ok">IMA AFTER</span>':'')+'</div><div class="tfs">'+esc(tf)+(x.by?' · '+esc(x.by):'')+'</div></div>'+
-      '<a class="btn" href="objavi.html?after#zavrsilo='+encodeURIComponent(x.id)+'">'+(x.now?'↻ Zamijeni After':'+ Dodaj After')+'</a></div>';
+      '<div class="acts2"><a class="btn" href="objavi.html?after#zavrsilo='+encodeURIComponent(x.id)+'">'+(x.now?'↻ Zamijeni After':'+ Dodaj After')+'</a>'+(x.now?'<button type="button" class="btn xbtn" data-x="'+esc(x.id)+'">Slika za X</button>':'')+'</div></div>';
   }).join('');
+  [].forEach.call(el.querySelectorAll('[data-x]'),function(b){b.onclick=function(){var n=notes.filter(function(y){return y.id===b.getAttribute('data-x');})[0];makeX(n,b);};});
 }
+// ---- Before / After picture for X (1600 x 900 PNG) ----
+function snap(u){var m=/tradingview\.com\/x\/([A-Za-z0-9]+)/.exec(u||'');return m?'https://s3.tradingview.com/snapshots/'+m[1].charAt(0).toLowerCase()+'/'+m[1]+'.png':null;}
+function loadImg(src){return new Promise(function(ok,bad){var i=new Image();i.onload=function(){ok(i);};i.onerror=function(){bad(new Error('Slika se ne učitava.'));};i.src=src;});}
+function fit(g,img,x,y,w,h){var r=Math.min(w/img.width,h/img.height),iw=img.width*r,ih=img.height*r;g.drawImage(img,x+(w-iw)/2,y+(h-ih)/2,iw,ih);}
+function nyLabel(t){return new Date(t.slice(0,10)+'T12:00:00Z').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',timeZone:'UTC'})+' · '+t.slice(11,16)+' ET';}
+function makeX(n,btn){
+  var tf=n.now.tf,bLink=(n.ideas&&n.ideas[tf])||(n.ideas&&n.ideas[TFS.filter(function(t){return n.ideas[t];})[0]]);
+  var bs=snap(bLink),as=snap(n.now.link);
+  if(!bs||!as){alert('Za sliku trebaju oba grafa kao slike (kamera → Copy link to the chart image).');return;}
+  btn.disabled=true;btn.textContent='Radim sliku…';
+  Promise.all([loadImg('/api/img?u='+encodeURIComponent(bs)),loadImg('/api/img?u='+encodeURIComponent(as)),loadImg('img/apple-touch-icon.png')]).then(function(im){
+    var W=1600,H=900,c=document.createElement('canvas');c.width=W;c.height=H;var g=c.getContext('2d');
+    g.fillStyle='#050505';g.fillRect(0,0,W,H);
+    g.drawImage(im[2],48,30,84,84);
+    g.fillStyle='#ece6d6';g.font='40px Georgia, serif';g.fillText('SB DESK',150,88);
+    g.fillStyle='#8f8f8f';g.font='22px Consolas, monospace';g.textAlign='right';g.fillText('NQ · '+tf,W-48,88);g.textAlign='left';
+    var y=140,pw=(W-48*2-24)/2,ph=540;
+    [[0,'BEFORE',n.t,im[0],'#ffb000'],[1,'AFTER',n.now.t,im[1],'#22d34a']].forEach(function(p){
+      var x=48+p[0]*(pw+24);g.fillStyle='#111';g.fillRect(x,y,pw,ph+56);
+      g.fillStyle=p[4];g.font='bold 26px Consolas, monospace';g.fillText(p[1],x+18,y+38);
+      g.fillStyle='#bdb6a6';g.font='20px Consolas, monospace';g.textAlign='right';g.fillText(nyLabel(p[2]),x+pw-18,y+38);g.textAlign='left';
+      fit(g,p[3],x+8,y+56,pw-16,ph-8);
+    });
+    g.fillStyle='#fff';g.font='bold 34px Georgia, serif';var t=n.title.length>70?n.title.slice(0,68)+'…':n.title;g.fillText(t,48,y+ph+56+62);
+    g.fillStyle='#ffb000';g.font='24px Consolas, monospace';g.fillText('sbdesk.com/n/'+n.id,48,y+ph+56+102);
+    g.fillStyle='#6f6a61';g.font='18px Consolas, monospace';g.textAlign='right';g.fillText('Analysis only · not a signal',W-48,y+ph+56+102);g.textAlign='left';
+    c.toBlob(function(b){var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='sbdesk-before-after-'+n.t.slice(0,10)+'.png';document.body.appendChild(a);a.click();a.remove();btn.disabled=false;btn.textContent='Slika za X';},'image/png');
+  }).catch(function(e){alert(e.message);btn.disabled=false;btn.textContent='Slika za X';});
+}
+function loadBaks(){var b=document.getElementById('baks');
+  fetch('/api/backups',{credentials:'same-origin',cache:'no-store'}).then(function(r){return r.json();}).then(function(d){var k=d.backups||[];
+    b.innerHTML=k.length?k.slice(0,10).map(function(x){return '<a href="/api/backups?key='+encodeURIComponent(x)+'">'+esc(x.replace('sbdesk-',''))+'</a>';}).join(''):'<p class="empty">Prva automatska kopija nastaje večeras.</p>';},function(){b.innerHTML='';});}
 function loadAccess(){
   var rb=document.getElementById('reqs'),mb=document.getElementById('mems');rb.innerHTML=mb.innerHTML='<p class="empty">Učitavam…</p>';
   fetch('/api/access',{credentials:'same-origin',cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){
