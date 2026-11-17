@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>SB Desk · Nova objava</title>
+<style>
+:root{--navy:#0b2f5c;--ink:#0f1a24;--muted:#5d6b78;--line:#d6dde6;--soft:#f3f6fa;--card:#fff;--bg:#e9edf2;--up:#0a7a2f;--dn:#c0161d;--accent:#0b2f5c;
+  --mono:"Courier New",Courier,monospace;--ui:Verdana,Geneva,Tahoma,sans-serif}
+body.dark{--navy:#0b0b0b;--ink:#d8d8d8;--muted:#8a8a8a;--line:#2a2a2a;--soft:#0b0b0b;--card:#000;--bg:#050505;--up:#22d34a;--dn:#ff4545;--accent:#ffb000;
+  --mono:Consolas,"Lucida Console","Courier New",monospace;--ui:Tahoma,Verdana,"Segoe UI",Arial,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 var(--ui)}
+.page{max-width:760px;margin:0 auto;min-height:100vh;background:var(--card);border-left:1px solid var(--line);border-right:1px solid var(--line)}
+.top{display:flex;align-items:center;gap:14px;padding:12px 18px;background:var(--navy);color:#fff;border-bottom:1px solid var(--line)}
+.brand{font:700 20px Georgia,serif;color:#fff;text-decoration:none}body.dark .brand{font:700 18px var(--mono);letter-spacing:.08em}
+.top small{font:12px var(--mono);color:#9fb6d6}body.dark .top small{color:var(--accent)}
+.top a.back{margin-left:auto;color:#d5e2f3;text-decoration:none;font-size:14px}
+form{padding:18px}
+.step{margin-bottom:26px}
+.step>h2{display:flex;align-items:center;gap:10px;margin:0 0 10px;font:700 17px var(--ui)}
+.num{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--card);font:700 15px var(--mono)}
+body.dark .num{color:#000}
+.how{background:var(--soft);border:1px solid var(--line);padding:10px 14px;font-size:14px;margin-bottom:12px}
+.how ol{margin:4px 0 0;padding-left:20px}.how li{margin:2px 0}
+.tf{border:1px solid var(--line);margin-bottom:10px}
+.tf .row{display:flex;align-items:stretch}
+.tf .lab{flex:none;width:64px;display:grid;place-items:center;font:700 17px var(--mono);background:var(--soft);border-right:1px solid var(--line)}
+.tf input{flex:1;min-width:0;font:15px var(--mono);padding:14px 12px;border:0;background:var(--card);color:var(--ink)}
+.tf input:focus{outline:2px solid var(--accent);outline-offset:-2px}
+.tf .clr{flex:none;border:0;border-left:1px solid var(--line);background:var(--soft);color:var(--muted);font-size:20px;width:46px;cursor:pointer;display:none}
+.tf.filled .clr{display:block}
+.tf .msg{display:none;padding:8px 12px;font-size:14px;border-top:1px solid var(--line)}
+.tf.ok .msg{display:block;color:var(--up)}.tf.bad .msg{display:block;color:var(--dn)}
+.tf.ok{border-color:var(--up)}.tf.bad{border-color:var(--dn)}
+.tf .pv{display:none;border-top:1px solid var(--line)}.tf.ok .pv{display:block}
+.tf .pv img{display:block;width:100%}
+.tf .pv iframe{display:block;width:100%;height:300px;border:0}
+label.h{display:block;font:600 12px var(--ui);letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+input.t,textarea,select{width:100%;font:16px var(--ui);padding:12px;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:0}
+textarea{min-height:170px;resize:vertical}
+.kindrow{margin-top:12px;display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted)}
+.kindrow select{width:auto;padding:8px;font-size:14px}
+button.go{width:100%;padding:16px;font:700 17px var(--ui);background:var(--accent);color:#fff;border:0;cursor:pointer}
+body.dark button.go{color:#000}
+button.go:disabled{opacity:.35;cursor:not-allowed}
+.need{margin:10px 0 0;font-size:14px;color:var(--muted)}
+.done{display:none;margin:0 18px 18px;padding:14px;border:1px solid var(--up);color:var(--up);font-size:15px}
+.done a{color:inherit;font-weight:700}
+.tabs{display:flex;border-bottom:1px solid var(--line)}.tabs[hidden]{display:none}
+.tabs button{flex:1;padding:14px 6px;font:700 15px var(--ui);background:var(--soft);color:var(--muted);border:0;cursor:pointer}
+.tabs button+button{border-left:1px solid var(--line)}
+.tabs button[aria-pressed=true]{background:var(--card);color:var(--ink);box-shadow:inset 0 -3px 0 var(--accent)}
+.pick{border:1px solid var(--line);max-height:330px;overflow:auto}
+.pick label{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-bottom:1px solid var(--line);cursor:pointer}
+.pick label:last-child{border-bottom:0}
+.pick input{margin-top:5px}
+.pick .when{font:13px var(--mono);color:var(--muted);white-space:nowrap}
+.pick .ttl{font-weight:700}
+.pick .has{font:12px var(--mono);color:var(--up)}
+.pick label:has(input:checked){background:var(--soft);box-shadow:inset 3px 0 0 var(--accent)}
+.tfpick{display:flex;border:1px solid var(--line);margin-bottom:10px}
+.tfpick button{flex:1;padding:12px 4px;font:700 16px var(--mono);background:var(--card);color:var(--muted);border:0;cursor:pointer}
+.tfpick button+button{border-left:1px solid var(--line)}
+.tfpick button[aria-pressed=true]{background:var(--accent);color:var(--card)}
+body.dark .tfpick button[aria-pressed=true]{color:#000}
+.toafter{padding:0 18px 22px;font-size:15px}.toafter a{color:var(--up);font-weight:700}
+.demo{margin-top:14px;font-size:12.5px;color:var(--muted)}
+body.wait .page{visibility:hidden}
+.err{color:var(--dn)!important;font-weight:700}
+</style>
+</head>
+<body class="wait">
+<div class="page">
+  <header class="top"><a class="brand" href="index.html">SB Desk</a><small>NOVA OBJAVA · NQ</small><a class="back" href="admin.html">← Admin</a></header>
+
+  <div class="tabs" hidden><button type="button" id="tabA" aria-pressed="true">Nova analiza</button><button type="button" id="tabB">Then / Now</button></div>
+  <form id="f" autocomplete="off" novalidate>
+    <div class="step">
+      <h2><span class="num">1</span>Grafovi s TradingViewa</h2>
+      <div class="how">Za svaki graf:
+        <ol>
+          <li>U TradingViewu klikni <b>ikonu kamere</b> gore desno.</li>
+          <li>Odaberi <b>Copy link to the chart image</b>.</li>
+          <li>Zalijepi link u red s pravim timeframeom (desni klik → Zalijepi, ili Ctrl+V).</li>
+        </ol>
+        Ne moraš popuniti sva četiri. Dovoljan je jedan.
+      </div>
+      <div id="tfs"></div>
+    </div>
+
+    <div class="step">
+      <h2><span class="num">2</span>Naslov</h2>
+      <input class="t" type="text" id="title" maxlength="90" placeholder="npr. NY open: kupci obranili jučerašnji high">
+    </div>
+
+    <div class="step">
+      <h2><span class="num">3</span>Što tržište radi</h2>
+      <textarea id="body" placeholder="Što vidiš, koje razine gledaš, što bi promijenilo sliku. Bez ulaza, stopa i ciljeva."></textarea>
+      <div class="kindrow">Vrsta objave:
+        <select id="kind"><option>Pre-market</option><option>NY open</option><option>Session</option><option>Close</option><option>Weekly review</option></select>
+        <span>(stavi se sama po njujorškom vremenu)</span></div>
+    </div>
+
+    <button class="go" type="submit" id="go" disabled>Objavi</button>
+    <p class="need" id="need"></p>
+  </form>
+  <form id="g" autocomplete="off" novalidate hidden>
+    <div class="step">
+      <h2><span class="num">1</span>Koja analiza?</h2>
+      <p class="need" style="margin:0 0 8px">Odabrana je ona na koju si kliknuo u Arhivi. Možeš odabrati i drugu.</p>
+      <div class="pick" id="pick"></div>
+    </div>
+    <div class="step">
+      <h2><span class="num">2</span>Graf kako je završilo</h2>
+      <div class="how">Isto kao i inače: kamera → <b>Copy link to the chart image</b>. Odaberi timeframe, pa zalijepi.</div>
+      <div class="tfpick" id="ntf"></div>
+      <div id="nbox"></div>
+    </div>
+    <div class="step">
+      <h2><span class="num">3</span>Jedna rečenica (nije obavezno)</h2>
+      <input class="t" type="text" id="nbody" maxlength="200" placeholder="npr. 15m val je odnio cijenu do closea.">
+    </div>
+    <button class="go" type="submit" id="ngo" disabled>Objavi After</button>
+    <p class="need" id="nneed"></p>
+  </form>
+  <div class="done" id="done">✓ Objavljeno. <a href="index.html">Otvori Desk</a></div>
+  <p class="toafter" id="toAfter"><a href="admin.html">+ Dodaj After na neku stariju objavu</a></p>
+</div>
+
+<script src="js/auth.js"></script>
+<script>
+(function(){
+try{if(localStorage.getItem('sbdesk-theme')!=='light')document.body.classList.add('dark');}catch(_){}
+SBAuth.requireAdmin().then(function(m){if(!m)return;document.body.classList.remove('wait');
+  return SBAuth.notes().then(initAfter,function(){initAfter([]);});});
+var TFS=['5m','15m','1H','4H'],links={},state={};
+
+// Reads whatever was pasted and decides what it is.
+function readLink(raw){
+  var u=(raw||'').trim(),m;
+  if(!u)return {kind:'empty'};
+  if((m=/tradingview\.com\/x\/([A-Za-z0-9]+)/i.exec(u)))
+    return {kind:'img',link:'https://www.tradingview.com/x/'+m[1]+'/',img:'https://s3.tradingview.com/snapshots/'+m[1].charAt(0).toLowerCase()+'/'+m[1]+'.png'};
+  if((m=/s3\.tradingview\.com\/snapshots\/[a-z0-9]\/([A-Za-z0-9]+)\.png/i.exec(u)))
+    return {kind:'img',link:'https://www.tradingview.com/x/'+m[1]+'/',img:m[0].indexOf('http')===0?m[0]:'https://'+m[0]};
+  if((m=/(https?:\/\/[a-z.]*tradingview\.com\/chart\/[^\/\s]+\/([A-Za-z0-9]+)[^\s]*)/i.exec(u)))
+    return {kind:'idea',link:m[1],id:m[2]};
+  if(/tradingview\.com\/chart\/?(\?|$|#)/i.test(u)||/tradingview\.com\/chart\/[A-Za-z0-9]+\/?$/i.test(u))
+    return {kind:'bad',why:'Ovo je link na tvoj radni graf, ne na sliku. Klikni ikonu kamere i odaberi "Copy link to the chart image".'};
+  if(/tradingview/i.test(u))return {kind:'bad',why:'Ovo je TradingView link, ali nije slika grafa. Klikni ikonu kamere i odaberi "Copy link to the chart image".'};
+  return {kind:'bad',why:'Ovo nije TradingView link. Klikni ikonu kamere u TradingViewu i odaberi "Copy link to the chart image".'};
+}
+
+var box=document.getElementById('tfs');
+function linkRow(tf,links,state,update){
+  var el=document.createElement('div');el.className='tf';
+  el.innerHTML='<div class="row"><span class="lab">'+tf+'</span><input type="text" inputmode="url" placeholder="zalijepi link za '+tf+'"><button type="button" class="clr" title="Obriši">×</button></div><div class="msg"></div><div class="pv"></div>';
+  var inp=el.querySelector('input'),msg=el.querySelector('.msg'),pv=el.querySelector('.pv');
+  function check(){
+    var r=readLink(inp.value);el.className='tf'+(inp.value.trim()?' filled':'');pv.innerHTML='';delete links[tf];
+    if(r.kind==='empty'){state[tf]='empty';update();return;}
+    if(r.kind==='bad'){el.className+=' bad';msg.textContent='✗ '+r.why;state[tf]='bad';update();return;}
+    if(r.kind==='idea'){el.className+=' ok';msg.textContent='✓ Objavljena ideja: posjetitelji će moći micati graf.';
+      pv.innerHTML='<iframe src="https://s.tradingview.com/embed/'+r.id+'/" scrolling="no"></iframe>';links[tf]=r.link;state[tf]='ok';update();return;}
+    // image link: show it, and only accept once the picture really loads
+    el.className+=' ok';msg.textContent='Učitavam sliku…';state[tf]='wait';update();
+    var im=new Image();im.alt=tf;
+    im.onload=function(){if(readLink(inp.value).img!==r.img)return;msg.textContent='✓ '+tf+' graf je dobar. Ovako će izgledati na Desku.';links[tf]=r.link;state[tf]='ok';update();};
+    im.onerror=function(){if(readLink(inp.value).img!==r.img)return;el.className='tf filled bad';pv.innerHTML='';msg.textContent='✗ Slika se ne učitava. Kopiraj link ponovno (kamera → Copy link to the chart image).';state[tf]='bad';update();};
+    im.src=r.img;pv.appendChild(im);
+  }
+  inp.addEventListener('input',check);inp.addEventListener('paste',function(){setTimeout(check,0);});
+  el.querySelector('.clr').onclick=function(){inp.value='';check();inp.focus();};
+  state[tf]='empty';return {el:el,setTf:function(t){tf=t;el.querySelector('.lab').textContent=t;inp.placeholder='zalijepi link za '+t;if(inp.value.trim())check();}};
+}
+TFS.forEach(function(tf){box.appendChild(linkRow(tf,links,state,function(){update();}).el);});
+
+function nyNow(){var d=new Date(new Date().toLocaleString('en-US',{timeZone:'America/New_York'}));return d;}
+(function(){var d=nyNow(),m=d.getHours()*60+d.getMinutes(),k=d.getDay()===0||d.getDay()===6?'Weekly review':m<570?'Pre-market':m<630?'NY open':m<945?'Session':'Close';document.getElementById('kind').value=k;})();
+
+var title=document.getElementById('title'),body=document.getElementById('body'),go=document.getElementById('go'),need=document.getElementById('need');
+title.oninput=body.oninput=update;
+function update(){
+  var miss=[],vals=TFS.map(function(t){return state[t];});
+  if(vals.indexOf('bad')>=0)miss.push('popravi crveni link (ili ga obriši s ×)');
+  else if(vals.indexOf('wait')>=0)miss.push('pričekaj da se slika učita');
+  else if(vals.indexOf('ok')<0)miss.push('zalijepi barem jedan graf');
+  if(!title.value.trim())miss.push('upiši naslov');
+  if(!body.value.trim())miss.push('napiši tekst');
+  go.disabled=miss.length>0;
+  need.textContent=miss.length?'Još: '+miss.join(', ')+'.':'Sve je spremno.';
+}
+update();
+
+document.getElementById('f').onsubmit=function(e){
+  e.preventDefault();if(go.disabled)return;
+  var d=nyNow(),pad=function(n){return String(n).padStart(2,'0');};
+  var t=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'T'+pad(d.getHours())+':'+pad(d.getMinutes());
+  var ideas={};TFS.forEach(function(x){if(links[x])ideas[x]=links[x];});
+  var first=TFS.filter(function(x){return ideas[x];});
+  var note={kind:document.getElementById('kind').value,title:title.value.trim(),body:body.value.trim(),ideas:ideas};
+  go.disabled=true;go.textContent='Objavljujem…';need.className='need';
+  SBAuth.post('/api/notes',note).then(showDone,function(err){go.disabled=false;go.textContent='Objavi';need.className='need err';need.textContent='✗ '+err.message;});
+};
+function showDone(){document.getElementById('f').hidden=true;document.getElementById('g').hidden=true;document.querySelector('.tabs').style.display='none';document.getElementById('done').style.display='block';window.scrollTo(0,0);}
+
+// ---- tabs ----
+var tabA=document.getElementById('tabA'),tabB=document.getElementById('tabB');
+function tab(b){tabA.setAttribute('aria-pressed',!b);tabB.setAttribute('aria-pressed',b);document.getElementById('f').hidden=b;document.getElementById('g').hidden=!b;}
+tabA.onclick=function(){tab(false);};tabB.onclick=function(){tab(true);};
+var want=location.hash.indexOf('#zavrsilo')===0?decodeURIComponent(location.hash.slice(9).replace(/^=/,'')):null;
+if(want!==null){tab(true);document.querySelector('.top small').textContent='AFTER · NQ';document.getElementById('toAfter').style.display='none';}
+function esc(v){return String(v==null?'':v).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+var all=[],nlinks={},nstate={},ntf=null,row=null;
+function pickedNote(){var r=document.querySelector('[name=pick]:checked');return r?all[+r.value]:null;}
+function initAfter(list){
+
+// ---- After: add a chart of how it ended to an earlier note ----
+all=list.slice();all.sort(function(a,b){return a.t<b.t?1:-1;});
+var wi=-1;all.forEach(function(n,i){if(n.id===want)wi=i;});if(wi<0)wi=0;
+function tfsOf(n){return n.ideas?TFS.filter(function(t){return n.ideas[t];}):[n.tf];}
+document.getElementById('pick').innerHTML=all.length?all.map(function(n,i){var d=new Date(n.t.slice(0,10)+'T12:00:00Z').toLocaleDateString('hr-HR',{day:'numeric',month:'numeric',timeZone:'UTC'});
+  return '<label><input type="radio" name="pick" value="'+i+'"'+(i===wi?' checked':'')+'><span><span class="when">'+d+' '+n.t.slice(11,16)+' · '+tfsOf(n).join(' ')+'</span><br><span class="ttl">'+esc(n.title)+'</span>'+(n.now?'<br><span class="has">već ima After (novi zamijeni stari)</span>':'')+'</span></label>';}).join(''):'<p style="padding:12px">Još nema objava.</p>';
+var ntfBox=document.getElementById('ntf');
+function setNtf(t){ntf=t;[].forEach.call(ntfBox.querySelectorAll('button'),function(b){b.setAttribute('aria-pressed',b.textContent===t);});
+  if(!row){row=linkRow(t,nlinks,nstate,nupdate);document.getElementById('nbox').appendChild(row.el);}else{Object.keys(nlinks).forEach(function(k){delete nlinks[k];});Object.keys(nstate).forEach(function(k){delete nstate[k];});nstate[t]='empty';row.setTf(t);}
+  nupdate();}
+ntfBox.innerHTML=TFS.map(function(t){return '<button type="button">'+t+'</button>';}).join('');
+[].forEach.call(ntfBox.querySelectorAll('button'),function(b){b.onclick=function(){setNtf(b.textContent);};});
+function defaultTf(){var n=pickedNote();return n?tfsOf(n)[0]:'15m';}
+[].forEach.call(document.querySelectorAll('[name=pick]'),function(r){r.onchange=function(){setNtf(defaultTf());};});
+setNtf(defaultTf());
+}
+function nupdate(){
+  var miss=[],st=nstate[ntf];
+  if(!pickedNote())miss.push('odaberi analizu');
+  if(st==='bad')miss.push('popravi crveni link');else if(st==='wait')miss.push('pričekaj da se slika učita');else if(st!=='ok')miss.push('zalijepi link grafa');
+  var g=document.getElementById('ngo');g.disabled=miss.length>0;
+  document.getElementById('nneed').textContent=miss.length?'Još: '+miss.join(', ')+'.':'Sve je spremno.';
+}
+document.getElementById('g').onsubmit=function(e){
+  e.preventDefault();if(document.getElementById('ngo').disabled)return;
+  var g=document.getElementById('ngo'),nn=document.getElementById('nneed');g.disabled=true;g.textContent='Objavljujem…';nn.className='need';
+  SBAuth.post('/api/after',{id:pickedNote().id,tf:ntf,link:nlinks[ntf],body:document.getElementById('nbody').value.trim()})
+    .then(showDone,function(err){g.disabled=false;g.textContent='Objavi After';nn.className='need err';nn.textContent='✗ '+err.message;});
+};
+})();
+</script>
+</body>
+</html>

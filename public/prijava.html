@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>SB Desk · Prijava</title>
+<style>
+:root{--ink:#d8d8d8;--muted:#8a8a8a;--line:#2a2a2a;--card:#000;--bg:#050505;--gold:#ffb000;--dn:#ff4545;--up:#22d34a}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:grid;place-items:center;background:var(--bg);color:var(--ink);font:16px/1.5 Tahoma,Verdana,sans-serif;padding:16px}
+.box{width:min(380px,100%);border:1px solid var(--line);background:var(--card);padding:24px}
+h1{margin:0 0 2px;font:700 22px Consolas,"Courier New",monospace;letter-spacing:.08em;color:#fff}
+.sub{margin:0 0 18px;color:var(--muted);font-size:14px}
+label{display:block;font:600 12px Tahoma,sans-serif;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:12px 0 5px}
+input{width:100%;font:17px Tahoma,sans-serif;padding:12px;background:#0a0a0a;color:#fff;border:1px solid #3a3a3a;border-radius:0}
+input:focus{outline:2px solid var(--gold);outline-offset:-2px}
+button{margin-top:16px;width:100%;padding:14px;font:700 16px Tahoma,sans-serif;background:var(--gold);color:#000;border:0;cursor:pointer}
+button:disabled{opacity:.5;cursor:wait}
+.msg{margin:12px 0 0;font-size:14px;min-height:1em}.msg.err{color:var(--dn)}.msg.ok{color:var(--up)}
+.link{display:inline-block;margin-top:14px;color:var(--muted);font-size:14px;background:none;border:0;padding:0;width:auto;cursor:pointer;text-decoration:underline;font-weight:400}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="box">
+  <h1>SB DESK</h1>
+  <p class="sub" id="sub">Prijava za admine.</p>
+
+  <form id="fLogin">
+    <label for="em">Email</label><input id="em" type="email" autocomplete="username" required>
+    <label for="pw">Lozinka</label><input id="pw" type="password" autocomplete="current-password" required>
+    <button type="submit">Prijavi se</button>
+    <button type="button" class="link" id="toForgot">Zaboravio sam lozinku</button>
+  </form>
+
+  <form id="fForgot" hidden>
+    <label for="em2">Tvoj email</label><input id="em2" type="email" autocomplete="username" required>
+    <button type="submit">Pošalji mi link</button>
+    <button type="button" class="link" id="toLogin">← Natrag na prijavu</button>
+  </form>
+
+  <form id="fNew" hidden>
+    <label for="np1">Nova lozinka (barem 8 znakova)</label><input id="np1" type="password" autocomplete="new-password" minlength="8" required>
+    <label for="np2">Ponovi lozinku</label><input id="np2" type="password" autocomplete="new-password" minlength="8" required>
+    <button type="submit">Spremi lozinku</button>
+  </form>
+
+  <p class="msg" id="msg"></p>
+</div>
+<script src="js/auth.js"></script>
+<script>
+(function(){
+var A=window.SBAuth,msg=document.getElementById('msg'),sub=document.getElementById('sub');
+var next=new URLSearchParams(location.search).get('next')||'admin.html';
+if(!/^[a-z]+\.html/.test(next))next='admin.html';
+function show(id){['fLogin','fForgot','fNew'].forEach(function(f){document.getElementById(f).hidden=f!==id;});say('');}
+function say(t,kind){msg.textContent=t;msg.className='msg'+(kind?' '+kind:'');}
+function busy(form,on){[].forEach.call(form.querySelectorAll('button[type=submit]'),function(b){b.disabled=on;});}
+function hr(e){var m=String(e&&e.message||e||'');
+  if(/expired|token/i.test(m))return 'Link je istekao ili je već iskorišten. Zatraži novi.';
+  if(/invalid_grant|No user found|Invalid|password/i.test(m))return 'Krivi email ili lozinka.';
+  return 'Nešto nije u redu: '+m;}
+function goNext(){location.replace(next);}
+
+var mode=null,inviteToken=null;
+document.getElementById('toForgot').onclick=function(){show('fForgot');document.getElementById('em2').value=document.getElementById('em').value;};
+document.getElementById('toLogin').onclick=function(){show('fLogin');};
+
+document.getElementById('fLogin').onsubmit=function(e){e.preventDefault();var f=this;busy(f,true);say('Prijavljujem…');
+  A.login(document.getElementById('em').value.trim(),document.getElementById('pw').value)
+   .then(function(){return A.me();}).then(function(m){
+     if(m.admin)goNext();else{say('Ovaj račun nije admin SB Deska.','err');busy(f,false);}
+   },function(err){say(hr(err),'err');busy(f,false);});};
+
+document.getElementById('fForgot').onsubmit=function(e){e.preventDefault();var f=this;busy(f,true);
+  A.requestPasswordRecovery(document.getElementById('em2').value.trim())
+   .then(function(){say('Ako je to admin email, poslali smo link. Otvori email i klikni ga.','ok');},function(err){say(hr(err),'err');})
+   .then(function(){busy(f,false);});};
+
+document.getElementById('fNew').onsubmit=function(e){e.preventDefault();var f=this;
+  var a=document.getElementById('np1').value,b=document.getElementById('np2').value;
+  if(a.length<8)return say('Lozinka mora imati barem 8 znakova.','err');
+  if(a!==b)return say('Lozinke nisu iste.','err');
+  busy(f,true);say('Spremam…');
+  var p=mode==='invite'?A.acceptInvite(inviteToken,a):A.updateUser({password:a});
+  p.then(function(){say('✓ Lozinka spremljena.','ok');setTimeout(function(){location.replace('admin.html');},700);},function(err){say(hr(err),'err');busy(f,false);});};
+
+// Links from emails (invite, password reset) arrive with a token in the address.
+A.handleAuthCallback().then(function(r){
+  if(r&&r.type==='invite'){mode='invite';inviteToken=r.token;show('fNew');sub.textContent='Dobrodošao. Postavi svoju lozinku.';return;}
+  if(r&&r.type==='recovery'){mode='recovery';show('fNew');sub.textContent='Postavi novu lozinku.';return;}
+  if(r&&r.user){goNext();return;}
+  return A.getUser().then(function(u){if(u)return A.me().then(function(m){if(m.admin)goNext();});});
+},function(err){say(hr(err),'err');});
+})();
+</script>
+</body>
+</html>

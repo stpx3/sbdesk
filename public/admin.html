@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>SB Desk · Admin</title>
+<style>
+:root{--navy:#0b2f5c;--ink:#0f1a24;--muted:#5d6b78;--line:#d6dde6;--soft:#f3f6fa;--card:#fff;--bg:#e9edf2;--up:#0a7a2f;--gold:#f5c542;--mono:"Courier New",Courier,monospace;--ui:Verdana,Geneva,Tahoma,sans-serif;--serif:Georgia,"Times New Roman",serif}
+body.dark{--navy:#1e1e1e;--ink:#d8d8d8;--muted:#8a8a8a;--line:#2a2a2a;--soft:#0b0b0b;--card:#000;--bg:#050505;--up:#22d34a;--gold:#ffb000;--serif:Consolas,"Courier New",monospace;--mono:Consolas,"Courier New",monospace;--ui:Tahoma,Verdana,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--ui)}
+.page{max-width:860px;margin:0 auto;background:var(--card);min-height:100vh;border-left:1px solid var(--line);border-right:1px solid var(--line)}
+.top{display:flex;align-items:center;gap:12px;padding:12px 18px;background:var(--navy);color:#fff}
+.top b{font:700 21px var(--serif)}.top small{font:11px var(--mono);color:#9fb6d6;letter-spacing:.06em}
+.top a{margin-left:auto;color:#d5e2f3;text-decoration:none;font-size:14px}
+.wrap{padding:20px 18px 40px}
+.new{display:block;text-align:center;padding:16px;background:var(--up);color:#fff;font:700 18px var(--ui);text-decoration:none;border-radius:3px}
+h2{font:700 18px var(--serif);margin:28px 0 4px}
+.hint{margin:0 0 12px;color:var(--muted);font-size:13.5px}
+.row{display:grid;grid-template-columns:120px 1fr auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.when{font:13px var(--mono);color:var(--muted)}
+.ttl{font-weight:700}.tfs{font:12px var(--mono);color:var(--muted)}
+.ok{font:700 11px var(--mono);color:var(--up);border:1px solid var(--up);padding:0 4px;margin-left:6px}
+.btn{padding:10px 14px;border:1px solid var(--up);color:var(--up);font:700 14px var(--ui);text-decoration:none;white-space:nowrap;border-radius:3px}
+.btn:hover{background:var(--soft)}
+.empty{padding:20px 0;color:var(--muted)}
+body.wait .page{visibility:hidden}
+.who{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0 0 16px;font-size:13.5px;color:var(--muted)}
+.who button{background:none;border:1px solid var(--line);color:var(--ink);padding:6px 12px;cursor:pointer;font:13px var(--ui);border-radius:3px}
+.mig{margin:0 0 18px;padding:12px 14px;border:1px solid var(--gold);background:var(--soft);font-size:14px}
+.mig button{margin-top:8px;padding:10px 14px;font:700 14px var(--ui);background:var(--gold);color:#000;border:0;cursor:pointer;border-radius:3px}
+.err{color:#ff4545}
+@media(max-width:620px){.row{grid-template-columns:1fr}.btn{text-align:center}}
+</style>
+</head>
+<body class="wait">
+<div class="page">
+  <header class="top"><b>SB Desk</b><small>ADMIN</small><a href="index.html">Desk →</a></header>
+  <div class="wrap">
+    <div class="who"><span id="who"></span><button type="button" id="out">Odjava</button></div>
+    <div class="mig" id="mig" hidden></div>
+    <a class="new" href="objavi.html">+ Nova analiza</a>
+    <h2>After (kako je završilo)</h2>
+    <p class="hint">Nađi analizu po datumu i klikni "Dodaj After".</p>
+    <div id="list"></div>
+  </div>
+</div>
+<script src="js/auth.js"></script>
+<script>
+(function(){
+try{if(localStorage.getItem('sbdesk-theme')!=='light')document.body.classList.add('dark');}catch(_){}
+function esc(v){return String(v==null?'':v).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+var TFS=['5m','15m','1H','4H'],el=document.getElementById('list');
+document.getElementById('out').onclick=function(){SBAuth.signOut();};
+SBAuth.requireAdmin().then(function(m){if(!m)return;
+  document.body.classList.remove('wait');
+  document.getElementById('who').textContent='Prijavljen: '+m.name;
+  load();migrate();
+});
+function load(){
+  el.innerHTML='<p class="empty">Učitavam…</p>';
+  SBAuth.notes().then(draw,function(e){el.innerHTML='<p class="empty err">'+esc(e.message)+'</p>';});
+}
+function draw(notes){
+  notes=notes.slice().sort(function(a,b){return a.t<b.t?1:-1;});
+  if(!notes.length){el.innerHTML='<p class="empty">Još nema objava.</p>';return;}
+  el.innerHTML=notes.map(function(x){
+    var tf=TFS.filter(function(t){return x.ideas&&x.ideas[t];}).join(' · ');
+    return '<div class="row"><div class="when">'+x.t.slice(8,10)+'.'+x.t.slice(5,7)+'.'+x.t.slice(0,4)+'<br>'+x.t.slice(11,16)+' NY</div>'+
+      '<div><div class="ttl">'+esc(x.title)+(x.now?'<span class="ok">IMA AFTER</span>':'')+'</div><div class="tfs">'+esc(tf)+(x.by?' · '+esc(x.by):'')+'</div></div>'+
+      '<a class="btn" href="objavi.html?after#zavrsilo='+encodeURIComponent(x.id)+'">'+(x.now?'↻ Zamijeni After':'+ Dodaj After')+'</a></div>';
+  }).join('');
+}
+// One-time move of notes that were saved only in this browser (before accounts existed).
+function migrate(){
+  var old=[],nows={};
+  try{old=JSON.parse(localStorage.getItem('sbdesk-demo-notes')||'[]').filter(function(x){return x&&x.t&&x.title&&x.ideas;});}catch(_){}
+  try{nows=JSON.parse(localStorage.getItem('sbdesk-demo-now')||'{}');}catch(_){}
+  if(!old.length)return;
+  var box=document.getElementById('mig');box.hidden=false;
+  box.innerHTML='U ovom pregledniku su <b>'+old.length+'</b> stare objave koje još nitko drugi ne vidi.<br><button type="button" id="mv">Prebaci ih na stranicu</button>';
+  document.getElementById('mv').onclick=function(){
+    var b=this;b.disabled=true;b.textContent='Prebacujem…';
+    old.sort(function(a,c){return a.t<c.t?-1:1;});
+    var chain=Promise.resolve();
+    old.forEach(function(x){chain=chain.then(function(){
+      return SBAuth.post('/api/notes',{import:true,t:x.t,kind:x.kind,title:x.title,body:x.body,ideas:x.ideas,now:nows[x.t+'|'+x.title]||null}).then(function(){
+        // remove each moved note right away, so a retry never posts it twice
+        try{var left=JSON.parse(localStorage.getItem('sbdesk-demo-notes')||'[]').filter(function(y){return !(y&&y.t===x.t&&y.title===x.title);});localStorage.setItem('sbdesk-demo-notes',JSON.stringify(left));
+          var done=JSON.parse(localStorage.getItem('sbdesk-demo-notes-prebaceno')||'[]');done.push(x);localStorage.setItem('sbdesk-demo-notes-prebaceno',JSON.stringify(done));}catch(_){}
+      });});});
+    chain.then(function(){
+      try{localStorage.removeItem('sbdesk-demo-notes');}catch(_){}
+      box.innerHTML='✓ Prebačeno. Sad ih vide svi.';load();
+    },function(e){b.disabled=false;b.textContent='Pokušaj ponovno';box.insertAdjacentHTML('beforeend','<p class="err">✗ '+esc(e.message)+'</p>');});
+  };
+}
+})();
+</script>
+</body>
+</html>

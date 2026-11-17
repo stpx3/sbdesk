@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<script>/* links from Netlify emails (invite, password reset) go to the login page */
+if(/(invite|recovery|confirmation|email_change)_token=/.test(location.hash))location.replace('prijava.html'+location.hash);</script>
+<script src="gate.js"></script>
+<title>SB Desk · NQ research desk</title>
+<style>
+:root{--navy:#0b2f5c;--blue:#1a56a8;--ink:#0f1a24;--muted:#5d6b78;--line:#d6dde6;--soft:#f3f6fa;--head:#e6edf5;--card:#fff;--bg:#e9edf2;--sel:#fff9e6;--top:#0b2f5c;
+  --up:#0a7a2f;--dn:#c0161d;--ne:#9a6b00;--gold:#f5c542;--mono:"Courier New",Courier,monospace;--ui:Verdana,Geneva,Tahoma,sans-serif;--serif:Georgia,"Times New Roman",serif}
+/* dark = the old SB Desk terminal look */
+body.dark{--navy:#1e1e1e;--blue:#ffb000;--ink:#d8d8d8;--muted:#8a8a8a;--line:#2a2a2a;--soft:#0b0b0b;--head:#141414;--card:#000;--bg:#050505;--sel:#0d1608;--top:#0b0b0b;--up:#22d34a;--dn:#ff4545;--ne:#f2e14b;--gold:#ffb000;
+  --serif:Consolas,"Lucida Console","Courier New",monospace;--mono:Consolas,"Lucida Console","Courier New",monospace;--ui:Tahoma,Verdana,"Segoe UI",Arial,sans-serif}
+body.dark .top{border-bottom:1px solid #2a2a2a}
+body.dark .brand{letter-spacing:.08em;font-size:18px}
+body.dark .whead{background:#141414;color:#9a9a9a;border-bottom:1px solid #2a2a2a}
+body.dark .seg button[aria-pressed=true]{background:#1e1e1e;color:#fff;box-shadow:inset 0 -2px 0 var(--gold)}
+body.dark .reading{border-top-color:var(--gold)}
+body.dark .t{color:#3cc8ff}
+body.dark .tag.sym{color:var(--gold)}
+body.dark .badge{background:var(--gold);color:#000}
+body.dark .theme{border-color:#3a3a3a}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.55 var(--ui)}
+a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
+.page{max-width:1280px;margin:0 auto;background:var(--card);min-height:100vh;border-left:1px solid var(--line);border-right:1px solid var(--line);display:flex;flex-direction:column}
+.top{display:flex;align-items:center;gap:22px;padding:10px 18px;background:var(--top);color:#fff;flex-wrap:wrap}
+.brand{font:700 21px/1 var(--serif);color:#fff!important;text-decoration:none!important}
+.brand small{font:11px var(--mono);color:#9fb6d6;margin-left:8px;letter-spacing:.06em}
+.nav{display:flex;gap:16px;flex-wrap:wrap}.nav a{color:#d5e2f3;font-size:13px}.nav a.on{color:#fff;box-shadow:inset 0 -2px 0 var(--gold);padding-bottom:3px}
+.tr{margin-left:auto;display:flex;align-items:center;gap:12px}
+.clock{font:13px var(--mono);color:var(--gold)}
+.adm{font:12px var(--ui);color:#d5e2f3;border:1px solid #3c5a85;padding:4px 9px;border-radius:3px}
+.theme{background:none;border:1px solid #3c5a85;color:#d5e2f3;font:12px var(--ui);padding:5px 10px;border-radius:3px;cursor:pointer}
+/* desk */
+.desk{display:grid;grid-template-columns:1fr 400px;flex:1;min-height:0}
+.chartcol{padding:14px 18px;border-right:1px solid var(--line);min-width:0}
+.cbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.cbar h2{margin:0;font:700 17px var(--serif)}
+.cbar .meta{font:12px var(--mono);color:var(--muted)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.seg button{font:600 12px var(--ui);background:var(--card);border:0;padding:7px 14px;cursor:pointer;color:var(--muted)}
+.seg button+button{border-left:1px solid var(--line)}.seg button[aria-pressed=true]{background:var(--navy);color:#fff}
+.right{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.frame{border:1px solid var(--line);background:var(--card)}
+.frame header{display:flex;justify-content:space-between;padding:6px 10px;background:var(--head);font:600 12px var(--ui)}
+.frame header span:last-child{font:12px var(--mono);color:var(--muted);font-weight:400}
+.frame img{display:block;width:100%;cursor:zoom-in}
+.frame iframe{display:block;width:100%;height:560px;border:0}
+.tvbox{height:560px}
+.empty{padding:60px 20px;text-align:center;color:var(--muted);background:var(--soft)}
+.fnote{font:12px var(--mono);color:var(--muted);margin:8px 0 0}
+.reading{margin-top:16px;border-top:2px solid var(--navy);padding-top:10px}
+.reading .k{font:600 11px var(--ui);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.reading h3{margin:4px 0 6px;font:700 20px/1.3 var(--serif)}
+.reading p{margin:0 0 8px;font-size:14.5px}
+.by{font:12px var(--mono);color:var(--muted)}
+/* wire */
+.wire{display:flex;flex-direction:column;min-height:0}
+.whead{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--top);color:#fff;font:700 12px var(--ui);letter-spacing:.08em}
+.whead span:last-child{font:12px var(--mono);color:var(--gold);letter-spacing:0}
+.wsub{display:flex;justify-content:space-between;padding:6px 14px;background:var(--head);font:11px var(--ui);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line)}
+.wlist{overflow-y:auto;max-height:calc(100vh - 150px)}
+.day{padding:6px 14px;font:700 11px var(--ui);letter-spacing:.08em;text-transform:uppercase;color:var(--navy);background:var(--soft);border-bottom:1px solid var(--line)}
+body.dark .day{color:var(--blue)}
+.item{display:grid;grid-template-columns:62px 1fr;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;border-left:3px solid transparent}
+.item:hover{background:var(--soft)}.item.sel{background:var(--sel);border-left-color:var(--navy)}
+body.dark .item.sel{border-left-color:var(--gold)}
+.t{font:700 15px var(--mono)}.t small{display:block;font:11px var(--mono);color:var(--muted);font-weight:400}
+.tfc{display:inline-block;margin-top:6px;font:700 12px var(--mono);border:1px solid var(--ink);padding:1px 5px;margin-right:2px}
+body.dark .tfc{border-color:var(--gold);color:var(--gold)}
+.kind{font:11px var(--mono);color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+.item h4{margin:2px 0 4px;font:700 15px/1.3 var(--serif)}
+.item p{margin:0 0 6px;font-size:13px;color:var(--ink);opacity:.85}
+.tags{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.tag{font:11px var(--mono);border:1px solid var(--line);padding:1px 5px;border-radius:2px;color:var(--muted)}
+.tag.sym{color:var(--ink);font-weight:700}
+.wfoot{padding:10px 14px;font-size:12px;color:var(--muted);border-top:1px solid var(--line);background:var(--soft)}
+/* pages */
+.doc{max-width:760px;padding:30px 24px 50px}
+.doc h1{font:700 30px/1.2 var(--serif);margin:0 0 6px}
+.doc .lede{font-size:16px;color:var(--muted);margin:0 0 26px}
+.doc h2{font:700 19px var(--serif);margin:28px 0 8px;padding-top:12px;border-top:1px solid var(--line)}
+.doc p,.doc li{font-size:14.5px}
+.ph{background:var(--sel);padding:0 4px;border-radius:2px}
+.people{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:10px}
+.person{border:1px solid var(--line);padding:16px}
+.avatar{width:64px;height:64px;border-radius:50%;background:var(--head);display:grid;place-items:center;font:700 22px var(--serif);color:var(--navy);margin-bottom:10px}
+body.dark .avatar{color:var(--blue)}
+.person h3{margin:0;font:700 17px var(--serif)}.person .role{font:12px var(--mono);color:var(--muted);margin-bottom:8px}
+table.arch{width:100%;border-collapse:collapse}
+.arch td{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.arch td:first-child{font:13px var(--mono);white-space:nowrap;color:var(--muted);width:120px}
+.badge{display:inline-block;font:600 10px var(--ui);letter-spacing:.06em;background:var(--navy);color:#fff;padding:2px 6px;border-radius:2px;margin-right:6px;vertical-align:1px}
+.samplebar{padding:6px 18px;font:11px var(--mono);letter-spacing:.06em;background:#fff3cd;color:#6b5200;border-bottom:1px solid var(--line)}
+body.dark .samplebar{background:#1a1505;color:#e8d7a0}
+.smp{font:10px var(--mono);letter-spacing:.06em;color:var(--ne);border:1px solid var(--ne);padding:0 4px}
+.tag.now{color:var(--up);border-color:var(--up);font-weight:700}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:8px}.pair iframe{height:420px}
+.nowtxt{margin:10px 0;padding:8px 10px;border-left:3px solid var(--up);background:var(--soft);font-size:14px}
+.nowtxt b{font:700 12px var(--mono);color:var(--up)}
+@media(max-width:700px){.pair{grid-template-columns:1fr}}
+.tag.new{color:#fff;background:var(--dn);border-color:var(--dn);font-weight:700}
+.upd{display:flex;gap:8px 16px;flex-wrap:wrap;align-items:baseline;padding:7px 10px;margin-bottom:10px;background:var(--soft);border:1px solid var(--line);font:12px var(--mono);color:var(--muted)}
+.upd b{color:var(--ink)}.upd .fresh{color:var(--dn);font-weight:700}
+a.gl{color:inherit;border-bottom:1px dotted var(--blue)}a.gl:hover{text-decoration:none;color:var(--blue)}
+.gterm{scroll-margin-top:20px;padding:10px 12px;border-left:3px solid var(--line)}.gterm.hit{border-left-color:var(--gold);background:var(--sel)}
+.gterm h3{margin:0 0 4px;font:700 16px var(--serif)}.gterm p{margin:0}
+footer.f{border-top:1px solid var(--line);padding:14px 18px;font-size:12px;color:var(--muted);background:var(--soft)}
+.lb{position:fixed;inset:0;background:rgba(5,15,30,.9);display:none;align-items:center;justify-content:center;padding:20px;z-index:9}.lb.on{display:flex}.lb img{max-width:100%;max-height:100%}
+@media(max-width:960px){
+  .desk{grid-template-columns:1fr}.chartcol{border-right:0;padding:12px}
+  .wlist{max-height:none}.frame iframe,.tvbox{height:62vh;min-height:380px}
+  .top{gap:8px 14px}.tr{margin-left:0;width:100%;justify-content:space-between}
+  .cbar .right{margin-left:0;width:100%}.tfs{display:flex;width:100%}.tfs button{flex:1;padding:10px 0}
+  .people{grid-template-columns:1fr}.doc{padding:22px 16px 40px}
+}
+</style>
+</head>
+<body>
+<div class="page">
+<header class="top">
+  <a class="brand" href="#desk">SB Desk<small>NQ · SPLIT</small></a>
+  <nav class="nav" id="nav"><a href="#desk">Desk</a><a href="#archive">Archive</a><a href="#method">Method</a><a href="#about">About</a></nav>
+  <div class="tr"><a class="adm" id="adm" href="admin.html" hidden>Admin</a><span class="clock" id="clock">NY --:--:--</span><button class="theme" id="theme">☾ Dark</button></div>
+</header>
+
+<!-- DESK -->
+<section id="p-desk">
+  <div class="desk">
+    <div class="chartcol">
+      <div class="cbar">
+        <h2 id="cTitle"></h2><span class="meta" id="cMeta"></span>
+        <div class="right">
+          <div class="seg tfs" id="tfs"></div>
+          <div class="seg" id="mode"></div>
+        </div>
+      </div>
+      <div class="upd" id="upd" hidden></div>
+      <div id="chart"></div>
+      <p class="fnote" id="fnote"></p>
+      <div class="reading" id="reading"></div>
+    </div>
+    <aside class="wire">
+      <div class="whead"><span>RESEARCH WIRE</span><span id="count"></span></div>
+      <div class="wsub"><span id="range">Time-stamped notes</span><span>ET / New York</span></div>
+      <div class="wlist" id="wire"></div>
+      <div class="wfoot">Every note stays in the record. Nothing is deleted or rewritten after the fact.</div>
+    </aside>
+  </div>
+</section>
+
+<!-- ARCHIVE -->
+<section id="p-archive" hidden><div class="doc">
+  <h1>Archive</h1><p class="lede">Every note, in order. Nothing removed.</p>
+  <h2>All notes</h2><table class="arch" id="archAll"></table>
+</div></section>
+
+<!-- METHOD -->
+<section id="p-method" hidden><div class="doc">
+  <h1>Method</h1><p class="lede">How the desk reads NQ.</p>
+  <h2>Waves, read with MACD</h2>
+  <p>We read the market in waves, using our own MACD-based method.</p>
+  <h2>Four timeframes</h2>
+  <p>We publish charts on the <b>4H</b>, <b>1H</b>, <b>15m</b> and <b>5m</b>. Each note shows which timeframe it is about.</p>
+  <h2>Before / After</h2>
+  <p>Some notes get a second chart later, showing what the market did after we wrote. Hits and misses stay up the same way.</p>
+  <h2>Glossary</h2>
+  <p>Words used in our notes. A dotted word in a note links here.</p>
+  <div id="glossary"></div>
+  <h2>What we do not do</h2>
+  <p>No entries, stops or targets. No signals, no calls to buy or sell. This is how we read the market, written down as it happens. What you do with it is your decision.</p>
+</div></section>
+
+<!-- ABOUT -->
+<section id="p-about" hidden><div class="doc">
+  <h1>About the desk</h1><p class="lede">Two traders, father and son, trading Nasdaq futures from Split, Croatia.</p>
+  <div class="people">
+    <div class="person"><div class="avatar">B</div><h3>Bernard Pupačić</h3><div class="role">Desk lead · NQ</div></div>
+    <div class="person"><div class="avatar">S</div><h3>Stipe Pupačić</h3><div class="role">Trader · NQ</div></div>
+  </div>
+  <h2>Candor</h2>
+  <p>We also run <a href="https://propfirmcandor.com">Candor</a>, a comparison site for futures prop firms. Candor earns a commission when someone buys a challenge with our code. We trade with prop firms ourselves; that is why we built it.</p>
+</div></section>
+
+<footer class="f">SB Desk publishes market analysis for information only. No entries, stops or targets; not financial advice. Futures trading carries substantial risk. We own Candor (propfirmcandor.com) and earn affiliate commission from prop firms listed there.</footer>
+</div>
+<div class="lb" id="lb"><img alt=""></div>
+
+<script>
+(function(){
+var TFS=['5m','15m','1H','4H'];
+// Glossary: words in notes that link to the Method page. Add a word = add one line.
+var GLOSS=[
+  {id:'double-top',term:'Double top',match:'double tops?',text:'Price makes two highs at about the same level and fails to break above the second time.'}
+];
+var LIVE={NQ:['CAPITALCOM:US100','Nasdaq 100 CFD']};
+function key(n){return n.t+'|'+n.title;}
+// notes come from the server (/api/notes); loaded at the bottom
+var NOTES=[],loadErr='';
+var state={sel:0,tf:null,mode:'note',liv:'15'},liveKey='';
+function setNotes(list){NOTES=(list||[]).filter(function(x){return x&&x.t&&x.title;});
+  NOTES.sort(function(a,b){return a.t<b.t?-1:1;});
+  NOTES.forEach(function(x,i){x.key=x.key||x.id;x.id=i+1;x.sym='NQ';x.posted=true;x.ideas=x.ideas||{};});
+  state.sel=NOTES.length?NOTES[NOTES.length-1].id:0;}
+function hm(s){return s.slice(11,16);}
+function dayLabel(s){var d=new Date(s.slice(0,10)+'T12:00:00Z');return d.toLocaleDateString('en-GB',{weekday:'long',day:'2-digit',month:'short',timeZone:'UTC'});}
+function fN(n){return n.toLocaleString('en-US');}
+function glossify(t){var h=esc(t);GLOSS.forEach(function(g){h=h.replace(new RegExp('\\b('+g.match+')\\b','gi'),'<a class="gl" href="#method/'+g.id+'">$1</a>');});return h;}
+function nyNow(){var d=new Date(new Date().toLocaleString('en-US',{timeZone:'America/New_York'}));function p(x){return ('0'+x).slice(-2);}return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'T'+p(d.getHours())+':'+p(d.getMinutes());}
+function mins(a,b){return Math.round((new Date(b.slice(0,16)+':00Z')-new Date(a.slice(0,16)+':00Z'))/60000);}
+function ago(t){var m=mins(t,nyNow());if(m<1)return 'just now';if(m<60)return m+' min ago';if(m<24*60)return Math.round(m/60)+' h ago';var d=Math.round(m/1440);return d+(d===1?' day ago':' days ago');}
+function isNew(t){return mins(t,nyNow())<24*60;}
+function dm(t){return t.slice(8,10)+'.'+t.slice(5,7)+'.';}
+function esc(v){return String(v==null?'':v).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function ideaId(u){var m=/\/chart\/[^\/]+\/([A-Za-z0-9]+)/.exec(u||'');return m?m[1]:null;}
+function snapImg(u){var m=/tradingview\.com\/x\/([A-Za-z0-9]+)/.exec(u||'');return m?'https://s3.tradingview.com/snapshots/'+m[1].charAt(0).toLowerCase()+'/'+m[1]+'.png':null;}
+function tfsOf(x){return x.posted?TFS.filter(function(t){return x.ideas[t];}):[x.tf];}
+function when(t){return new Date(t.slice(0,10)+'T12:00:00Z').toLocaleDateString('en-GB',{weekday:'short',day:'2-digit',month:'short',timeZone:'UTC'})+' '+hm(t)+' ET';}
+function gap(a,b){var m=Math.round((new Date(b+':00Z')-new Date(a+':00Z'))/60000);if(m<60)return m+' min later';if(m<48*60)return Math.round(m/60)+' h later';return Math.round(m/1440)+' days later';}
+var cache={};
+function shot(sym,tf,seed,bias){
+  var D=document.body.classList.contains('dark'),k=sym+tf+seed+D;if(cache[k])return cache[k];
+  var W=960,H=540,c=document.createElement('canvas');c.width=W;c.height=H;var g=c.getContext('2d');
+  var s=seed*97+tf.length*13;function r(){s=(s*9301+49297)%233280;return s/233280;}
+  g.fillStyle=D?'#131722':'#fff';g.fillRect(0,0,W,H);var pw=W-70,ph=380,mt=400;
+  g.strokeStyle=D?'#1e222d':'#f0f3fa';for(var i=0;i<8;i++){g.beginPath();g.moveTo(0,20+i*50.5);g.lineTo(pw,20+i*50.5);g.stroke();}
+  for(var j=0;j<10;j++){g.beginPath();g.moveTo(j*96.5,0);g.lineTo(j*96.5,H);g.stroke();}
+  var n=90,p=200,bars=[],dir=bias==='bull'?-.2:bias==='bear'?.2:0;
+  for(var i2=0;i2<n;i2++){var o=p,cl=o+(r()-.5+dir*.15)*14;bars.push([o,cl,Math.min(o,cl)-r()*8,Math.max(o,cl)+r()*8]);p=Math.max(70,Math.min(340,cl));}
+  var bw=pw/n;bars.forEach(function(b,i){var x=i*bw+bw/2,up=b[1]<b[0];g.strokeStyle=g.fillStyle=up?'#089981':'#f23645';g.beginPath();g.moveTo(x,b[2]+20);g.lineTo(x,b[3]+20);g.stroke();g.fillRect(x-bw*.32,Math.min(b[0],b[1])+20,bw*.64,Math.max(1,Math.abs(b[1]-b[0])));});
+  // trader's levels
+  [['R1','#f23645',95],['PDH','#f23645',140],['PDL','#089981',300],['S1','#089981',345]].forEach(function(l){g.strokeStyle=l[1];g.lineWidth=1.5;g.beginPath();g.moveTo(0,l[2]);g.lineTo(pw,l[2]);g.stroke();g.lineWidth=1;g.fillStyle=l[1];g.font='bold 13px Arial';g.fillText(l[0],pw-40,l[2]-5);});
+  // price axis
+  g.fillStyle=D?'#131722':'#fff';g.fillRect(pw,0,70,H);g.strokeStyle=D?'#2a2e39':'#e0e3eb';g.beginPath();g.moveTo(pw+.5,0);g.lineTo(pw+.5,H);g.stroke();
+  g.fillStyle=D?'#d1d4dc':'#131722';g.font='12px Arial';var base=sym==='NQ'?21000:6000,st=sym==='NQ'?50:10;for(var a=0;a<7;a++)g.fillText(fN(base+st*(6-a)),pw+6,30+a*55);
+  // MACD pane
+  g.strokeStyle='#e0e3eb';g.beginPath();g.moveTo(0,mt+.5);g.lineTo(W,mt+.5);g.stroke();
+  var m1=0,m2=0;for(var q=0;q<n;q++){var v=(r()-.5)*18+(q>n*.7?(bias==='bull'?6:bias==='bear'?-6:0):0);g.fillStyle=v>=0?'#26a69a':'#ef5350';g.fillRect(q*bw+1,mt+70-Math.max(0,v),bw-2,Math.abs(v));}
+  g.strokeStyle='#2962ff';g.beginPath();for(var q2=0;q2<n;q2++){m1+=((r()-.5)*6-m1*.1);g.lineTo(q2*bw,mt+70-m1*2);}g.stroke();
+  g.fillStyle=D?'#d1d4dc':'#131722';g.font='bold 14px Arial';g.fillText(sym+'1! · '+tf+' · CME',10,18);g.font='12px Arial';g.fillStyle='#787b86';g.fillText('MACD 12 26 close 9',10,mt+16);
+  g.save();g.globalAlpha=.08;g.fillStyle=D?'#fff':'#000';g.font='bold 54px Arial';g.translate(W/2,H/2);g.rotate(-.18);g.textAlign='center';g.fillText('SAMPLE SCREENSHOT',0,0);g.restore();
+  return cache[k]=c.toDataURL('image/png');
+}
+
+function note(id){return NOTES.filter(function(n){return n.id===id;})[0];}
+// one chart box: published idea = interactive, image link = picture, nothing = sample picture
+function frame(label,right,link,seed,tf){
+  var id=ideaId(link),sn=snapImg(link);
+  return '<div class="frame"><header><span>'+label+(link?' · <a href="'+esc(link)+'" target="_blank" rel="noopener">open on TradingView</a>':'')+'</span><span>'+right+'</span></header>'+
+    (id?'<iframe src="https://s.tradingview.com/embed/'+id+'/" scrolling="no" allowtransparency="true"></iframe>':'<img src="'+(sn||shot('NQ',tf,seed,'neut'))+'" alt="NQ '+tf+'">')+'</div>';
+}
+function render(){
+  var n=note(state.sel);
+  if(!n){document.getElementById('mode').innerHTML='';document.getElementById('tfs').hidden=true;document.getElementById('cTitle').textContent='NQ';document.getElementById('cMeta').textContent='';
+    document.getElementById('chart').innerHTML='<div class="empty" style="padding:60px 20px;text-align:center">'+(loadErr||'No notes yet.')+'</div>';document.getElementById('fnote').textContent='';
+    document.getElementById('reading').innerHTML='<h3>First note coming soon.</h3>';document.getElementById('wire').innerHTML='<p class="empty" style="padding:18px">No notes yet.</p>';
+    document.getElementById('count').textContent='00 notes';document.getElementById('upd').hidden=true;document.getElementById('archAll').innerHTML='<tr><td>No notes yet.</td></tr>';return;}
+  if(!state.tf)state.tf=n.tf;
+  if(state.mode==='live'||(state.mode==='now'&&!n.now))state.mode='note';
+  var modes=[['note','Analysis']];if(n.now)modes.push(['now','Before / After']);document.getElementById('mode').hidden=modes.length<2;
+  document.getElementById('mode').innerHTML=modes.map(function(m){return '<button data-m="'+m[0]+'"'+(m[0]===state.mode?' aria-pressed="true"':'')+'>'+m[1]+'</button>';}).join('');
+  [].forEach.call(document.querySelectorAll('#mode button'),function(b){b.onclick=function(){state.mode=b.getAttribute('data-m');render();};});
+  var title={note:'NQ · '+state.tf,now:'NQ · Before / After',live:LIVE.NQ[1]+' · live'}[state.mode];
+  document.getElementById('cTitle').textContent=title;
+  document.getElementById('cMeta').textContent=state.mode==='live'?'':'note '+('0'+n.id).slice(-2)+' · '+hm(n.t)+' ET';
+  var have=n.posted?tfsOf(n):TFS;
+  var tfs=state.mode==='live'?[['5','5m'],['15','15m'],['60','1H'],['240','4H']]:state.mode==='now'?[]:have.map(function(t){return [t,t];});
+  var tb=document.getElementById('tfs');tb.hidden=!tfs.length;
+  tb.innerHTML=tfs.map(function(x){var on=state.mode==='live'?x[0]===state.liv:x[0]===state.tf;return '<button data-v="'+x[0]+'"'+(on?' aria-pressed="true"':'')+'>'+x[1]+'</button>';}).join('');
+  [].forEach.call(tb.querySelectorAll('button'),function(b){b.onclick=function(){if(state.mode==='live')state.liv=b.getAttribute('data-v');else state.tf=b.getAttribute('data-v');render();};});
+  var box=document.getElementById('chart'),D=document.body.classList.contains('dark'),fn=document.getElementById('fnote');
+  if(state.mode==='live'){var k=D+state.liv;if(liveKey!==k){liveKey=k;
+      box.innerHTML='<div class="frame tvbox"><div class="tradingview-widget-container" style="height:100%"><div class="tradingview-widget-container__widget" style="height:100%"></div></div></div>';
+      var sc=document.createElement('script');sc.src='https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';sc.async=true;
+      sc.textContent=JSON.stringify({autosize:true,symbol:LIVE.NQ[0],interval:state.liv,timezone:'America/New_York',theme:D?'dark':'light',style:'1',locale:'en',allow_symbol_change:false,hide_side_toolbar:false,support_host:'https://www.tradingview.com'});
+      box.querySelector('.tradingview-widget-container').appendChild(sc);}
+    fn.textContent='Free TradingView chart (CFD). Draw and change timeframe yourself.';
+  } else if(state.mode==='now'){liveKey='';
+    var w=n.now,thenTf=n.ideas[w.tf]||!n.posted?w.tf:tfsOf(n)[0];
+    box.innerHTML='<div class="pair">'+frame('<b>BEFORE</b> · '+thenTf,when(n.t),n.ideas[thenTf],n.id*10+TFS.indexOf(thenTf),thenTf)+
+      frame('<b>AFTER</b> · '+w.tf,when(w.t),w.link,n.id*10+TFS.indexOf(w.tf)+5,w.tf)+'</div>';
+    fn.textContent='Left: the chart when the note was written. Right: the same market later. Nothing edited.';
+  } else {liveKey='';
+    box.innerHTML=frame('NQ · '+state.tf,dayLabel(n.t)+' '+hm(n.t)+' ET',n.ideas[state.tf],n.id*10+TFS.indexOf(state.tf),state.tf);
+    fn.textContent=ideaId(n.ideas[state.tf])?'The desk\'s own TradingView chart, as published with this note. Interactive.':n.sample?'Sample image in this prototype.':'The desk\'s chart at the time of this note. Click to enlarge.';
+  }
+  [].forEach.call(box.querySelectorAll('img'),function(im){im.onclick=function(){var lb=document.getElementById('lb');lb.querySelector('img').src=im.src;lb.classList.add('on');};});
+  document.getElementById('reading').innerHTML='<div class="k">'+esc(n.kind)+' · NQ · '+dayLabel(n.t)+' '+hm(n.t)+' ET'+(n.sample?' · <span class="smp">SAMPLE</span>':'')+'</div><h3>'+glossify(n.title)+'</h3><p style="white-space:pre-wrap">'+glossify(n.body)+'</p>'+
+    (n.now?'<div class="nowtxt"><b>AFTER · '+when(n.now.t)+'</b>'+(n.now.body?'<br>'+glossify(n.now.body):'')+(state.mode!=='now'?' <a href="#desk" id="seeNow">See Before / After →</a>':'')+'</div>':'')+
+    '<div class="by">'+esc(n.by||'SB Desk')+' · SB Desk</div>';
+  var sn=document.getElementById('seeNow');if(sn)sn.onclick=function(e){e.preventDefault();state.mode='now';render();};
+  // wire
+  var list=NOTES.slice().reverse(),h='',lastDay='';
+  list.forEach(function(x){var d=x.t.slice(0,10);if(d!==lastDay){h+='<div class="day">'+dayLabel(x.t)+'</div>';lastDay=d;}
+    h+='<div class="item'+(x.id===state.sel?' sel':'')+'" data-id="'+x.id+'"><div class="t">'+hm(x.t)+'<small>ET</small>'+tfsOf(x).map(function(t){return '<span class="tfc">'+t+'</span>';}).join('')+'</div><div><div class="kind">Note '+('0'+x.id).slice(-2)+' · '+esc(x.kind)+(x.sample?' · sample':'')+'</div><h4>'+esc(x.title)+'</h4><p>'+esc(x.body)+'</p>'+
+      ((x.now||isNew(x.t))?'<div class="tags">'+(isNew(x.t)?'<span class="tag new">NEW</span>':'')+(x.now?'<span class="tag now">BEFORE / AFTER</span>':'')+'</div>':'')+'</div></div>';});
+  var wl=document.getElementById('wire');wl.innerHTML=h;
+  [].forEach.call(wl.querySelectorAll('.item'),function(e){e.onclick=function(){state.sel=+e.getAttribute('data-id');state.tf=null;state.mode='note';render();if(innerWidth<=960)window.scrollTo({top:0,behavior:'smooth'});};});
+  document.getElementById('count').textContent=('0'+NOTES.length).slice(-2)+' notes';
+  var first=NOTES[0].t,last=NOTES[NOTES.length-1].t;
+  document.getElementById('range').textContent='Notes '+dm(first)+(first.slice(0,10)!==last.slice(0,10)?' – '+dm(last):'');
+  var up=document.getElementById('upd');up.hidden=false;
+  up.innerHTML='<span>Last update: <b>'+when(last)+'</b></span><span class="'+(isNew(last)?'fresh':'')+'">'+ago(last)+'</span><span>Notes '+dm(first)+' – '+dm(last)+'</span>';
+  document.getElementById('archAll').innerHTML=list.map(function(x){return '<tr><td>'+x.t.slice(5,10).replace('-','.')+' '+hm(x.t)+'</td><td>'+tfsOf(x).join(' · ')+' · '+esc(x.kind)+' · <a href="#desk" data-id="'+x.id+'">'+esc(x.title)+'</a>'+(x.now?' <span class="tag now">BEFORE / AFTER</span>':'')+(x.sample?' <span class="smp">sample</span>':'')+'</td></tr>';}).join('');
+  [].forEach.call(document.querySelectorAll('#archAll a[data-id]'),function(a){a.onclick=function(){state.sel=+a.getAttribute('data-id');state.tf=null;state.mode='note';};});
+}
+function drawGloss(hit){document.getElementById('glossary').innerHTML=GLOSS.map(function(g){return '<div class="gterm'+(g.id===hit?' hit':'')+'" id="g-'+g.id+'"><h3>'+esc(g.term)+'</h3><p>'+esc(g.text)+'</p></div>';}).join('');}
+function route(){var p=(location.hash||'#desk').slice(1),sub=null;if(p.indexOf('method/')===0){sub=p.slice(7);p='method';}if(['desk','archive','method','about'].indexOf(p)<0)p='desk';drawGloss(sub);
+  ['desk','archive','method','about'].forEach(function(x){document.getElementById('p-'+x).hidden=x!==p;});
+  [].forEach.call(document.querySelectorAll('#nav a'),function(a){a.classList.toggle('on',a.getAttribute('href')==='#'+p);});render();var g=sub&&document.getElementById('g-'+sub);if(g)g.scrollIntoView();else window.scrollTo(0,0);}
+window.addEventListener('hashchange',route);
+var th=document.getElementById('theme');function setTheme(d){document.body.classList.toggle('dark',d);th.textContent=d?'☀ Light':'☾ Dark';try{localStorage.setItem('sbdesk-theme',d?'dark':'light');}catch(_){}liveKey='';cache={};render();}
+th.onclick=function(){setTheme(!document.body.classList.contains('dark'));};
+var dk=true;try{dk=localStorage.getItem('sbdesk-theme')!=='light';}catch(_){}if(dk){document.body.classList.add('dark');th.textContent='☀ Light';}
+document.getElementById('lb').onclick=function(){this.classList.remove('on');};
+function tick(){var ny=new Date(new Date().toLocaleString('en-US',{timeZone:'America/New_York'}));document.getElementById('clock').textContent='NY '+ny.toTimeString().slice(0,8);}
+tick();setInterval(tick,1000);
+if(/(^|; )nf_jwt=/.test(document.cookie))document.getElementById('adm').hidden=false;
+document.getElementById('reading').innerHTML='<p class="by">Loading notes…</p>';
+fetch('/api/notes',{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();})
+  .then(function(d){setNotes(d.notes);},function(){loadErr='Notes could not be loaded. Refresh the page.';})
+  .then(route);
+})();
+</script>
+</body>
+</html>
