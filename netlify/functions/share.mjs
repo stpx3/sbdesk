@@ -1,6 +1,6 @@
 // GET /n/<id> -> a real page for one note: readable by Google and by people,
 // with its own share preview (X, WhatsApp, ...). New notes (early access) show only that a note exists.
-import { notesStore, nyNow, minutesBetween, LOCK_HOURS, TFS } from '../lib/desk.mjs';
+import { notesStore, viewer, ageMinutes, LOCK_HOURS, TFS } from '../lib/desk.mjs';
 
 const SITE = 'https://sbdesk.com';
 const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -16,6 +16,8 @@ function isoNY(t) {
 
 function chart(tf, link) {
   const img = snap(link);
+  const idea = /\/chart\/[^/]+\/([A-Za-z0-9]+)/.exec(link || '');
+  if (!img && idea) return `<figure><figcaption><span class="tf tf-${tf}">${tf}</span><a href="${esc(link)}" rel="noopener" target="_blank">open on TradingView</a></figcaption><iframe src="https://s.tradingview.com/embed/${idea[1]}/" title="NQ ${tf} chart on TradingView" loading="lazy" style="width:100%;height:480px;border:0;display:block"></iframe></figure>`;
   if (img) return `<figure><figcaption><span class="tf tf-${tf}">${tf}</span><a href="${esc(link)}" rel="noopener" target="_blank">open on TradingView</a></figcaption><img src="${esc(img)}" alt="NQ ${tf} chart" width="1200" height="675" loading="lazy" decoding="async"></figure>`;
   return `<figure><figcaption><span class="tf tf-${tf}">${tf}</span><a href="${esc(link)}" rel="noopener" target="_blank">interactive chart on TradingView</a></figcaption></figure>`;
 }
@@ -26,11 +28,15 @@ export default async (req) => {
   const n = await notesStore().get(id, { type: 'json' });
   if (!n) return Response.redirect(SITE + '/', 302);
 
-  const age = minutesBetween(n.t, nyNow());
-  const open = age >= LOCK_HOURS * 60;
+  const age = ageMinutes(n);
+  const isPublic = age >= LOCK_HOURS * 60;
+  // early-access users and admins see a new note in full here too; everyone else sees only that it exists
+  let v = null;
+  if (!isPublic) { try { v = await viewer(); } catch { v = null; } }
+  const open = isPublic || !!(v && v.member);
   const tfs = TFS.filter((x) => n.ideas && n.ideas[x]);
   const url = `${SITE}/n/${id}`;
-  let title, desc, image = SITE + '/img/og.png', main, robots = 'index,follow', ld = '';
+  let title, desc, image = SITE + '/img/og.png', main, robots = isPublic ? 'index,follow' : 'noindex,follow', ld = '';
 
   if (open) {
     title = `${n.title} · NQ ${tfs.join(' · ')} · SB Desk`;
@@ -41,7 +47,8 @@ export default async (req) => {
 <h1>${esc(n.title)}</h1>
 <p class="body">${esc(n.body)}</p>
 ${tfs.map((x) => chart(x, n.ideas[x])).join('\n')}
-${n.now ? `<section class="after"><h2>After · ${esc(day(n.now.t))} ${esc(n.now.t.slice(11, 16))} ET</h2>${n.now.body ? `<p>${esc(n.now.body)}</p>` : ''}${chart(n.now.tf, n.now.link)}</section>` : ''}`;
+${n.now ? `<section class="after"><h2>After · ${esc(day(n.now.t))} ${esc(n.now.t.slice(11, 16))} ET</h2>${n.now.body ? `<p>${esc(n.now.body)}</p>` : ''}${chart(n.now.tf, n.now.link)}${(n.nowHistory || []).length ? `<p class="hist">This After chart was replaced ${n.nowHistory.length} time${n.nowHistory.length > 1 ? 's' : ''}; earlier versions are kept in the record (first added ${esc(day(n.nowHistory[0].t))} ${esc(n.nowHistory[0].t.slice(11, 16))} ET).</p>` : ''}</section>` : ''}
+<p class="hist">Posted ${esc(n.t.slice(11, 16))} ET by the server clock. Notes are never edited or deleted.</p>`;
     ld = `<script type="application/ld+json">${JSON.stringify({
       '@context': 'https://schema.org', '@type': 'AnalysisNewsArticle', headline: n.title, description: desc,
       datePublished: isoNY(n.t), url, image: [image], inLanguage: 'en',
@@ -85,6 +92,7 @@ figcaption{display:flex;gap:12px;align-items:center;padding:6px 10px;background:
 .tf{font:700 12px Consolas,monospace;border:1px solid #2a2a2a;border-left:4px solid #888;padding:1px 6px}
 .tf-5m{border-left-color:#fdd835}.tf-15m{border-left-color:#9c27b0}.tf-1H{border-left-color:#4fc3f7}.tf-4H{border-left-color:#1e40af}
 .after{margin-top:26px;padding-top:16px;border-top:2px solid #22d34a}
+.hist{font-size:12.5px;color:#7d776d}
 .btn{display:inline-block;padding:12px 18px;border-radius:3px;font-weight:700;text-decoration:none;margin:6px 8px 0 0}
 .btn.gold{background:#ffb000;color:#000}.btn.line{border:1px solid #333;color:#ece6d6}
 footer{margin-top:34px;font-size:12px;color:#7d776d;border-top:1px solid #2a2a2a;padding-top:12px}
@@ -96,7 +104,9 @@ ${main}
 </main>
 <footer>SB Desk publishes market analysis for information only. No entries, stops or targets; not financial advice. Futures trading carries substantial risk.</footer>
 </div></body></html>`;
-  return new Response(html, { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=300' } });
+  // a page for a note under 24 h differs per person: never let a shared cache keep it
+  const cache = isPublic ? 'public, max-age=300' : 'private, no-store';
+  return new Response(html, { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': cache, Vary: 'Cookie' } });
 };
 
 export const config = { path: '/n/*' };

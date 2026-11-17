@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-11-17 (9): fixes from ChatGPT's review
+- `/n/<id>` shows the full note to admins and early-access users, the locked view to others; pages of new notes are never cached by a shared cache and stay noindex. Published TradingView ideas are embedded there.
+- Notes can no longer be back-dated (import path removed; the server sets the time). Admin page: the one-time "move old browser notes" box removed.
+- Replacing an After chart keeps the earlier version (`nowHistory`); shown on the note page and the Desk.
+- 24 h lock computed in real time (summer / winter time safe).
+- Synthetic sample chart code removed.
+- Tests (`npm test`), run by the build before every deploy.
+- README updated; `docs/status.md` has the review and what was done.
+
 ## 2026-11-17 (8)
 - Method page: "Waves, made objective" (Stipe's words: Elliott Wave is subjective, ten people count ten ways; MACD decides where a wave starts and ends). Site description mentions it for search.
 - Contact hello@sbdesk.com on Privacy, footer, early access page and structured data.

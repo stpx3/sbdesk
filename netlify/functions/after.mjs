@@ -14,7 +14,12 @@ export default async (req) => {
   const link = cleanLink(d.link);
   if (!link) return fail('Link nije TradingView slika grafa.');
   if (!TFS.includes(d.tf)) return fail('Odaberi timeframe.');
-  note.now = { t: nyNow(), tf: d.tf, link, body: clip(d.body, 300), by: who.name };
+  // an earlier After is never lost: it moves to nowHistory with the time it was replaced
+  if (note.now) {
+    note.nowHistory = Array.isArray(note.nowHistory) ? note.nowHistory : [];
+    note.nowHistory.push({ ...note.now, replacedAt: new Date().toISOString() });
+  }
+  note.now = { t: nyNow(), tf: d.tf, link, body: clip(d.body, 300), by: who.name, postedAt: new Date().toISOString() };
   await store.setJSON(note.id, note);
   return json({ ok: true, note });
 };

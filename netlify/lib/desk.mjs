@@ -42,8 +42,27 @@ export async function viewer() {
   return { email, name: null, admin: false, member: !!(m && m.active) };
 }
 
-// minutes between two New York wall-clock times "YYYY-MM-DDTHH:MM"
+// minutes between two New York wall-clock times "YYYY-MM-DDTHH:MM" (display only)
 export const minutesBetween = (a, b) => Math.round((Date.parse(b + ':00Z') - Date.parse(a + ':00Z')) / 60000);
+
+// The real moment of a New York wall-clock time, in ms since 1970 (handles summer / winter time).
+export function nyToEpoch(t) {
+  const asUtc = Date.parse(t + ':00Z');
+  const offsetAt = (ms) => {
+    const p = Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', hourCycle: 'h23',
+      year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }).formatToParts(new Date(ms)).map((x) => [x.type, x.value]));
+    return Date.parse(`${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}:00Z`) - ms; // NY minus UTC
+  };
+  let ms = asUtc - offsetAt(asUtc);
+  ms = asUtc - offsetAt(ms);
+  return ms;
+}
+
+// Minutes since a note was posted. Uses the server's own receipt time when it is the posting time.
+export function ageMinutes(n, nowMs = Date.now()) {
+  return Math.floor((nowMs - nyToEpoch(n.t)) / 60000);
+}
+export const isOpen = (n, nowMs) => ageMinutes(n, nowMs) >= LOCK_HOURS * 60;
 
 export function json(data, status = 200) {
   return new Response(JSON.stringify(data), {

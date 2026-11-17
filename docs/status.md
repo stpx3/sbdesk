@@ -1,6 +1,6 @@
 # Status and open questions (for Stipe and for a second opinion)
 
-Written by Claude, 17 Nov 2026. Honest view of where SB Desk stands, what is missing, and what could go wrong. A reviewer should challenge this file first.
+Written by Claude, 17 Nov 2026; updated after ChatGPT's review the same day (see the last section). Honest view of where SB Desk stands, what is missing, and what could go wrong. A reviewer should challenge this file first.
 
 ## Built and live (sbdesk.com)
 
@@ -38,7 +38,7 @@ Written by Claude, 17 Nov 2026. Honest view of where SB Desk stands, what is mis
 - **Affiliate terms**: some prop firms may forbid "buy with our code and get X". FTMO and FundedNext refused the earlier Fee-Back. If a firm objects, the early-access offer may need to be limited to firms that allow it.
 - **Prop firm rules on signals**: early access must stay analysis. Any note that reads like "buy here, stop there" would put Stipe's own funded accounts and the affiliate deals at risk.
 - **Manual approval**: every early-access request is checked by hand. Fine for tens of users; slow for hundreds. Firms give no API for automatic checks.
-- **Free tiers**: Netlify Identity free tier allows about 1,000 users; Blobs and functions are within free limits for now.
+- **Netlify plan**: the account is on a legacy (non-credit) plan. Netlify's current docs say credit-based Free/Personal plans include unlimited Identity users and custom OAuth credentials; on legacy plans Identity follows the old service levels (the dashboard asked for Identity Pro for branded Google login). Moving the account to a credit plan could unlock it, but credits are also spent on every deploy (Candor deploys often), so check costs first.
 - **Elliott wording**: "objective waves" is the message; the site must not claim proven results or superiority without evidence.
 
 ## Open questions for Stipe
@@ -49,3 +49,29 @@ Written by Claude, 17 Nov 2026. Honest view of where SB Desk stands, what is mis
 4. Visitor stats with GoatCounter: yes? (needs a site on his GoatCounter account)
 5. Branded Google login needs Netlify Identity Pro (paid): keep "Netlify Identity" on Google's screen for now?
 6. When does Candor get CFD and perp firms (Stipe, 17 Nov: later)?
+
+## Review by ChatGPT (17 Nov) and what was done
+
+Fixed the same day:
+- **Note page for early-access users**: `/n/<id>` showed the locked version even to approved users. Now it checks who is looking; full page for admins and early-access users, locked for others. Pages of notes under 24 h are never kept in a shared cache (`private, no-store`) and stay `noindex`.
+- **Back-dating closed**: the one-time import path (which accepted a given time) is removed. Every note gets the server's time.
+- **After history**: replacing an After chart keeps the earlier version (`nowHistory`, with the time it was replaced); the note page and the Desk say when an After was replaced.
+- **Exact 24 hours**: the lock now converts New York time to real time, so summer / winter time no longer shifts it by an hour. Covered by a test.
+- **Synthetic sample chart** generator removed from the page.
+- **Note page embeds published TradingView ideas** (interactive), not only a link.
+- **Tests**: `npm test` (link rules, time conversion, 24 h lock across the clock change); the Netlify build runs them first.
+- **README** brought up to date (open registration, no password screen, all functions).
+- Checked: registration is **Open** in Netlify (it was switched from invite-only on 17 Nov).
+
+Agreed, but needs Stipe:
+- **The 24 h lock can push new visitors away**, and approval "within 24 hours" can mean a buyer gets access only when the note is already public. Options: shorter lock (for example until the New York close), a public title + first lines with charts in early access, faster approvals. Stipe decides; real visitor data would help (needs stats).
+- **"Objective" must be shown, not only claimed**: the Method page needs the rules (what starts a wave, what ends it, what happens in unclear cases, same rules on every timeframe) with one marked chart. If some parts stay discretionary, say so.
+- **Method, About, Archive as their own pages** (own address and title) instead of `#method` sections: better for search. Planned.
+- **On the phone, latest notes above the chart** (compact strip), and later **archive search / filters**.
+- **A rhythm** (for example before the New York open + after the session) and Before / After posts that also show misses.
+- **Strategic question**: SB Desk mainly as a public archive that builds reputation, or a tool traders open every trading day? The 24 h lock pushes it towards an archive for normal visitors.
+- **Email to early-access users about new notes**: hold until the prop firm question is clear (ChatGPT's point, agreed).
+
+Not agreed / different view:
+- ChatGPT said branded Google login does not need a paid plan. True for Netlify's new credit plans, not for this account's legacy plan (see Risks).
+- Loading all notes on every visit is fine at today's size; to fix (paging or a summary index) when the archive passes a few hundred notes.

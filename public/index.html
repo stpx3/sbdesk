@@ -155,8 +155,6 @@ table.arch{width:100%;border-collapse:collapse}
 .arch td{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
 .arch td:first-child{font:13px var(--mono);white-space:nowrap;color:var(--muted);width:120px}
 .badge{display:inline-block;font:600 10px var(--ui);letter-spacing:.06em;background:var(--navy);color:#fff;padding:2px 6px;border-radius:2px;margin-right:6px;vertical-align:1px}
-.samplebar{padding:6px 18px;font:11px var(--mono);letter-spacing:.06em;background:#fff3cd;color:#6b5200;border-bottom:1px solid var(--line)}
-body.dark .samplebar{background:#1a1505;color:#e8d7a0}
 .smp{font:10px var(--mono);letter-spacing:.06em;color:var(--ne);border:1px solid var(--ne);padding:0 4px}
 .tag.now{color:var(--up);border-color:var(--up);font-weight:700}
 .pair{display:grid;grid-template-columns:1fr 1fr;gap:8px}.pair iframe{height:420px}
@@ -346,36 +344,13 @@ function tfsOf(x){if(x.locked)return x.tfs||[];return x.posted?TFS.filter(functi
 function when(t){return new Date(t.slice(0,10)+'T12:00:00Z').toLocaleDateString('en-GB',{weekday:'short',day:'2-digit',month:'short',timeZone:'UTC'})+' '+hm(t)+' ET';}
 function gap(a,b){var m=Math.round((new Date(b+':00Z')-new Date(a+':00Z'))/60000);if(m<60)return m+' min later';if(m<48*60)return Math.round(m/60)+' h later';return Math.round(m/1440)+' days later';}
 var cache={};
-function shot(sym,tf,seed,bias){
-  var D=document.body.classList.contains('dark'),k=sym+tf+seed+D;if(cache[k])return cache[k];
-  var W=960,H=540,c=document.createElement('canvas');c.width=W;c.height=H;var g=c.getContext('2d');
-  var s=seed*97+tf.length*13;function r(){s=(s*9301+49297)%233280;return s/233280;}
-  g.fillStyle=D?'#131722':'#fff';g.fillRect(0,0,W,H);var pw=W-70,ph=380,mt=400;
-  g.strokeStyle=D?'#1e222d':'#f0f3fa';for(var i=0;i<8;i++){g.beginPath();g.moveTo(0,20+i*50.5);g.lineTo(pw,20+i*50.5);g.stroke();}
-  for(var j=0;j<10;j++){g.beginPath();g.moveTo(j*96.5,0);g.lineTo(j*96.5,H);g.stroke();}
-  var n=90,p=200,bars=[],dir=bias==='bull'?-.2:bias==='bear'?.2:0;
-  for(var i2=0;i2<n;i2++){var o=p,cl=o+(r()-.5+dir*.15)*14;bars.push([o,cl,Math.min(o,cl)-r()*8,Math.max(o,cl)+r()*8]);p=Math.max(70,Math.min(340,cl));}
-  var bw=pw/n;bars.forEach(function(b,i){var x=i*bw+bw/2,up=b[1]<b[0];g.strokeStyle=g.fillStyle=up?'#089981':'#f23645';g.beginPath();g.moveTo(x,b[2]+20);g.lineTo(x,b[3]+20);g.stroke();g.fillRect(x-bw*.32,Math.min(b[0],b[1])+20,bw*.64,Math.max(1,Math.abs(b[1]-b[0])));});
-  // trader's levels
-  [['R1','#f23645',95],['PDH','#f23645',140],['PDL','#089981',300],['S1','#089981',345]].forEach(function(l){g.strokeStyle=l[1];g.lineWidth=1.5;g.beginPath();g.moveTo(0,l[2]);g.lineTo(pw,l[2]);g.stroke();g.lineWidth=1;g.fillStyle=l[1];g.font='bold 13px Arial';g.fillText(l[0],pw-40,l[2]-5);});
-  // price axis
-  g.fillStyle=D?'#131722':'#fff';g.fillRect(pw,0,70,H);g.strokeStyle=D?'#2a2e39':'#e0e3eb';g.beginPath();g.moveTo(pw+.5,0);g.lineTo(pw+.5,H);g.stroke();
-  g.fillStyle=D?'#d1d4dc':'#131722';g.font='12px Arial';var base=sym==='NQ'?21000:6000,st=sym==='NQ'?50:10;for(var a=0;a<7;a++)g.fillText(fN(base+st*(6-a)),pw+6,30+a*55);
-  // MACD pane
-  g.strokeStyle='#e0e3eb';g.beginPath();g.moveTo(0,mt+.5);g.lineTo(W,mt+.5);g.stroke();
-  var m1=0,m2=0;for(var q=0;q<n;q++){var v=(r()-.5)*18+(q>n*.7?(bias==='bull'?6:bias==='bear'?-6:0):0);g.fillStyle=v>=0?'#26a69a':'#ef5350';g.fillRect(q*bw+1,mt+70-Math.max(0,v),bw-2,Math.abs(v));}
-  g.strokeStyle='#2962ff';g.beginPath();for(var q2=0;q2<n;q2++){m1+=((r()-.5)*6-m1*.1);g.lineTo(q2*bw,mt+70-m1*2);}g.stroke();
-  g.fillStyle=D?'#d1d4dc':'#131722';g.font='bold 14px Arial';g.fillText(sym+'1! · '+tf+' · CME',10,18);g.font='12px Arial';g.fillStyle='#787b86';g.fillText('MACD 12 26 close 9',10,mt+16);
-  g.save();g.globalAlpha=.08;g.fillStyle=D?'#fff':'#000';g.font='bold 54px Arial';g.translate(W/2,H/2);g.rotate(-.18);g.textAlign='center';g.fillText('SAMPLE SCREENSHOT',0,0);g.restore();
-  return cache[k]=c.toDataURL('image/png');
-}
 
 function note(id){return NOTES.filter(function(n){return n.id===id;})[0];}
-// one chart box: published idea = interactive, image link = picture, nothing = sample picture
+// one chart box: published idea = interactive, image link = picture
 function frame(label,right,link,seed,tf){
   var id=ideaId(link),sn=snapImg(link);
   return '<div class="frame"><header><span>'+label+(link?' · <a href="'+esc(link)+'" target="_blank" rel="noopener">open on TradingView</a>':'')+'</span><span>'+right+'</span></header>'+
-    (id?'<iframe src="https://s.tradingview.com/embed/'+id+'/" title="NQ '+tf+' chart on TradingView" loading="lazy" scrolling="no" allowtransparency="true"></iframe>':'<img src="'+(sn||shot('NQ',tf,seed,'neut'))+'" alt="NQ '+tf+' chart" width="1200" height="675" decoding="async">')+'</div>';
+    (id?'<iframe src="https://s.tradingview.com/embed/'+id+'/" title="NQ '+tf+' chart on TradingView" loading="lazy" scrolling="no" allowtransparency="true"></iframe>':sn?'<img src="'+sn+'" alt="NQ '+tf+' chart" width="1200" height="675" decoding="async">':'<div class="empty">No chart for this timeframe.</div>')+'</div>';
 }
 function render(){
   var n=note(state.sel);
@@ -411,11 +386,11 @@ function render(){
     fn.textContent='Left: the chart when the note was written. Right: the same market later. Nothing edited.';
   } else {liveKey='';
     box.innerHTML=frame('NQ · '+state.tf,dayLabel(n.t)+' '+hm(n.t)+' ET',n.ideas[state.tf],n.id*10+TFS.indexOf(state.tf),state.tf);
-    fn.textContent=ideaId(n.ideas[state.tf])?'The desk\'s own TradingView chart, as published with this note. Interactive.':n.sample?'Sample image in this prototype.':'The desk\'s chart at the time of this note. Click to enlarge.';
+    fn.textContent=ideaId(n.ideas[state.tf])?'The desk\'s own TradingView chart, as published with this note. Interactive.':'The desk\'s chart at the time of this note. Click to enlarge.';
   }
   [].forEach.call(box.querySelectorAll('img'),function(im){im.onclick=function(){var lb=document.getElementById('lb');lb.querySelector('img').src=im.src;lb.classList.add('on');};});
   document.getElementById('reading').innerHTML='<div class="k">'+esc(n.kind)+' · NQ · '+dayLabel(n.t)+' '+hm(n.t)+' ET'+(n.by?' · <span class="author">'+esc(n.by)+'</span>':'')+'</div><h3>'+glossify(n.title)+'</h3><p style="white-space:pre-wrap">'+glossify(n.body)+'</p>'+
-    (n.now?'<div class="nowtxt"><b>AFTER · '+when(n.now.t)+'</b>'+(n.now.body?'<br>'+glossify(n.now.body):'')+(state.mode!=='now'?' <a href="#desk" id="seeNow">See Before / After →</a>':'')+'</div>':'')+
+    (n.now?'<div class="nowtxt"><b>AFTER · '+when(n.now.t)+'</b>'+(n.now.body?'<br>'+glossify(n.now.body):'')+((n.nowHistory||[]).length?'<br><small>Replaced '+n.nowHistory.length+'×; earlier versions are kept.</small>':'')+(state.mode!=='now'?' <a href="#desk" id="seeNow">See Before / After →</a>':'')+'</div>':'')+
     '<div class="by">'+esc(n.by||'SB Desk')+' · SB Desk<button type="button" class="copy" id="copyLink">Copy link</button></div>';
   var sn=document.getElementById('seeNow');if(sn)sn.onclick=function(e){e.preventDefault();state.mode='now';render();};
   }
@@ -442,7 +417,7 @@ function render(){
     up.className='upd';
     up.innerHTML='<span>Updated '+ago(last)+' · notes '+dm(first)+' – '+dm(last)+'</span>';
   }
-  document.getElementById('archAll').innerHTML=list.map(function(x){return '<tr><td>'+x.t.slice(5,10).replace('-','.')+' '+hm(x.t)+'</td><td>'+tfsOf(x).join(' · ')+' · '+esc(x.kind)+(x.by?' · '+esc(x.by):'')+' · <a href="/n/'+esc(x.key)+'" data-id="'+x.id+'" data-key="'+esc(x.key)+'">'+(x.locked?'New note · public '+opensTxt(x):esc(x.title))+'</a>'+(x.now?' <span class="tag now">BEFORE / AFTER</span>':'')+(x.sample?' <span class="smp">sample</span>':'')+'</td></tr>';}).join('');
+  document.getElementById('archAll').innerHTML=list.map(function(x){return '<tr><td>'+x.t.slice(5,10).replace('-','.')+' '+hm(x.t)+'</td><td>'+tfsOf(x).join(' · ')+' · '+esc(x.kind)+(x.by?' · '+esc(x.by):'')+' · <a href="/n/'+esc(x.key)+'" data-id="'+x.id+'" data-key="'+esc(x.key)+'">'+(x.locked?'New note · public '+opensTxt(x):esc(x.title))+'</a>'+(x.now?' <span class="tag now">BEFORE / AFTER</span>':'')+'</td></tr>';}).join('');
   [].forEach.call(document.querySelectorAll('#archAll a[data-id]'),function(a){a.onclick=function(ev){ev.preventDefault();location.hash='note/'+a.getAttribute('data-key');};});
 }
 function drawGloss(hit){document.getElementById('glossary').innerHTML=GLOSS.map(function(g){return '<div class="gterm'+(g.id===hit?' hit':'')+'" id="g-'+g.id+'"><h3>'+esc(g.term)+'</h3><p>'+esc(g.text)+'</p></div>';}).join('');}

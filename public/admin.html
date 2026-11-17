@@ -90,7 +90,7 @@ document.getElementById('bak').onclick=function(){SBAuth.notes().then(function(n
 SBAuth.requireAdmin().then(function(m){if(!m)return;
   document.body.classList.remove('wait');
   document.getElementById('who').textContent='Prijavljen: '+m.name;
-  load();migrate();loadSugs();loadAccess();loadBaks();
+  load();loadSugs();loadAccess();loadBaks();
 });
 function load(){
   el.innerHTML='<p class="empty">Učitavam…</p>';

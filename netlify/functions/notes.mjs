@@ -1,6 +1,6 @@
 // GET  /api/notes  -> every note (public)
 // POST /api/notes  -> publish a note (admins only)
-import { TFS, KINDS, adminUser, viewer, notesStore, json, fail, nyNow, isTime, cleanLink, clip, LOCK_HOURS, minutesBetween } from '../lib/desk.mjs';
+import { TFS, KINDS, adminUser, viewer, notesStore, json, fail, nyNow, cleanLink, clip, LOCK_HOURS, ageMinutes } from '../lib/desk.mjs';
 
 export default async (req) => {
   const store = notesStore();
@@ -11,9 +11,8 @@ export default async (req) => {
     notes.sort((a, b) => (a.t < b.t ? -1 : a.t > b.t ? 1 : 0));
     const v = await viewer();
     const full = !!(v && v.member);
-    const now = nyNow();
     const out = notes.map((n) => {
-      const age = minutesBetween(n.t, now);
+      const age = ageMinutes(n);
       if (full || age >= LOCK_HOURS * 60) {
         const { postedBy, ...pub } = n; // never send admin emails to the page
         return pub;
@@ -52,20 +51,15 @@ export default async (req) => {
   if (!body) return fail('Napiši tekst.');
   const kind = KINDS.includes(d.kind) ? d.kind : 'Session';
 
-  // Moving old notes from a browser keeps their original time; new notes get the server's time.
-  const imported = d.import === true && isTime(d.t);
-  const t = imported ? d.t : nyNow();
+  // The time is always the server's own clock: notes cannot be back-dated.
+  const t = nyNow();
   const id = t.replace(/\D/g, '') + '-' + Math.random().toString(16).slice(2, 8);
   const have = TFS.filter((x) => ideas[x]);
   const note = {
     id, t, sym: 'NQ', kind, tf: have[have.length - 1], title, body, ideas,
-    by: imported && d.by ? clip(d.by, 60) : who.name,
+    by: who.name,
     postedBy: who.email, postedAt: new Date().toISOString(),
   };
-  if (imported && d.now) {
-    const l = cleanLink(d.now.link);
-    if (l && TFS.includes(d.now.tf) && isTime(d.now.t)) note.now = { t: d.now.t, tf: d.now.tf, link: l, body: clip(d.now.body, 300) };
-  }
   await store.setJSON(id, note);
   return json({ ok: true, note });
 };
