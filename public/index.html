@@ -493,7 +493,7 @@ function drawLocked(n){
   document.getElementById('chart').innerHTML='<div class="lockbox"><div class="lockbg"></div><div class="lockin">'+
     '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="1.5"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>'+
     '<h3>Public '+opensTxt(n)+'</h3><p>'+tfsOf(n).join(' · ')+' · every note is free</p>'+
-    '<div class="row"><a class="bgold" href="/pristup.html">See it now: free early access</a><a class="bline" href="/pristup.html">Log in</a></div>'+
+    '<div class="row"><a class="bgold" href="/pristup.html">Candor user? See it now</a><a class="bline" href="/pristup.html">Log in</a></div>'+
     '<p class="lockc">No challenge yet? <a href="https://propfirmcandor.com/?utm_source=sbdesk&amp;utm_medium=locked_note" target="_blank" rel="noopener">Compare futures prop firms on Candor</a></p></div></div>';
   document.getElementById('fnote').textContent='Traders who bought their challenge through our Candor code see new notes early. Free.';
   document.getElementById('reading').innerHTML='<div class="k">'+esc(n.kind)+' · NQ · '+dayLabel(n.t)+' '+hm(n.t)+' ET'+(n.by?' · <span class="author">'+esc(n.by)+'</span>':'')+'</div><h3>New note</h3><p>Posted '+ago(n.t)+'. Public '+opensTxt(n)+'.</p><div class="by">SB Desk<button type="button" class="copy" id="copyLink">Copy link</button></div>';

@@ -3,62 +3,88 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SB Desk · Free early access</title>
-<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<title>Early access for Candor users · SB Desk</title>
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
 <meta name="theme-color" content="#050505">
 <meta name="description" content="Every SB Desk note is free. Bought your prop firm challenge through our Candor code? See new NQ notes as soon as they are posted.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=IBM+Plex+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#d8d8d8;--muted:#8f8f8f;--line:#2a2a2a;--card:#000;--bg:#050505;--gold:#ffb000;--dn:#ff5c5c;--up:#22d34a;--iv:#ece6d6}
+:root{--ink:#d8d8d8;--muted:#8f8f8f;--line:#2a2a2a;--card:#000;--bg:#050505;--soft:#0b0b0b;--gold:#ffb000;--dn:#ff5c5c;--up:#22d34a;--iv:#ece6d6;
+  --mono:Consolas,"Lucida Console","Courier New",monospace;--ui:Tahoma,Verdana,"Segoe UI",Arial,sans-serif}
 *{box-sizing:border-box}[hidden]{display:none!important}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Tahoma,Verdana,sans-serif}
-.wrap{max-width:620px;margin:0 auto;padding:28px 18px 60px}
-.top{display:flex;align-items:center;gap:12px;margin-bottom:26px}
-.top a{display:flex;align-items:center;gap:10px;color:var(--iv);text-decoration:none;font:22px 'Libre Caslon Display',Georgia,serif;letter-spacing:.05em}
-.top .back{margin-left:auto;font:14px Tahoma,sans-serif;color:var(--muted)}
-h1{font:400 34px/1.15 'Libre Caslon Display',Georgia,serif;color:#fff;margin:0 0 10px}
-.lede{color:var(--muted);margin:0 0 24px}
-ol.steps{list-style:none;padding:0;margin:0 0 28px;display:grid;gap:10px}
-ol.steps li{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);padding:12px 14px;background:#0a0a0a}
-ol.steps b.n{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--gold);color:#000;font:700 14px 'IBM Plex Mono',monospace}
-ol.steps li.done b.n{background:var(--up)}
-ol.steps a{color:var(--gold)}
-.card{border:1px solid var(--line);background:var(--card);padding:22px}
-.card h2{margin:0 0 4px;font:700 18px Tahoma,sans-serif;color:#fff}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--ui)}
+a{color:var(--gold)}
+.top{background:#0b0b0b;border-bottom:1px solid var(--line)}
+.topin{max-width:980px;margin:0 auto;padding:10px 18px;display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;color:var(--iv);text-decoration:none;font:22px 'Libre Caslon Display',Georgia,serif;letter-spacing:.06em}
+.brand svg{width:52px;height:52px}
+.nav{display:flex;gap:20px;flex-wrap:wrap}.nav a{color:#cfcfcf;text-decoration:none;font-size:15px}.nav a:hover{color:#fff}
+.wrap{max-width:640px;margin:0 auto;padding:34px 18px 60px}
+h1{font:700 32px/1.2 var(--mono);color:#fff;margin:0 0 10px}
+h2.sec{font:700 18px var(--mono);color:#fff;margin:34px 0 10px;padding-top:14px;border-top:1px solid var(--line)}
+.lede{color:#bdbdbd;margin:0 0 22px;font-size:17px}
+.cmp{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);margin:0 0 6px}
+.cmp>div{padding:14px 16px}.cmp>div+div{border-left:1px solid var(--line);background:#0d0b05}
+.cmp h3{margin:0 0 6px;font:700 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.cmp>div+div h3{color:var(--gold)}
+.cmp p{margin:0;font-size:15px}.cmp b{color:#fff}
+ol.steps{list-style:none;padding:0;margin:0;counter-reset:s}
+ol.steps li{counter-increment:s;display:flex;gap:14px;padding:10px 0;border-bottom:1px solid var(--line)}
+ol.steps li:last-child{border-bottom:0}
+ol.steps li::before{content:counter(s);flex:none;font:700 15px var(--mono);color:var(--gold);width:18px;padding-top:1px}
+ol.steps li.done::before{content:"✓";color:var(--up)}
+.code{font:700 15px var(--mono);color:#fff;border:1px dashed var(--gold);padding:1px 7px;letter-spacing:.06em;white-space:nowrap}
+.why{font-size:15px;color:#bdbdbd}.why p{margin:0 0 10px}
+.card{border:1px solid var(--line);background:var(--card);padding:22px;margin-top:26px}
+.card h2{margin:0 0 4px;font:700 18px var(--mono);color:#fff}
 .card .sub{margin:0 0 14px;color:var(--muted);font-size:14px}
-.gbtn{width:100%;display:flex;align-items:center;justify-content:center;gap:12px;padding:14px;font:700 16px Tahoma,sans-serif;background:#fff;color:#1f1f1f;border:0;cursor:pointer;border-radius:3px}
+.gbtn{width:100%;display:flex;align-items:center;justify-content:center;gap:12px;padding:14px;font:700 16px var(--ui);background:#fff;color:#1f1f1f;border:0;cursor:pointer;border-radius:3px}
 .tabs{display:flex;margin:18px 0 6px;border:1px solid var(--line)}
-.tabs button{flex:1;padding:14px;background:#0a0a0a;color:var(--muted);border:0;font:700 15px Tahoma,sans-serif;cursor:pointer}
+.tabs button{flex:1;padding:14px;background:#0a0a0a;color:var(--muted);border:0;font:700 15px var(--ui);cursor:pointer}
 .tabs button[aria-pressed=true]{background:var(--card);color:#fff;box-shadow:inset 0 -3px 0 var(--gold)}
-label{display:block;font:600 12px Tahoma,sans-serif;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:12px 0 5px}
-input,textarea{width:100%;font:16px Tahoma,sans-serif;padding:12px;background:#0a0a0a;color:#fff;border:1px solid #3a3a3a;border-radius:0}
+label{display:block;font:600 12px var(--ui);letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:12px 0 5px}
+input,textarea{width:100%;font:16px var(--ui);padding:12px;background:#0a0a0a;color:#fff;border:1px solid #3a3a3a;border-radius:0}
 input:focus,textarea:focus{outline:2px solid var(--gold);outline-offset:-2px}
 textarea{min-height:80px;resize:vertical}
-button.go{margin-top:16px;width:100%;padding:14px;font:700 16px Tahoma,sans-serif;background:var(--gold);color:#000;border:0;cursor:pointer}
+button.go{margin-top:16px;width:100%;padding:14px;font:700 16px var(--ui);background:var(--gold);color:#000;border:0;cursor:pointer}
 button.go:disabled{opacity:.5;cursor:wait}
-.link{background:none;border:0;padding:0;margin-top:12px;color:var(--muted);font:14px Tahoma,sans-serif;text-decoration:underline;cursor:pointer}
-.msg{margin:12px 0 0;font-size:14px;min-height:1em}.msg.err{color:var(--dn)}.msg.ok{color:var(--up)}
+.link{background:none;border:0;padding:0;margin-top:12px;color:var(--muted);font:14px var(--ui);text-decoration:underline;cursor:pointer}
+.msg{margin:10px 0 0;font-size:14px}.msg:empty{display:none}.msg.err{color:var(--dn)}.msg.ok{color:var(--up)}
 .state{font-size:15px}.state b{color:#fff}
 a.btn{display:inline-block;margin-top:14px;padding:12px 18px;background:var(--gold);color:#000;font-weight:700;text-decoration:none}
-.fine{margin-top:22px;font-size:13px;color:var(--muted)}.fine a{color:var(--muted)}
+.fine{margin-top:26px;font-size:13px;color:var(--muted)}.fine a{color:var(--muted)}
+@media(max-width:560px){.cmp{grid-template-columns:1fr}.cmp>div+div{border-left:0;border-top:1px solid var(--line)}.nav{gap:14px}.nav a{font-size:14px}h1{font-size:27px}}
 </style>
 </head>
 <body>
+<header class="top"><div class="topin"><a class="brand" href="/" aria-label="SB Desk"><svg viewBox="0 0 260 260" width="58" height="58" role="img" aria-label="SB Desk seal" style="flex:none"><defs><path id="t-pr" d="M 37,130 A 93,93 0 0 1 223,130"></path><path id="b-pr" d="M 24,130 A 106,106 0 0 0 236,130"></path><path id="s-pr" d="M 28,130 A 102,102 0 0 0 232,130"></path></defs><circle cx="130" cy="130" r="126" fill="none" stroke="#ece6d6" stroke-width="2.2"></circle><circle cx="130" cy="130" r="114" fill="none" stroke="#ece6d6" stroke-width="0.7"></circle><line x1="246.00" y1="130.00" x2="253.00" y2="130.00" stroke="#ece6d6" stroke-width="1.4"></line><line x1="247.55" y1="140.28" x2="252.53" y2="140.72" stroke="#ece6d6" stroke-width="0.7"></line><line x1="246.21" y1="150.49" x2="251.13" y2="151.36" stroke="#ece6d6" stroke-width="0.7"></line><line x1="243.98" y1="160.54" x2="248.81" y2="161.83" stroke="#ece6d6" stroke-width="0.7"></line><line x1="240.88" y1="170.36" x2="245.58" y2="172.07" stroke="#ece6d6" stroke-width="0.7"></line><line x1="236.94" y1="179.87" x2="241.48" y2="181.98" stroke="#ece6d6" stroke-width="0.7"></line><line x1="230.46" y1="188.00" x2="236.52" y2="191.50" stroke="#ece6d6" stroke-width="1.4"></line><line x1="226.66" y1="197.68" x2="230.76" y2="200.55" stroke="#ece6d6" stroke-width="0.7"></line><line x1="220.39" y1="205.85" x2="224.22" y2="209.06" stroke="#ece6d6" stroke-width="0.7"></line><line x1="213.44" y1="213.44" x2="216.97" y2="216.97" stroke="#ece6d6" stroke-width="0.7"></line><line x1="205.85" y1="220.39" x2="209.06" y2="224.22" stroke="#ece6d6" stroke-width="0.7"></line><line x1="197.68" y1="226.66" x2="200.55" y2="230.76" stroke="#ece6d6" stroke-width="0.7"></line><line x1="188.00" y1="230.46" x2="191.50" y2="236.52" stroke="#ece6d6" stroke-width="1.4"></line><line x1="179.87" y1="236.94" x2="181.98" y2="241.48" stroke="#ece6d6" stroke-width="0.7"></line><line x1="170.36" y1="240.88" x2="172.07" y2="245.58" stroke="#ece6d6" stroke-width="0.7"></line><line x1="160.54" y1="243.98" x2="161.83" y2="248.81" stroke="#ece6d6" stroke-width="0.7"></line><line x1="150.49" y1="246.21" x2="151.36" y2="251.13" stroke="#ece6d6" stroke-width="0.7"></line><line x1="140.28" y1="247.55" x2="140.72" y2="252.53" stroke="#ece6d6" stroke-width="0.7"></line><line x1="130.00" y1="246.00" x2="130.00" y2="253.00" stroke="#ece6d6" stroke-width="1.4"></line><line x1="119.72" y1="247.55" x2="119.28" y2="252.53" stroke="#ece6d6" stroke-width="0.7"></line><line x1="109.51" y1="246.21" x2="108.64" y2="251.13" stroke="#ece6d6" stroke-width="0.7"></line><line x1="99.46" y1="243.98" x2="98.17" y2="248.81" stroke="#ece6d6" stroke-width="0.7"></line><line x1="89.64" y1="240.88" x2="87.93" y2="245.58" stroke="#ece6d6" stroke-width="0.7"></line><line x1="80.13" y1="236.94" x2="78.02" y2="241.48" stroke="#ece6d6" stroke-width="0.7"></line><line x1="72.00" y1="230.46" x2="68.50" y2="236.52" stroke="#ece6d6" stroke-width="1.4"></line><line x1="62.32" y1="226.66" x2="59.45" y2="230.76" stroke="#ece6d6" stroke-width="0.7"></line><line x1="54.15" y1="220.39" x2="50.94" y2="224.22" stroke="#ece6d6" stroke-width="0.7"></line><line x1="46.56" y1="213.44" x2="43.03" y2="216.97" stroke="#ece6d6" stroke-width="0.7"></line><line x1="39.61" y1="205.85" x2="35.78" y2="209.06" stroke="#ece6d6" stroke-width="0.7"></line><line x1="33.34" y1="197.68" x2="29.24" y2="200.55" stroke="#ece6d6" stroke-width="0.7"></line><line x1="29.54" y1="188.00" x2="23.48" y2="191.50" stroke="#ece6d6" stroke-width="1.4"></line><line x1="23.06" y1="179.87" x2="18.52" y2="181.98" stroke="#ece6d6" stroke-width="0.7"></line><line x1="19.12" y1="170.36" x2="14.42" y2="172.07" stroke="#ece6d6" stroke-width="0.7"></line><line x1="16.02" y1="160.54" x2="11.19" y2="161.83" stroke="#ece6d6" stroke-width="0.7"></line><line x1="13.79" y1="150.49" x2="8.87" y2="151.36" stroke="#ece6d6" stroke-width="0.7"></line><line x1="12.45" y1="140.28" x2="7.47" y2="140.72" stroke="#ece6d6" stroke-width="0.7"></line><line x1="14.00" y1="130.00" x2="7.00" y2="130.00" stroke="#ece6d6" stroke-width="1.4"></line><line x1="12.45" y1="119.72" x2="7.47" y2="119.28" stroke="#ece6d6" stroke-width="0.7"></line><line x1="13.79" y1="109.51" x2="8.87" y2="108.64" stroke="#ece6d6" stroke-width="0.7"></line><line x1="16.02" y1="99.46" x2="11.19" y2="98.17" stroke="#ece6d6" stroke-width="0.7"></line><line x1="19.12" y1="89.64" x2="14.42" y2="87.93" stroke="#ece6d6" stroke-width="0.7"></line><line x1="23.06" y1="80.13" x2="18.52" y2="78.02" stroke="#ece6d6" stroke-width="0.7"></line><line x1="29.54" y1="72.00" x2="23.48" y2="68.50" stroke="#ece6d6" stroke-width="1.4"></line><line x1="33.34" y1="62.32" x2="29.24" y2="59.45" stroke="#ece6d6" stroke-width="0.7"></line><line x1="39.61" y1="54.15" x2="35.78" y2="50.94" stroke="#ece6d6" stroke-width="0.7"></line><line x1="46.56" y1="46.56" x2="43.03" y2="43.03" stroke="#ece6d6" stroke-width="0.7"></line><line x1="54.15" y1="39.61" x2="50.94" y2="35.78" stroke="#ece6d6" stroke-width="0.7"></line><line x1="62.32" y1="33.34" x2="59.45" y2="29.24" stroke="#ece6d6" stroke-width="0.7"></line><line x1="72.00" y1="29.54" x2="68.50" y2="23.48" stroke="#ece6d6" stroke-width="1.4"></line><line x1="80.13" y1="23.06" x2="78.02" y2="18.52" stroke="#ece6d6" stroke-width="0.7"></line><line x1="89.64" y1="19.12" x2="87.93" y2="14.42" stroke="#ece6d6" stroke-width="0.7"></line><line x1="99.46" y1="16.02" x2="98.17" y2="11.19" stroke="#ece6d6" stroke-width="0.7"></line><line x1="109.51" y1="13.79" x2="108.64" y2="8.87" stroke="#ece6d6" stroke-width="0.7"></line><line x1="119.72" y1="12.45" x2="119.28" y2="7.47" stroke="#ece6d6" stroke-width="0.7"></line><line x1="130.00" y1="14.00" x2="130.00" y2="7.00" stroke="#ece6d6" stroke-width="1.4"></line><line x1="140.28" y1="12.45" x2="140.72" y2="7.47" stroke="#ece6d6" stroke-width="0.7"></line><line x1="150.49" y1="13.79" x2="151.36" y2="8.87" stroke="#ece6d6" stroke-width="0.7"></line><line x1="160.54" y1="16.02" x2="161.83" y2="11.19" stroke="#ece6d6" stroke-width="0.7"></line><line x1="170.36" y1="19.12" x2="172.07" y2="14.42" stroke="#ece6d6" stroke-width="0.7"></line><line x1="179.87" y1="23.06" x2="181.98" y2="18.52" stroke="#ece6d6" stroke-width="0.7"></line><line x1="188.00" y1="29.54" x2="191.50" y2="23.48" stroke="#ece6d6" stroke-width="1.4"></line><line x1="197.68" y1="33.34" x2="200.55" y2="29.24" stroke="#ece6d6" stroke-width="0.7"></line><line x1="205.85" y1="39.61" x2="209.06" y2="35.78" stroke="#ece6d6" stroke-width="0.7"></line><line x1="213.44" y1="46.56" x2="216.97" y2="43.03" stroke="#ece6d6" stroke-width="0.7"></line><line x1="220.39" y1="54.15" x2="224.22" y2="50.94" stroke="#ece6d6" stroke-width="0.7"></line><line x1="226.66" y1="62.32" x2="230.76" y2="59.45" stroke="#ece6d6" stroke-width="0.7"></line><line x1="230.46" y1="72.00" x2="236.52" y2="68.50" stroke="#ece6d6" stroke-width="1.4"></line><line x1="236.94" y1="80.13" x2="241.48" y2="78.02" stroke="#ece6d6" stroke-width="0.7"></line><line x1="240.88" y1="89.64" x2="245.58" y2="87.93" stroke="#ece6d6" stroke-width="0.7"></line><line x1="243.98" y1="99.46" x2="248.81" y2="98.17" stroke="#ece6d6" stroke-width="0.7"></line><line x1="246.21" y1="109.51" x2="251.13" y2="108.64" stroke="#ece6d6" stroke-width="0.7"></line><line x1="247.55" y1="119.72" x2="252.53" y2="119.28" stroke="#ece6d6" stroke-width="0.7"></line><circle cx="130" cy="130" r="80" fill="none" stroke="#ece6d6" stroke-width="0.7"></circle><circle cx="130" cy="130" r="76" fill="none" stroke="#ece6d6" stroke-width="1.6"></circle><text font-family="Libre Caslon Text, serif" font-size="12.5" letter-spacing="3.4" fill="#ece6d6" text-anchor="middle"><textPath href="#t-pr" startOffset="50%">NQ RESEARCH DESK</textPath></text><path d="M 30,126 l 4,4 l -4,4 l -4,-4 z" fill="#ffb000"></path><path d="M 230,126 l 4,4 l -4,4 l -4,-4 z" fill="#ffb000"></path><text x="130" y="143" font-family="Libre Caslon Display, serif" font-size="64" fill="#ece6d6" text-anchor="middle" letter-spacing="1">SB</text><line x1="104" y1="156" x2="156" y2="156" stroke="#ffb000" stroke-width="1.2"></line><text x="131" y="174" font-family="IBM Plex Mono, monospace" font-weight="700" font-size="9.5" letter-spacing="6" fill="#ece6d6" text-anchor="middle">DESK</text><line x1="33.01" y1="186.00" x2="19.15" y2="194.00" stroke="#f23645" stroke-width="5" stroke-linecap="butt"></line><line x1="64.17" y1="220.61" x2="54.76" y2="233.55" stroke="#fdd835" stroke-width="5" stroke-linecap="butt"></line><line x1="106.71" y1="239.55" x2="103.39" y2="255.20" stroke="#9c27b0" stroke-width="5" stroke-linecap="butt"></line><line x1="153.29" y1="239.55" x2="156.61" y2="255.20" stroke="#4fc3f7" stroke-width="5" stroke-linecap="butt"></line><line x1="195.83" y1="220.61" x2="205.24" y2="233.55" stroke="#1e40af" stroke-width="5" stroke-linecap="butt"></line><line x1="226.99" y1="186.00" x2="240.85" y2="194.00" stroke="#ff9800" stroke-width="5" stroke-linecap="butt"></line><text font-family="Libre Caslon Text, serif" font-size="12.5" letter-spacing="3.4" fill="#ece6d6" text-anchor="middle"><textPath href="#s-pr" startOffset="50%">SPLIT</textPath></text></svg><span>SB DESK</span></a>
+  <nav class="nav"><a href="/">Desk</a><a href="/archive/">Archive</a><a href="/before-after/">Before / After</a><a href="/method/">Method</a><a href="/about/">About</a></nav></div></header>
 <main class="wrap">
-  <div class="top"><a href="index.html" aria-label="SB Desk"><img src="img/favicon.svg" width="34" height="34" alt="">SB DESK</a><a class="back" href="index.html">← Desk</a></div>
+  <h1>Early access for Candor users</h1>
+  <p class="lede">Bought your prop firm challenge through Candor? Then you see new SB Desk notes the moment we post them. Free, nothing to pay. Everyone else sees every note 24 hours later.</p>
+  <p style="margin:-10px 0 22px"><a href="#login">Already a Candor user? Log in ↓</a></p>
 
-  <h1>Free early access</h1>
-  <p class="lede">Every SB Desk note is free for everyone. Traders who bought their challenge through our Candor code simply see new notes as soon as we post them; everyone else sees them 24 hours later.</p>
+  <div class="cmp">
+    <div><h3>Everyone</h3><p>New notes <b>24 hours</b> after we post them. Archive and Before / After always open.</p></div>
+    <div><h3>Candor users</h3><p>New notes <b>as soon as</b> we post them. Same desk, same notes, just earlier.</p></div>
+  </div>
 
+  <h2 class="sec">How it works</h2>
   <ol class="steps">
-    <li id="s1"><b class="n">1</b><span>Buy your prop firm challenge through <a href="https://propfirmcandor.com/?utm_source=sbdesk&amp;utm_medium=early_access" target="_blank" rel="noopener">Candor</a> with our code.</span></li>
-    <li id="s2"><b class="n">2</b><span>Log in here with your Google account.</span></li>
-    <li id="s3"><b class="n">3</b><span>Tell us the firm and your order number. We check it and switch on early access.</span></li>
+    <li id="s1"><span>Buy your challenge through <a href="https://propfirmcandor.com/?utm_source=sbdesk&amp;utm_medium=early_access" target="_blank" rel="noopener">Candor</a>: code <span class="code">CANDOR</span> or the firm's link on Candor.</span></li>
+    <li id="s2"><span>Log in below with Google (or email).</span></li>
+    <li id="s3"><span>Send us the firm and your order number. We find the order in our partner account and switch on early access.</span></li>
   </ol>
 
+  <h2 class="sec">Why is it free?</h2>
+  <div class="why">
+    <p>Candor is our comparison site for futures prop firms. When you buy a challenge through it, the firm pays us a commission. Your price is the same, or lower with the code.</p>
+    <p>That commission pays for the desk, so we give buyers the notes first. Your order number is only used to find your purchase.</p>
+  </div>
+
   <!-- not logged in -->
-  <div class="card" id="cAuth" hidden>
+  <div class="card" id="cAuth" hidden><span id="login"></span>
     <button class="gbtn" type="button" id="google"><svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.2-.1-2.3-.4-3.5z"></path><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"></path><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"></path><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.2-.1-2.3-.4-3.5z"></path></svg>Continue with Google</button>
     <button class="link" type="button" id="useEmail">No Google account? Use email instead</button>
     <div id="emailBox" hidden>
@@ -78,6 +104,14 @@ a.btn{display:inline-block;margin-top:14px;padding:12px 18px;background:var(--go
     <p class="msg" id="mAuth"></p>
   </div>
 
+  <!-- logged in as admin (Stipe / Bernard) -->
+  <div class="card state" id="cAdm" hidden>
+    <h2>You are logged in as admin</h2>
+    <p>Logged in as <b id="who3"></b>. Admins see every note already.</p>
+    <a class="btn" href="/admin.html">Open the admin panel</a><br>
+    <button class="link" type="button" data-out>Log out (to try it as a buyer)</button>
+  </div>
+
   <!-- new password (from the reset email) -->
   <div class="card" id="cPw" hidden>
     <h2>Set a new password</h2>
@@ -94,7 +128,7 @@ a.btn{display:inline-block;margin-top:14px;padding:12px 18px;background:var(--go
     <h2>Your purchase</h2>
     <p class="sub">Logged in as <b id="who1"></b>. We only use this to check that you bought through our Candor code.</p>
     <form id="fReq">
-      <label for="rFirm">Prop firm</label><input id="rFirm" maxlength="60" required placeholder="e.g. Apex">
+      <label for="rFirm">Prop firm</label><input id="rFirm" maxlength="60" required list="firms" placeholder="e.g. Earn2Trade" autocomplete="off"><datalist id="firms"><option value="Aqua Futures"><option value="BluSky"><option value="Earn2Trade"><option value="FTMO"><option value="FundedNext"><option value="Top One Futures"><option value="TradeDay"></datalist>
       <label for="rOrd">Order number</label><input id="rOrd" maxlength="80" required>
       <label for="rNote">Anything else (optional)</label><textarea id="rNote" maxlength="300"></textarea>
       <button class="go" type="submit">Send</button>
@@ -114,18 +148,18 @@ a.btn{display:inline-block;margin-top:14px;padding:12px 18px;background:var(--go
   <div class="card state" id="cMem" hidden>
     <h2>Early access is on</h2>
     <p>Logged in as <b id="who2"></b>. You see every note as soon as we post it.</p>
-    <a class="btn" href="index.html">Open the Desk</a><br>
+    <a class="btn" href="/">Open the Desk</a><br>
     <button class="link" type="button" data-out>Log out</button>
   </div>
 
-  <p class="fine">Analysis only: no entries, stops, targets or signals. Not financial advice. <a href="/privacy/">Privacy</a> · Questions: <a href="mailto:hello@sbdesk.com">hello@sbdesk.com</a></p>
+  <p class="fine">SB Desk · Bernard and Stipe Pupačić, Split. Analysis only: no entries, stops, targets or signals. Not financial advice. <a href="/privacy/">Privacy</a> · Questions: <a href="mailto:hello@sbdesk.com">hello@sbdesk.com</a></p>
 </main>
-<script src="js/auth.js"></script>
+<script src="/js/auth.js"></script>
 <script>
 (function(){
 var A=window.SBAuth;
 function $(id){return document.getElementById(id);}
-function show(id){['cAuth','cPw','cReq','cWait','cMem'].forEach(function(c){$(c).hidden=c!==id;});}
+function show(id){['cAuth','cPw','cReq','cWait','cMem','cAdm'].forEach(function(c){$(c).hidden=c!==id;});}
 function say(el,t,k){el.textContent=t;el.className='msg'+(k?' '+k:'');}
 function busy(f,on){var b=f.querySelector('button[type=submit]');if(b)b.disabled=on;}
 function steps(n){['s1','s2','s3'].forEach(function(s,i){$(s).classList.toggle('done',i<n);});}
@@ -139,12 +173,12 @@ function tab(log){$('tNew').setAttribute('aria-pressed',!log);$('tLog').setAttri
 $('tNew').onclick=function(){tab(false);};$('tLog').onclick=function(){tab(true);};
 $('google').onclick=function(){say($('mAuth'),'Opening Google…');A.oauthLogin('google');};
 $('useEmail').onclick=function(){$('emailBox').hidden=false;this.hidden=true;};
-[].forEach.call(document.querySelectorAll('[data-out]'),function(b){b.onclick=function(){A.signOut('pristup.html');};});
+[].forEach.call(document.querySelectorAll('[data-out]'),function(b){b.onclick=function(){A.signOut('/pristup.html');};});
 
 function refresh(){
   return A.me().then(function(m){
     if(!m.loggedIn){show('cAuth');steps(0);return;}
-    if(m.admin){location.replace('admin.html');return;}
+    if(m.admin){$('who3').textContent=m.email||'';show('cAdm');steps(3);return;}
     if(m.member){$('who2').textContent=m.email||'';show('cMem');steps(3);return;}
     if(m.pending){show('cWait');steps(2);return;}
     $('who1').textContent=m.email||'';show('cReq');steps(2);

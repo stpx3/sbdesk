@@ -3,6 +3,10 @@
 
 
 
+
+## 2026-11-17 (18): early-access page for Candor users
+- Stipe: the page looked scammy and should say it is for Candor users. New page: same header as the site, title "Early access for Candor users", Everyone vs Candor users, how it works with code CANDOR, an honest "Why is it free?" (Candor commission), firm suggestions (partner firms), names in the footer. Buttons elsewhere: "Candor user? See it now".
+- Logged-in admins are no longer sent to the admin page automatically (Stipe ended up there while testing with Google); the page says who is logged in and offers the admin panel or log out.
 ## 2026-11-17 (17): archive without search
 - Stipe: the search box is removed. Archive grouped by day ("Tuesday, 10 November 2026"), time on the left, title, timeframe chips in the timeframe colours, type, author, Before / After tag. Filters (timeframe, type, Before / After only) stay.
 ## 2026-11-17 (16): own addresses, archive search, Before / After page
