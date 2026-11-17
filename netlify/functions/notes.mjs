@@ -1,6 +1,6 @@
 // GET  /api/notes  -> every note (public)
 // POST /api/notes  -> publish a note (admins only)
-import { TFS, KINDS, adminUser, notesStore, json, fail, nyNow, isTime, cleanLink, clip } from '../lib/desk.mjs';
+import { TFS, KINDS, adminUser, viewer, notesStore, json, fail, nyNow, isTime, cleanLink, clip, LOCK_HOURS, minutesBetween } from '../lib/desk.mjs';
 
 export default async (req) => {
   const store = notesStore();
@@ -9,7 +9,23 @@ export default async (req) => {
     const { blobs } = await store.list();
     const notes = (await Promise.all(blobs.map((b) => store.get(b.key, { type: 'json' })))).filter(Boolean);
     notes.sort((a, b) => (a.t < b.t ? -1 : a.t > b.t ? 1 : 0));
-    return json({ notes });
+    const v = await viewer();
+    const full = !!(v && v.member);
+    const now = nyNow();
+    const out = notes.map((n) => {
+      const age = minutesBetween(n.t, now);
+      if (full || age >= LOCK_HOURS * 60) {
+        const { postedBy, ...pub } = n; // never send admin emails to the page
+        return pub;
+      }
+      // locked for visitors: they see that a note exists, when, which timeframes, and when it opens
+      return {
+        id: n.id, t: n.t, sym: n.sym, kind: n.kind, tf: n.tf, by: n.by, locked: true,
+        tfs: TFS.filter((x) => n.ideas && n.ideas[x]),
+        opensIn: LOCK_HOURS * 60 - age,
+      };
+    });
+    return json({ notes: out, member: full, lockHours: LOCK_HOURS });
   }
 
   if (req.method !== 'POST') return fail('Method not allowed', 405);

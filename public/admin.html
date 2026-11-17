@@ -36,7 +36,13 @@ body.wait .page{visibility:hidden}
 .sg .meta{font:12px var(--mono);color:var(--muted);display:flex;justify-content:space-between;gap:10px}
 .sg p{margin:6px 0 0;white-space:pre-wrap}
 .sg button{background:none;border:0;color:var(--muted);cursor:pointer;font:12px var(--ui);text-decoration:underline}
-#sugN{font:700 13px var(--mono);color:var(--gold)}
+#sugN,#reqN,#memN{font:700 13px var(--mono);color:var(--gold)}
+.rq{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.rq .meta{font:12px var(--mono);color:var(--muted)}.rq .em{font-weight:700}
+.rq .acts{display:flex;gap:8px}
+.rq button{padding:9px 12px;font:700 13px var(--ui);border-radius:3px;cursor:pointer;border:1px solid var(--line);background:none;color:var(--ink)}
+.rq button.yes{background:var(--up);border-color:var(--up);color:#000}
+@media(max-width:620px){.rq{grid-template-columns:1fr}}
 @media(max-width:620px){.row{grid-template-columns:1fr}.btn{text-align:center}}
 </style>
 </head>
@@ -47,12 +53,18 @@ body.wait .page{visibility:hidden}
     <div class="who"><span id="who"></span><button type="button" id="out">Odjava</button></div>
     <div class="mig" id="mig" hidden></div>
     <a class="new" href="objavi.html">+ Nova analiza</a>
+    <h2>Zahtjevi za pristup <span id="reqN"></span></h2>
+    <p class="hint">Kupci preko Candor koda. Provjeri broj narudžbe u affiliate panelu firme, pa klikni Odobri.</p>
+    <div id="reqs"></div>
     <h2>After (kako je završilo)</h2>
     <p class="hint">Nađi analizu po datumu i klikni "Dodaj After".</p>
     <div id="list"></div>
     <h2>Prijedlozi posjetitelja <span id="sugN"></span></h2>
     <p class="hint">Ono što ljudi pošalju preko "Suggestions" na dnu stranice.</p>
     <div id="sugs"></div>
+    <h2>Članovi <span id="memN"></span></h2>
+    <p class="hint">Vide nove analize odmah. Ostali ih vide 24 sata kasnije.</p>
+    <div id="mems"></div>
   </div>
 </div>
 <script src="js/auth.js"></script>
@@ -65,7 +77,7 @@ document.getElementById('out').onclick=function(){SBAuth.signOut();};
 SBAuth.requireAdmin().then(function(m){if(!m)return;
   document.body.classList.remove('wait');
   document.getElementById('who').textContent='Prijavljen: '+m.name;
-  load();migrate();loadSugs();
+  load();migrate();loadSugs();loadAccess();
 });
 function load(){
   el.innerHTML='<p class="empty">Učitavam…</p>';
@@ -80,6 +92,19 @@ function draw(notes){
       '<div><div class="ttl">'+esc(x.title)+(x.now?'<span class="ok">IMA AFTER</span>':'')+'</div><div class="tfs">'+esc(tf)+(x.by?' · '+esc(x.by):'')+'</div></div>'+
       '<a class="btn" href="objavi.html?after#zavrsilo='+encodeURIComponent(x.id)+'">'+(x.now?'↻ Zamijeni After':'+ Dodaj After')+'</a></div>';
   }).join('');
+}
+function loadAccess(){
+  var rb=document.getElementById('reqs'),mb=document.getElementById('mems');rb.innerHTML=mb.innerHTML='<p class="empty">Učitavam…</p>';
+  fetch('/api/access',{credentials:'same-origin',cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){
+    var rq=d.requests||[],ms=d.members||[];
+    document.getElementById('reqN').textContent=rq.length?'('+rq.length+')':'';document.getElementById('memN').textContent=ms.length?'('+ms.length+')':'';
+    rb.innerHTML=rq.length?rq.map(function(x){return '<div class="rq"><div><div class="em">'+esc(x.email)+'</div><div class="meta">'+esc(x.firm)+' · narudžba '+esc(x.order)+' · '+x.t.slice(8,10)+'.'+x.t.slice(5,7)+'. '+x.t.slice(11,16)+' NY</div>'+(x.note?'<div>'+esc(x.note)+'</div>':'')+'</div><div class="acts"><button type="button" class="yes" data-a="approve" data-e="'+esc(x.email)+'">Odobri</button><button type="button" data-a="reject" data-e="'+esc(x.email)+'">Odbij</button></div></div>';}).join(''):'<p class="empty">Nema novih zahtjeva.</p>';
+    mb.innerHTML=ms.length?ms.map(function(x){return '<div class="rq"><div><div class="em">'+esc(x.email)+'</div><div class="meta">'+esc(x.firm)+(x.order?' · '+esc(x.order):'')+' · odobrio '+esc(x.approvedBy||'')+' '+String(x.approvedAt||'').slice(0,10)+'</div></div><div class="acts"><button type="button" data-a="revoke" data-e="'+esc(x.email)+'">Ukloni</button></div></div>';}).join(''):'<p class="empty">Još nema članova.</p>';
+    [].forEach.call(document.querySelectorAll('.rq button[data-a]'),function(b){b.onclick=function(){
+      var a=b.getAttribute('data-a'),e=b.getAttribute('data-e');
+      if(a!=='approve'&&!confirm((a==='reject'?'Odbiti ':'Ukloniti ')+e+'?'))return;
+      var o={};o[a]=e;b.disabled=true;SBAuth.post('/api/access',o).then(loadAccess,function(err){alert(err.message);b.disabled=false;});};});
+  },function(){rb.innerHTML=mb.innerHTML='<p class="empty err">Ne mogu učitati.</p>';});
 }
 function loadSugs(){
   var box=document.getElementById('sugs');box.innerHTML='<p class="empty">Učitavam…</p>';

@@ -19,15 +19,31 @@ export function admins() {
 
 // Returns {email, name} for a logged-in admin, otherwise null.
 export async function adminUser() {
+  const v = await viewer();
+  return v && v.admin ? { email: v.email, name: v.name } : null;
+}
+
+export const notesStore = () => getStore({ name: 'notes', consistency: 'strong' });
+export const membersStore = () => getStore({ name: 'members', consistency: 'strong' });
+export const requestsStore = () => getStore({ name: 'access-requests', consistency: 'strong' });
+
+// New notes are for members (people who bought through the Candor code) for this many hours.
+export const LOCK_HOURS = 24;
+
+// Who is looking: { email, name, admin, member } or null for a visitor without an account.
+export async function viewer() {
   let user = null;
   try { user = await getUser(); } catch { user = null; }
   if (!user || !user.email) return null;
   const email = String(user.email).toLowerCase();
   const name = admins()[email];
-  return name ? { email, name } : null;
+  if (name) return { email, name, admin: true, member: true };
+  const m = await membersStore().get(email, { type: 'json' });
+  return { email, name: null, admin: false, member: !!(m && m.active) };
 }
 
-export const notesStore = () => getStore({ name: 'notes', consistency: 'strong' });
+// minutes between two New York wall-clock times "YYYY-MM-DDTHH:MM"
+export const minutesBetween = (a, b) => Math.round((Date.parse(b + ':00Z') - Date.parse(a + ':00Z')) / 60000);
 
 export function json(data, status = 200) {
   return new Response(JSON.stringify(data), {

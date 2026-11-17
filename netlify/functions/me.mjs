@@ -1,13 +1,11 @@
-// GET /api/me -> who is logged in, and whether they are an admin.
-import { getUser } from '@netlify/identity';
-import { adminUser, json } from '../lib/desk.mjs';
+// GET /api/me -> who is logged in: admin, member, or waiting for access.
+import { viewer, requestsStore, json } from '../lib/desk.mjs';
 
 export default async () => {
-  const who = await adminUser();
-  if (who) return json({ loggedIn: true, admin: true, name: who.name, email: who.email });
-  let user = null;
-  try { user = await getUser(); } catch { user = null; }
-  return json({ loggedIn: !!user, admin: false, email: user ? user.email : null });
+  const v = await viewer();
+  if (!v) return json({ loggedIn: false, admin: false, member: false });
+  const pending = !v.member && !!(await requestsStore().get(v.email, { type: 'json' }));
+  return json({ loggedIn: true, admin: v.admin, member: v.member, pending, name: v.name, email: v.email });
 };
 
 export const config = { path: '/api/me' };

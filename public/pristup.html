@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SB Desk · Get access</title>
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<meta name="description" content="Bought your prop firm challenge through the Candor code? Get SB Desk member access: new NQ notes the moment they are posted.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=IBM+Plex+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#d8d8d8;--muted:#8f8f8f;--line:#2a2a2a;--card:#000;--bg:#050505;--gold:#ffb000;--dn:#ff5c5c;--up:#22d34a;--iv:#ece6d6}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Tahoma,Verdana,sans-serif}
+.wrap{max-width:620px;margin:0 auto;padding:28px 18px 60px}
+.top{display:flex;align-items:center;gap:12px;margin-bottom:26px}
+.top a{display:flex;align-items:center;gap:10px;color:var(--iv);text-decoration:none;font:22px 'Libre Caslon Display',Georgia,serif;letter-spacing:.05em}
+.top .back{margin-left:auto;font:14px Tahoma,sans-serif;color:var(--muted)}
+h1{font:400 34px/1.15 'Libre Caslon Display',Georgia,serif;color:#fff;margin:0 0 10px}
+.lede{color:var(--muted);margin:0 0 24px}
+ol.steps{list-style:none;padding:0;margin:0 0 28px;display:grid;gap:10px}
+ol.steps li{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);padding:12px 14px;background:#0a0a0a}
+ol.steps b.n{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--gold);color:#000;font:700 14px 'IBM Plex Mono',monospace}
+ol.steps li.done b.n{background:var(--up)}
+ol.steps a{color:var(--gold)}
+.card{border:1px solid var(--line);background:var(--card);padding:22px}
+.card h2{margin:0 0 4px;font:700 18px Tahoma,sans-serif;color:#fff}
+.card .sub{margin:0 0 14px;color:var(--muted);font-size:14px}
+.tabs{display:flex;margin:-22px -22px 18px;border-bottom:1px solid var(--line)}
+.tabs button{flex:1;padding:14px;background:#0a0a0a;color:var(--muted);border:0;font:700 15px Tahoma,sans-serif;cursor:pointer}
+.tabs button[aria-pressed=true]{background:var(--card);color:#fff;box-shadow:inset 0 -3px 0 var(--gold)}
+label{display:block;font:600 12px Tahoma,sans-serif;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:12px 0 5px}
+input,textarea{width:100%;font:16px Tahoma,sans-serif;padding:12px;background:#0a0a0a;color:#fff;border:1px solid #3a3a3a;border-radius:0}
+input:focus,textarea:focus{outline:2px solid var(--gold);outline-offset:-2px}
+textarea{min-height:80px;resize:vertical}
+button.go{margin-top:16px;width:100%;padding:14px;font:700 16px Tahoma,sans-serif;background:var(--gold);color:#000;border:0;cursor:pointer}
+button.go:disabled{opacity:.5;cursor:wait}
+.link{background:none;border:0;padding:0;margin-top:12px;color:var(--muted);font:14px Tahoma,sans-serif;text-decoration:underline;cursor:pointer}
+.msg{margin:12px 0 0;font-size:14px;min-height:1em}.msg.err{color:var(--dn)}.msg.ok{color:var(--up)}
+.state{font-size:15px}.state b{color:#fff}
+a.btn{display:inline-block;margin-top:14px;padding:12px 18px;background:var(--gold);color:#000;font-weight:700;text-decoration:none}
+.fine{margin-top:22px;font-size:13px;color:var(--muted)}.fine a{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a href="index.html" aria-label="SB Desk"><img src="img/favicon.svg" width="34" height="34" alt="">SB DESK</a><a class="back" href="index.html">← Desk</a></div>
+
+  <h1>Member access</h1>
+  <p class="lede">Members see every new note the moment it is posted. Everyone else sees it 24 hours later.</p>
+
+  <ol class="steps">
+    <li id="s1"><b class="n">1</b><span>Buy your prop firm challenge through <a href="https://propfirmcandor.com" target="_blank" rel="noopener">Candor</a> with our code.</span></li>
+    <li id="s2"><b class="n">2</b><span>Create an account here and confirm your email.</span></li>
+    <li id="s3"><b class="n">3</b><span>Send us the firm and your order number. We check it and unlock your access.</span></li>
+  </ol>
+
+  <!-- not logged in -->
+  <div class="card" id="cAuth" hidden>
+    <div class="tabs"><button type="button" id="tNew" aria-pressed="true">Create account</button><button type="button" id="tLog" aria-pressed="false">Log in</button></div>
+    <form id="fNew">
+      <label for="nEm">Email</label><input id="nEm" type="email" autocomplete="email" required>
+      <label for="nPw">Password (at least 8 characters)</label><input id="nPw" type="password" autocomplete="new-password" minlength="8" required>
+      <button class="go" type="submit">Create account</button>
+    </form>
+    <form id="fLog" hidden>
+      <label for="lEm">Email</label><input id="lEm" type="email" autocomplete="username" required>
+      <label for="lPw">Password</label><input id="lPw" type="password" autocomplete="current-password" required>
+      <button class="go" type="submit">Log in</button>
+      <button class="link" type="button" id="forgot">Forgot your password?</button>
+    </form>
+    <p class="msg" id="mAuth"></p>
+  </div>
+
+  <!-- new password (from the reset email) -->
+  <div class="card" id="cPw" hidden>
+    <h2>Set a new password</h2>
+    <form id="fPw">
+      <label for="p1">New password (at least 8 characters)</label><input id="p1" type="password" autocomplete="new-password" minlength="8" required>
+      <label for="p2">Repeat it</label><input id="p2" type="password" autocomplete="new-password" minlength="8" required>
+      <button class="go" type="submit">Save password</button>
+    </form>
+    <p class="msg" id="mPw"></p>
+  </div>
+
+  <!-- logged in, no access yet -->
+  <div class="card" id="cReq" hidden>
+    <h2>Your purchase</h2>
+    <p class="sub">Logged in as <b id="who1"></b>. We only use this to check that you bought through our code.</p>
+    <form id="fReq">
+      <label for="rFirm">Prop firm</label><input id="rFirm" maxlength="60" required placeholder="e.g. Apex">
+      <label for="rOrd">Order number</label><input id="rOrd" maxlength="80" required>
+      <label for="rNote">Anything else (optional)</label><textarea id="rNote" maxlength="300"></textarea>
+      <button class="go" type="submit">Send</button>
+    </form>
+    <p class="msg" id="mReq"></p>
+    <button class="link" type="button" data-out>Log out</button>
+  </div>
+
+  <!-- waiting -->
+  <div class="card state" id="cWait" hidden>
+    <h2>We are checking your order</h2>
+    <p>Thanks. We check your order number with the firm and unlock your access, usually within 24 hours. Log in again later; nothing else to do.</p>
+    <button class="link" type="button" data-out>Log out</button>
+  </div>
+
+  <!-- member -->
+  <div class="card state" id="cMem" hidden>
+    <h2>You have access</h2>
+    <p>Logged in as <b id="who2"></b>. You see every note the moment it is posted.</p>
+    <a class="btn" href="index.html">Open the Desk</a><br>
+    <button class="link" type="button" data-out>Log out</button>
+  </div>
+
+  <p class="fine">Analysis only: no entries, stops, targets or signals. Not financial advice. <a href="index.html#privacy">Privacy</a></p>
+</div>
+<script src="js/auth.js"></script>
+<script>
+(function(){
+var A=window.SBAuth;
+function $(id){return document.getElementById(id);}
+function show(id){['cAuth','cPw','cReq','cWait','cMem'].forEach(function(c){$(c).hidden=c!==id;});}
+function say(el,t,k){el.textContent=t;el.className='msg'+(k?' '+k:'');}
+function busy(f,on){var b=f.querySelector('button[type=submit]');if(b)b.disabled=on;}
+function steps(n){['s1','s2','s3'].forEach(function(s,i){$(s).classList.toggle('done',i<n);});}
+function hr(e){var m=String(e&&e.message||e||'');
+  if(/already|registered|exists/i.test(m))return 'This email already has an account. Log in instead.';
+  if(/expired|token/i.test(m))return 'This link has expired or was already used. Ask for a new one.';
+  if(/not confirmed|confirm/i.test(m))return 'Confirm your email first: open the email we sent and click the link.';
+  if(/invalid_grant|No user found|Invalid|password/i.test(m))return 'Wrong email or password.';
+  return 'Something went wrong: '+m;}
+function tab(log){$('tNew').setAttribute('aria-pressed',!log);$('tLog').setAttribute('aria-pressed',log);$('fNew').hidden=log;$('fLog').hidden=!log;say($('mAuth'),'');}
+$('tNew').onclick=function(){tab(false);};$('tLog').onclick=function(){tab(true);};
+[].forEach.call(document.querySelectorAll('[data-out]'),function(b){b.onclick=function(){A.signOut('pristup.html');};});
+
+function refresh(){
+  return A.me().then(function(m){
+    if(!m.loggedIn){show('cAuth');steps(0);if(location.hash==='#login')tab(true);return;}
+    if(m.member){$('who2').textContent=m.email||'';show('cMem');steps(3);return;}
+    if(m.pending){show('cWait');steps(2);return;}
+    $('who1').textContent=m.email||'';show('cReq');steps(2);
+  });
+}
+
+$('fNew').onsubmit=function(e){e.preventDefault();var f=this;
+  var em=$('nEm').value.trim(),pw=$('nPw').value;
+  if(pw.length<8)return say($('mAuth'),'Password needs at least 8 characters.','err');
+  busy(f,true);say($('mAuth'),'Creating your account…');
+  A.signup(em,pw).then(function(){
+    return A.getUser().then(function(u){
+      if(u)return refresh();
+      say($('mAuth'),'Done. Check your email ('+em+') and click the link to confirm. Then you continue here.','ok');
+    });
+  },function(err){say($('mAuth'),hr(err),'err');}).then(function(){busy(f,false);});};
+
+$('fLog').onsubmit=function(e){e.preventDefault();var f=this;busy(f,true);say($('mAuth'),'Logging in…');
+  A.login($('lEm').value.trim(),$('lPw').value).then(refresh,function(err){say($('mAuth'),hr(err),'err');}).then(function(){busy(f,false);});};
+
+$('forgot').onclick=function(){var em=$('lEm').value.trim();
+  if(!em)return say($('mAuth'),'Type your email above first.','err');
+  A.requestPasswordRecovery(em).then(function(){say($('mAuth'),'If that email has an account, we sent a link to set a new password.','ok');},function(err){say($('mAuth'),hr(err),'err');});};
+
+$('fPw').onsubmit=function(e){e.preventDefault();var f=this,a=$('p1').value,b=$('p2').value;
+  if(a.length<8)return say($('mPw'),'At least 8 characters.','err');
+  if(a!==b)return say($('mPw'),'The two passwords are not the same.','err');
+  busy(f,true);A.updateUser({password:a}).then(function(){say($('mPw'),'Saved.','ok');history.replaceState(null,'','pristup.html');setTimeout(refresh,500);},function(err){say($('mPw'),hr(err),'err');busy(f,false);});};
+
+$('fReq').onsubmit=function(e){e.preventDefault();var f=this;busy(f,true);say($('mReq'),'Sending…');
+  A.post('/api/access',{firm:$('rFirm').value,order:$('rOrd').value,note:$('rNote').value}).then(refresh,function(err){say($('mReq'),err.message,'err');busy(f,false);});};
+
+// links from our emails (confirm account, reset password) arrive here with a token
+A.handleAuthCallback().then(function(r){
+  if(r&&r.type==='recovery'){show('cPw');return;}
+  if(r&&r.type==='invite'){location.replace('prijava.html'+location.hash);return;}
+  if(r)history.replaceState(null,'','pristup.html');
+  return refresh();
+},function(err){show('cAuth');tab(true);say($('mAuth'),hr(err),'err');});
+})();
+</script>
+</body>
+</html>

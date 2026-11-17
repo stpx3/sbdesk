@@ -8,9 +8,17 @@
   directory = "netlify/functions"
   node_bundler = "esbuild"
 
-# Not public yet: keep search engines out.
+# Admin and login pages stay out of search engines.
 [[headers]]
-  for = "/*"
+  for = "/admin.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+[[headers]]
+  for = "/objavi.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+[[headers]]
+  for = "/prijava.html"
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
 

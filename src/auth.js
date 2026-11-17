@@ -1,6 +1,6 @@
 // Browser login helper for SB Desk admin pages. Built into public/js/auth.js.
 import {
-  getUser, login, logout, handleAuthCallback, acceptInvite,
+  getUser, login, logout, signup, handleAuthCallback, acceptInvite,
   requestPasswordRecovery, recoverPassword, refreshSession, updateUser,
 } from '@netlify/identity';
 
@@ -45,12 +45,12 @@ async function notes() {
   return (await r.json()).notes || [];
 }
 
-async function signOut() {
+async function signOut(to) {
   try { await logout(); } catch { /* cookies are cleared anyway */ }
-  location.href = 'index.html';
+  location.href = to || 'index.html';
 }
 
 window.SBAuth = {
-  getUser, login, handleAuthCallback, acceptInvite, requestPasswordRecovery, recoverPassword, updateUser,
+  getUser, login, signup, handleAuthCallback, acceptInvite, requestPasswordRecovery, recoverPassword, updateUser,
   me, requireAdmin, post, notes, signOut,
 };
