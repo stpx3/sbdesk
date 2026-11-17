@@ -55,6 +55,7 @@ button.go:disabled{opacity:.5;cursor:wait}
 a.btn{display:inline-block;margin-top:14px;padding:12px 18px;background:var(--gold);color:#000;font-weight:700;text-decoration:none}
 .fine{margin-top:26px;font-size:13px;color:var(--muted)}.fine a{color:var(--muted)}
 @media(max-width:560px){.cmp{grid-template-columns:1fr}.cmp>div+div{border-left:0;border-top:1px solid var(--line)}.nav{gap:14px}.nav a{font-size:14px}h1{font-size:27px}}
+.firms{margin:-8px 0 22px;padding:10px 14px;border-left:3px solid var(--gold);background:#0d0b05;font-size:15px}.firms b{color:#fff}
 </style>
 </head>
 <body>
@@ -63,6 +64,7 @@ a.btn{display:inline-block;margin-top:14px;padding:12px 18px;background:var(--go
 <main class="wrap">
   <h1>Early access for Candor users</h1>
   <p class="lede">Bought your prop firm challenge through Candor? Then you see new SB Desk notes the moment we post them. Free, nothing to pay. Everyone else sees every note 24 hours later.</p>
+  <p class="firms">Early access works for: <b>Earn2Trade</b>. More partner firms soon.</p>
   <p style="margin:-10px 0 22px"><a href="#login">Already a Candor user? Log in ↓</a></p>
 
   <div class="cmp">
@@ -72,7 +74,7 @@ a.btn{display:inline-block;margin-top:14px;padding:12px 18px;background:var(--go
 
   <h2 class="sec">How it works</h2>
   <ol class="steps">
-    <li id="s1"><span>Buy your challenge through <a href="https://propfirmcandor.com/?utm_source=sbdesk&amp;utm_medium=early_access" target="_blank" rel="noopener">Candor</a>: code <span class="code">CANDOR</span> or the firm's link on Candor.</span></li>
+    <li id="s1"><span>Buy your Earn2Trade challenge through <a href="https://propfirmcandor.com/?utm_source=sbdesk&amp;utm_medium=early_access" target="_blank" rel="noopener">Candor</a> with code <span class="code">CANDOR</span>.</span></li>
     <li id="s2"><span>Log in below with Google (or email).</span></li>
     <li id="s3"><span>Send us the firm and your order number. We find the order in our partner account and switch on early access.</span></li>
   </ol>
@@ -128,7 +130,7 @@ a.btn{display:inline-block;margin-top:14px;padding:12px 18px;background:var(--go
     <h2>Your purchase</h2>
     <p class="sub">Logged in as <b id="who1"></b>. We only use this to check that you bought through our Candor code.</p>
     <form id="fReq">
-      <label for="rFirm">Prop firm</label><input id="rFirm" maxlength="60" required list="firms" placeholder="e.g. Earn2Trade" autocomplete="off"><datalist id="firms"><option value="Aqua Futures"><option value="BluSky"><option value="Earn2Trade"><option value="FTMO"><option value="FundedNext"><option value="Top One Futures"><option value="TradeDay"></datalist>
+      <label for="rFirm">Prop firm</label><input id="rFirm" maxlength="60" required list="firms" placeholder="Earn2Trade" autocomplete="off"><datalist id="firms"><option value="Earn2Trade"></datalist>
       <label for="rOrd">Order number</label><input id="rOrd" maxlength="80" required>
       <label for="rNote">Anything else (optional)</label><textarea id="rNote" maxlength="300"></textarea>
       <button class="go" type="submit">Send</button>

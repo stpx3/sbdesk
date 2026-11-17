@@ -8,6 +8,9 @@
 
 
 
+
+## 2026-11-17 (23): early access names Earn2Trade only
+- Earn2Trade is the only firm that confirmed early access is allowed; the early-access page says so ("More partner firms soon") and the firm field suggests only Earn2Trade.
 ## 2026-11-17 (22): NEW goes away once seen
 - Stipe: after opening a new note or new After, it should no longer say NEW. The browser remembers what this visitor opened (`localStorage` key `sbdesk-seen`); the gold bar and the NEW / NEW AFTER tags show only for things not opened yet. A locked note that opens later counts as new again.
 ## 2026-11-17 (21): picture for X from published ideas

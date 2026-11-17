@@ -4,6 +4,7 @@ Every important decision, newest first. If it is not written here, it is not dec
 
 | Date | Decision | Why | By |
 |---|---|---|---|
+| 2026-11-17 | **Early access only for firms that confirmed it is allowed.** Now: Earn2Trade. The early-access page and Candor's card name only those firms; others are added as they confirm. | Never promise an extra a firm has not allowed in its affiliate terms. | Stipe |
 | 2026-11-17 | **The 24 h lock stays.** The main goal is purchases on Candor; SB Desk builds the credibility. Locked notes now also link straight to Candor (tagged `utm_source=sbdesk`). | Early access must stay a real reason to buy through the code. | Stipe |
 | 2026-11-17 | **SB Desk is both**: a public archive + method that builds credibility, and a tool traders open every day. The daily-tool side is developed further. | Archive alone gives no reason to come back daily. | Stipe |
 | 2026-11-17 | After ChatGPT's review: notes cannot be back-dated, After replacements are kept, the 24 h lock is exact, the build runs tests. | Trust must be checkable, not only promised. | Claude, from ChatGPT's review |
