@@ -24,3 +24,5 @@ Every important decision, newest first. If it is not written here, it is not dec
 | 2026-11-09 | NQ only; ES dropped. No live trades / notifications / copy trading. Before / After ("Then / Now") added later by choice, not in daily posting. Posting by pasting TradingView image links per timeframe. | Prop firm rules; Bernard must post without errors. | Stipe |
 | 2026-11-07 | Core identity (recorded in Candor docs): their own multi-timeframe reading of classic indicators (MACD, RSI, Bollinger Bands, Fisher, EMA). No claim of proven superiority. | Distinct from generic commentary; show it with timestamped charts. | Stipe |
 | 2026-11-05 | SB Desk is analysis, never entry / stop / target signals. | FundedNext, Top One and FTMO ban signal services and copy trading. | Stipe |
+
+- 2026-11-17: 1m is a publishing timeframe too (1m, 5m, 15m, 1H, 4H). Stipe wants to be able to show a 1m double top.

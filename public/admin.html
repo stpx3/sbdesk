@@ -80,7 +80,7 @@ body.wait .page{visibility:hidden}
 (function(){
 try{if(localStorage.getItem('sbdesk-theme')!=='light')document.body.classList.add('dark');}catch(_){}
 function esc(v){return String(v==null?'':v).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
-var TFS=['5m','15m','1H','4H'],el=document.getElementById('list');
+var TFS=['1m','5m','15m','1H','4H'],el=document.getElementById('list');
 document.getElementById('out').onclick=function(){SBAuth.signOut();};
 // download every note (with After charts) as one file, as a backup
 document.getElementById('bak').onclick=function(){SBAuth.notes().then(function(n){

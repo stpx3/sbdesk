@@ -138,7 +138,7 @@ body.wait .page{visibility:hidden}
 try{if(localStorage.getItem('sbdesk-theme')!=='light')document.body.classList.add('dark');}catch(_){}
 SBAuth.requireAdmin().then(function(m){if(!m)return;document.body.classList.remove('wait');
   return SBAuth.notes().then(initAfter,function(){initAfter([]);});});
-var TFS=['5m','15m','1H','4H'],links={},state={};
+var TFS=['1m','5m','15m','1H','4H'],links={},state={};
 
 // Reads whatever was pasted and decides what it is.
 function readLink(raw){
