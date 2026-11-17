@@ -207,9 +207,12 @@ footer.f{border-top:1px solid var(--line);padding:14px 18px;font-size:12px;color
 .gpair .gx{display:flex;align-items:center;justify-content:center;aspect-ratio:16/9;border:1px dashed var(--line);font:13px var(--ui);color:var(--muted)}
 .gcard .gtxt{font-size:14px;margin:10px 0 0}.gcard .gl2{font-size:13px;margin-top:8px}
 @media(max-width:620px){.gpair{grid-template-columns:1fr}}
+.upd.here{opacity:.75}
+.gpair iframe{display:block;width:100%;height:320px;border:1px solid var(--line)}
 </style>
 </head>
 <body>
+<script>try{if(localStorage.getItem('sbdesk-theme')!=='light')document.body.classList.add('dark');}catch(_){document.body.classList.add('dark');}</script>
 <noscript><p style="padding:12px;background:#ffb000;color:#000;margin:0">SB Desk needs JavaScript to show the notes.</p></noscript>
 <div class="page">
 <header class="top">
@@ -437,7 +440,7 @@ function render(){
   var list=NOTES.slice().reverse(),h='',lastDay='';
   list.forEach(function(x){var d=x.t.slice(0,10);if(d!==lastDay){h+='<div class="day">'+dayLabel(x.t)+'</div>';lastDay=d;}
     h+='<div class="item'+(x.id===state.sel?' sel':'')+'" data-id="'+x.id+'" role="button" tabindex="0" aria-current="'+(x.id===state.sel?'true':'false')+'"><div class="t">'+hm(x.t)+'<small>ET</small>'+tfsOf(x).map(function(t){return '<span class="tfc tf-'+t+'">'+t+'</span>';}).join('')+'</div><div><div class="kind">Note '+('0'+x.id).slice(-2)+' · '+esc(x.kind)+(x.by?' · <span class="author">'+esc(x.by)+'</span>':'')+'</div><h4>'+(x.locked?'New note':esc(x.title))+'</h4><p>'+(x.locked?'Public '+opensTxt(x)+'.':esc(x.body))+'</p>'+
-      ((x.now||isNew(x.t))?'<div class="tags">'+(x.locked?'<span class="tag mem">EARLY ACCESS</span>':'')+(isNew(x.t)?'<span class="tag new">NEW</span>':'')+(x.now?'<span class="tag now">BEFORE / AFTER</span>':'')+'</div>':'')+'</div></div>';});
+      ((x.now||isNew(x.t))?'<div class="tags">'+(x.locked?'<span class="tag mem">EARLY ACCESS</span>':'')+(isNew(x.t)?'<span class="tag new">NEW</span>':'')+(x.now&&isNew(x.now.t)?'<span class="tag new">NEW AFTER</span>':'')+(x.now?'<span class="tag now">BEFORE / AFTER</span>':'')+'</div>':'')+'</div></div>';});
   var wl=document.getElementById('wire');wl.innerHTML=h;
   [].forEach.call(wl.querySelectorAll('.item'),function(e){e.onkeydown=function(ev){if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();e.click();}};e.onclick=function(){state.sel=+e.getAttribute('data-id');state.tf=null;state.mode='note';var nn=note(state.sel);try{history.replaceState(null,'','#note/'+nn.key);}catch(_){}render();if(innerWidth<=960)window.scrollTo({top:0,behavior:'smooth'});};});
   document.getElementById('count').textContent=('0'+NOTES.length).slice(-2)+' notes';
@@ -445,13 +448,17 @@ function render(){
   document.getElementById('range').textContent='Notes '+dm(first)+(first.slice(0,10)!==last.slice(0,10)?' – '+dm(last):'');
   var up=document.getElementById('upd');up.hidden=false;
   // one status line: a clear NEW NOTE bar when the newest note is under 24 h old, otherwise one quiet line
-  var nn=NOTES[NOTES.length-1];
-  if(isNew(last)){
-    up.className='upd new';
-    up.innerHTML='<a href="/#note/'+esc(nn.key)+'" class="upd-go"><b class="dot"></b><b>NEW NOTE</b> · '+when(last)+' · '+ago(last)+(nn.locked&&!IS_MEMBER?' · public '+opensTxt(nn)+'</a><a class="upd-early" href="/pristup.html">See it now →</a>':' →</a>');
+  // the newest thing on the desk: a new note, or a new After chart on an older note
+  var nn=NOTES[NOTES.length-1],ev={n:nn,t:last,ba:false};
+  NOTES.forEach(function(x){if(x.now&&!x.locked&&x.now.t>ev.t)ev={n:x,t:x.now.t,ba:true};});
+  if(isNew(ev.t)){var en=ev.n,here=state.sel===en.id&&(ev.ba?state.mode==='now':state.mode!=='now');
+    up.className='upd new'+(here?' here':'');
+    var lbl=ev.ba?'NEW BEFORE / AFTER':'NEW NOTE',what=ev.ba?' · '+esc(en.title):'';
+    up.innerHTML='<a href="/#note/'+esc(en.key)+(ev.ba?'/ba':'')+'" class="upd-go"><b class="dot"></b><b>'+lbl+'</b>'+what+' · '+ago(ev.t)+
+      (en.locked&&!IS_MEMBER?' · public '+opensTxt(en)+'</a><a class="upd-early" href="/pristup.html">Candor user? See it now →</a>':(here?' · showing below ↓</a>':' →</a>'));
   } else {
     up.className='upd';
-    up.innerHTML='<span>Updated '+ago(last)+' · notes '+dm(first)+' – '+dm(last)+'</span>';
+    up.innerHTML='<span>Updated '+ago(ev.t)+' · notes '+dm(first)+' – '+dm(last)+'</span>';
   }
   drawArchive();drawGallery();
 }
@@ -473,7 +480,7 @@ function drawArchive(){
 }
 (function(){var s=document.getElementById('atf');TFS.forEach(function(t){var o=document.createElement('option');o.value=t;o.textContent=t;s.appendChild(o);});
   ['atf','akind','aba'].forEach(function(id){var e=document.getElementById(id);e.oninput=e.onchange=drawArchive;});})();
-function gFig(label,t,link,tf){var im=snapImg(link);return '<figure>'+(im?'<img src="'+esc(im)+'" alt="NQ '+esc(tf)+' chart, '+label+'" loading="lazy">':'<a class="gx" href="'+esc(link||'#')+'" target="_blank" rel="noopener">Open the '+esc(tf)+' chart on TradingView</a>')+'<figcaption><b>'+label+'</b> · '+esc(tf)+' · '+when(t)+'</figcaption></figure>';}
+function gFig(label,t,link,tf){var im=snapImg(link),id=ideaId(link);return '<figure>'+(id?'<iframe src="https://s.tradingview.com/embed/'+id+'/" title="NQ '+esc(tf)+' chart, '+label+'" loading="lazy" scrolling="no" allowtransparency="true"></iframe>':im?'<img src="'+esc(im)+'" alt="NQ '+esc(tf)+' chart, '+label+'" loading="lazy">':'<a class="gx" href="'+esc(link||'#')+'" target="_blank" rel="noopener">Open the '+esc(tf)+' chart on TradingView</a>')+'<figcaption><b>'+label+'</b> · '+esc(tf)+' · '+when(t)+'</figcaption></figure>';}
 function drawGallery(){
   var list=NOTES.filter(function(x){return x.now&&!x.locked;}).reverse(),g=document.getElementById('gal');
   if(!list.length){g.innerHTML='<p class="empty">No Before / After yet. When we add a later chart to a note, it shows up here.</p>';return;}

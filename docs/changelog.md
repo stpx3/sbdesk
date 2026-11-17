@@ -5,6 +5,11 @@
 
 
 
+
+## 2026-11-17 (20): clearer NEW bar, After charts in the gallery, dark from the first paint
+- The status bar shows the newest event: a new note, or **NEW BEFORE / AFTER · <title>** when an After chart was added to an older note; clicking it opens that note in Before / After view. While it is shown, the bar says "showing below". Wire items get a **NEW AFTER** tag.
+- Before / After page: published TradingView ideas are embedded (interactive) instead of an "Open the chart" link.
+- Dark theme is set before the page draws (no light flash on phones).
 ## 2026-11-17 (19): login stays alive
 - Bug: a login token lasts 1 h; after that the server saw a returning user (and early-access buyers) as logged out until they logged in again. Now the Desk and the early-access page renew the token first (`SBAuth.fresh`, called by `SBAuth.me`), then load notes.
 ## 2026-11-17 (18): early-access page for Candor users
