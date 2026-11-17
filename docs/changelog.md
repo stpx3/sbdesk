@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-11-17 (13): After, one field per timeframe
+- Posting an After: every timeframe has its own link field (like a new note). Switching 1m <-> 1H shows that timeframe's own field; links are kept per timeframe; the button publishes the selected one ("Objavi After · 1m"). Picking another note empties the fields.
+
 ## 2026-11-17 (12): After keeps the link
 - Reverts (11): switching the After timeframe keeps the pasted link and saves it under the timeframe selected when you press the button (emptying the field lost Stipe's link). The button now reads "Objavi After · 1m" (the selected timeframe).
 
