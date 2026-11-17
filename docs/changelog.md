@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-11-17 (10): 1m charts
+- 1m added as a timeframe (Stipe: to show a 1m double top). Posting page has a fifth link row (1m), the Desk shows a 1m tab and the live chart has 1m; After charts can be 1m too. Method page and meta description list 1m.
+
 ## 2026-11-17 (9): fixes from ChatGPT's review
 - `/n/<id>` shows the full note to admins and early-access users, the locked view to others; pages of new notes are never cached by a shared cache and stay noindex. Published TradingView ideas are embedded there.
 - Notes can no longer be back-dated (import path removed; the server sets the time). Admin page: the one-time "move old browser notes" box removed.

@@ -2,7 +2,7 @@
 import { getUser } from '@netlify/identity';
 import { getStore } from '@netlify/blobs';
 
-export const TFS = ['5m', '15m', '1H', '4H'];
+export const TFS = ['1m', '5m', '15m', '1H', '4H'];
 export const KINDS = ['Pre-market', 'NY open', 'Session', 'Close', 'Weekly review'];
 
 // Admins come from the Netlify environment variable ADMINS, not from the code

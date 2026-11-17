@@ -13,7 +13,7 @@ A serious, long-term project: the public research desk of a father and son who t
 
 - **Objective waves.** They read the market in waves with their own MACD-based method. Elliott Wave is subjective: ten people can count the same chart in ten different ways. Here MACD decides where a wave starts and ends, so the reading is objective. This is the core message for people searching for wave analysis.
 - **Timestamped, never edited.** Every note keeps its time; nothing is deleted or rewritten. Later a "Before / After" chart can show how it played out: hits and misses stay up the same way. That is the proof, without signals.
-- **Four timeframes**, each with its own colour on the charts (1m red, 5m yellow, 15m purple, 1H light blue, 4H dark blue, 1D orange). Charts are posted on 4H, 1H, 15m and 5m.
+- **Four timeframes**, each with its own colour on the charts (1m red, 5m yellow, 15m purple, 1H light blue, 4H dark blue, 1D orange). Charts are posted on 4H, 1H, 15m, 5m and 1m (1m added 17 Nov 2026, e.g. to show a 1m double top).
 - The most important patterns for them: **double top and double bottom**.
 
 ## Who it is for

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="NQ (Nasdaq futures) market analysis from a father-and-son desk in Split. Waves read objectively with MACD, not subjective Elliott Wave counts. Charts on 4H, 1H, 15m and 5m. No signals.">
+<meta name="description" content="NQ (Nasdaq futures) market analysis from a father-and-son desk in Split. Waves read objectively with MACD, not subjective Elliott Wave counts. Charts on 4H, 1H, 15m, 5m and 1m. No signals.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="SB Desk">
 <meta property="og:title" content="SB Desk · NQ research desk">
@@ -243,7 +243,7 @@ footer.f{border-top:1px solid var(--line);padding:14px 18px;font-size:12px;color
     <div><i style="color:var(--c4H)"></i>4H</div>
     <div><i style="color:var(--c1D)"></i>1D</div>
   </div>
-  <p>We publish charts on the <b>4H</b>, <b>1H</b>, <b>15m</b> and <b>5m</b>. Each note shows which timeframe it is about.</p>
+  <p>We publish charts on the <b>4H</b>, <b>1H</b>, <b>15m</b>, <b>5m</b> and <b>1m</b>. Each note shows which timeframe it is about.</p>
   <h2>The two patterns that matter most</h2>
   <p>For us the most important patterns are the <a class="gl" href="#method/double-top">double top</a> and the <a class="gl" href="#method/double-bottom">double bottom</a>.</p>
   <h2>Before / After</h2>
@@ -309,7 +309,7 @@ footer.f{border-top:1px solid var(--line);padding:14px 18px;font-size:12px;color
 
 <script>
 (function(){
-var TFS=['5m','15m','1H','4H'];
+var TFS=['1m','5m','15m','1H','4H'];
 // Glossary: words in notes that link to the Method page. Add a word = add one line.
 var GLOSS=[
   {id:'double-top',term:'Double top',match:'double tops?',text:'Price makes two highs at about the same level and fails to break above the second time.'},
@@ -368,7 +368,7 @@ function render(){
   document.getElementById('cTitle').textContent=title;
   document.getElementById('cMeta').textContent=state.mode==='live'?'':'note '+('0'+n.id).slice(-2)+' · '+hm(n.t)+' ET';
   var have=n.posted?tfsOf(n):TFS;
-  var tfs=state.mode==='live'?[['5','5m'],['15','15m'],['60','1H'],['240','4H']]:state.mode==='now'?[]:have.map(function(t){return [t,t];});
+  var tfs=state.mode==='live'?[['1','1m'],['5','5m'],['15','15m'],['60','1H'],['240','4H']]:state.mode==='now'?[]:have.map(function(t){return [t,t];});
   var tb=document.getElementById('tfs');tb.hidden=!tfs.length;
   tb.innerHTML=tfs.map(function(x){var on=state.mode==='live'?x[0]===state.liv:x[0]===state.tf;return '<button data-v="'+x[0]+'"'+(on?' aria-pressed="true"':'')+'>'+x[1]+'</button>';}).join('');
   [].forEach.call(tb.querySelectorAll('button'),function(b){b.onclick=function(){if(state.mode==='live')state.liv=b.getAttribute('data-v');else state.tf=b.getAttribute('data-v');render();};});

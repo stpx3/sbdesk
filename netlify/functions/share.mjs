@@ -90,7 +90,7 @@ h2{font:700 18px Georgia,serif;color:#22d34a;margin:0 0 8px}
 figure{margin:0 0 18px;border:1px solid #2a2a2a}figure img{display:block;width:100%;height:auto}
 figcaption{display:flex;gap:12px;align-items:center;padding:6px 10px;background:#141414;font-size:13px}figcaption a{color:#ffb000}
 .tf{font:700 12px Consolas,monospace;border:1px solid #2a2a2a;border-left:4px solid #888;padding:1px 6px}
-.tf-5m{border-left-color:#fdd835}.tf-15m{border-left-color:#9c27b0}.tf-1H{border-left-color:#4fc3f7}.tf-4H{border-left-color:#1e40af}
+.tf-1m{border-left-color:#f23645}.tf-5m{border-left-color:#fdd835}.tf-15m{border-left-color:#9c27b0}.tf-1H{border-left-color:#4fc3f7}.tf-4H{border-left-color:#1e40af}
 .after{margin-top:26px;padding-top:16px;border-top:2px solid #22d34a}
 .hist{font-size:12.5px;color:#7d776d}
 .btn{display:inline-block;padding:12px 18px;border-radius:3px;font-weight:700;text-decoration:none;margin:6px 8px 0 0}
