@@ -6,6 +6,9 @@
 
 
 
+
+## 2026-11-17 (21): picture for X from published ideas
+- "Slika za X" works when Before or After is a published TradingView idea (not only a chart snapshot): `/api/img?idea=<id>` returns the idea's preview image (`_big.png`, else `_mid.png` / `_mid.webp`).
 ## 2026-11-17 (20): clearer NEW bar, After charts in the gallery, dark from the first paint
 - The status bar shows the newest event: a new note, or **NEW BEFORE / AFTER · <title>** when an After chart was added to an older note; clicking it opens that note in Before / After view. While it is shown, the bar says "showing below". Wire items get a **NEW AFTER** tag.
 - Before / After page: published TradingView ideas are embedded (interactive) instead of an "Open the chart" link.

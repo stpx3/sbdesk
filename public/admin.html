@@ -109,15 +109,17 @@ function draw(notes){
 }
 // ---- Before / After picture for X (1600 x 900 PNG) ----
 function snap(u){var m=/tradingview\.com\/x\/([A-Za-z0-9]+)/.exec(u||'');return m?'https://s3.tradingview.com/snapshots/'+m[1].charAt(0).toLowerCase()+'/'+m[1]+'.png':null;}
-function loadImg(src){return new Promise(function(ok,bad){var i=new Image();i.onload=function(){ok(i);};i.onerror=function(){bad(new Error('Slika se ne učitava.'));};i.src=src;});}
+// snapshot (tradingview.com/x/...) or published idea (tradingview.com/chart/.../ID-...) -> our image address
+function imgSrc(u){var s=snap(u);if(s)return '/api/img?u='+encodeURIComponent(s);var m=/\/chart\/[^\/]+\/([A-Za-z0-9]+)/.exec(u||'');return m?'/api/img?idea='+m[1]:null;}
+function loadImg(src){return new Promise(function(ok,bad){var i=new Image();i.onload=function(){ok(i);};i.onerror=function(){bad(new Error('Slika grafa se ne učitava. Ako je ideja tek objavljena, TradingView ponekad treba par minuta za sliku.'));};i.src=src;});}
 function fit(g,img,x,y,w,h){var r=Math.min(w/img.width,h/img.height),iw=img.width*r,ih=img.height*r;g.drawImage(img,x+(w-iw)/2,y+(h-ih)/2,iw,ih);}
 function nyLabel(t){return new Date(t.slice(0,10)+'T12:00:00Z').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',timeZone:'UTC'})+' · '+t.slice(11,16)+' ET';}
 function makeX(n,btn){
   var tf=n.now.tf,bLink=(n.ideas&&n.ideas[tf])||(n.ideas&&n.ideas[TFS.filter(function(t){return n.ideas[t];})[0]]);
-  var bs=snap(bLink),as=snap(n.now.link);
-  if(!bs||!as){alert('Za sliku trebaju oba grafa kao slike (kamera → Copy link to the chart image).');return;}
+  var bs=imgSrc(bLink),as=imgSrc(n.now.link);
+  if(!bs||!as){alert('Ne prepoznajem link grafa. Treba TradingView slika (kamera → Copy link) ili objavljena ideja.');return;}
   btn.disabled=true;btn.textContent='Radim sliku…';
-  Promise.all([loadImg('/api/img?u='+encodeURIComponent(bs)),loadImg('/api/img?u='+encodeURIComponent(as)),loadImg('img/apple-touch-icon.png')]).then(function(im){
+  Promise.all([loadImg(bs),loadImg(as),loadImg('img/apple-touch-icon.png')]).then(function(im){
     var W=1600,H=900,c=document.createElement('canvas');c.width=W;c.height=H;var g=c.getContext('2d');
     g.fillStyle='#050505';g.fillRect(0,0,W,H);
     g.drawImage(im[2],48,30,84,84);
