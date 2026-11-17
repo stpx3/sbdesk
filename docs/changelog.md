@@ -7,6 +7,9 @@
 
 
 
+
+## 2026-11-17 (22): NEW goes away once seen
+- Stipe: after opening a new note or new After, it should no longer say NEW. The browser remembers what this visitor opened (`localStorage` key `sbdesk-seen`); the gold bar and the NEW / NEW AFTER tags show only for things not opened yet. A locked note that opens later counts as new again.
 ## 2026-11-17 (21): picture for X from published ideas
 - "Slika za X" works when Before or After is a published TradingView idea (not only a chart snapshot): `/api/img?idea=<id>` returns the idea's preview image (`_big.png`, else `_mid.png` / `_mid.webp`).
 ## 2026-11-17 (20): clearer NEW bar, After charts in the gallery, dark from the first paint

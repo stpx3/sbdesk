@@ -374,6 +374,11 @@ function glossify(t){var h=esc(t);GLOSS.forEach(function(g){h=h.replace(new RegE
 function nyNow(){var d=new Date(new Date().toLocaleString('en-US',{timeZone:'America/New_York'}));function p(x){return ('0'+x).slice(-2);}return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'T'+p(d.getHours())+':'+p(d.getMinutes());}
 function mins(a,b){return Math.round((new Date(b.slice(0,16)+':00Z')-new Date(a.slice(0,16)+':00Z'))/60000);}
 function ago(t){var m=mins(t,nyNow());if(m<1)return 'just now';if(m<60)return m+' min ago';if(m<24*60)return Math.round(m/60)+' h ago';var d=Math.round(m/1440);return d+(d===1?' day ago':' days ago');}
+// "NEW" disappears once this visitor has opened the note (or its After); remembered in this browser
+var SEEN={};try{SEEN=JSON.parse(localStorage.getItem('sbdesk-seen')||'{}')||{};}catch(_){SEEN={};}
+function seenKey(x,ba){return x.key+'|'+(ba&&x.now?x.now.t:x.t)+(x.locked?'|L':'');}
+function isSeen(x,ba){return !!SEEN[seenKey(x,ba)];}
+function markSeen(x,ba){if(!x||(ba&&!x.now))return;SEEN[seenKey(x,ba)]=1;try{var k=Object.keys(SEEN);if(k.length>300)k.slice(0,k.length-300).forEach(function(y){delete SEEN[y];});localStorage.setItem('sbdesk-seen',JSON.stringify(SEEN));}catch(_){}}
 function isNew(t){return mins(t,nyNow())<24*60;}
 function dm(t){return t.slice(8,10)+'.'+t.slice(5,7)+'.';}
 function esc(v){return String(v==null?'':v).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
@@ -402,7 +407,7 @@ function render(){
   if(state.mode==='live'||(state.mode==='now'&&!n.now))state.mode='note';
   var modes=[['note','Analysis']];if(n.now)modes.push(['now','Before / After']);document.getElementById('mode').hidden=modes.length<2;
   document.getElementById('mode').innerHTML=modes.map(function(m){return '<button data-m="'+m[0]+'"'+(m[0]===state.mode?' aria-pressed="true"':'')+'>'+m[1]+'</button>';}).join('');
-  [].forEach.call(document.querySelectorAll('#mode button'),function(b){b.onclick=function(){state.mode=b.getAttribute('data-m');render();};});
+  [].forEach.call(document.querySelectorAll('#mode button'),function(b){b.onclick=function(){state.mode=b.getAttribute('data-m');if(state.mode==='now')markSeen(note(state.sel),true);render();};});
   var title={note:'NQ · '+state.tf,now:'NQ · Before / After',live:LIVE.NQ[1]+' · live'}[state.mode];
   document.getElementById('cTitle').textContent=title;
   document.getElementById('cMeta').textContent=state.mode==='live'?'':'note '+('0'+n.id).slice(-2)+' · '+hm(n.t)+' ET';
@@ -431,7 +436,7 @@ function render(){
   document.getElementById('reading').innerHTML='<div class="k">'+esc(n.kind)+' · NQ · '+dayLabel(n.t)+' '+hm(n.t)+' ET'+(n.by?' · <span class="author">'+esc(n.by)+'</span>':'')+'</div><h3>'+glossify(n.title)+'</h3><p style="white-space:pre-wrap">'+glossify(n.body)+'</p>'+
     (n.now?'<div class="nowtxt"><b>AFTER · '+when(n.now.t)+'</b>'+(n.now.body?'<br>'+glossify(n.now.body):'')+((n.nowHistory||[]).length?'<br><small>Replaced '+n.nowHistory.length+'×; earlier versions are kept.</small>':'')+(state.mode!=='now'?' <a href="/" id="seeNow">See Before / After →</a>':'')+'</div>':'')+
     '<div class="by">'+esc(n.by||'SB Desk')+' · SB Desk<button type="button" class="copy" id="copyLink">Copy link</button></div>';
-  var sn=document.getElementById('seeNow');if(sn)sn.onclick=function(e){e.preventDefault();state.mode='now';render();};
+  var sn=document.getElementById('seeNow');if(sn)sn.onclick=function(e){e.preventDefault();state.mode='now';markSeen(note(state.sel),true);render();};
   }
   var cl=document.getElementById('copyLink');if(cl)cl.onclick=function(){var u=location.origin+'/n/'+n.key;
     (navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(function(){cl.textContent='Copied';},function(){prompt('Link to this note:',u);});};
@@ -440,9 +445,9 @@ function render(){
   var list=NOTES.slice().reverse(),h='',lastDay='';
   list.forEach(function(x){var d=x.t.slice(0,10);if(d!==lastDay){h+='<div class="day">'+dayLabel(x.t)+'</div>';lastDay=d;}
     h+='<div class="item'+(x.id===state.sel?' sel':'')+'" data-id="'+x.id+'" role="button" tabindex="0" aria-current="'+(x.id===state.sel?'true':'false')+'"><div class="t">'+hm(x.t)+'<small>ET</small>'+tfsOf(x).map(function(t){return '<span class="tfc tf-'+t+'">'+t+'</span>';}).join('')+'</div><div><div class="kind">Note '+('0'+x.id).slice(-2)+' · '+esc(x.kind)+(x.by?' · <span class="author">'+esc(x.by)+'</span>':'')+'</div><h4>'+(x.locked?'New note':esc(x.title))+'</h4><p>'+(x.locked?'Public '+opensTxt(x)+'.':esc(x.body))+'</p>'+
-      ((x.now||isNew(x.t))?'<div class="tags">'+(x.locked?'<span class="tag mem">EARLY ACCESS</span>':'')+(isNew(x.t)?'<span class="tag new">NEW</span>':'')+(x.now&&isNew(x.now.t)?'<span class="tag new">NEW AFTER</span>':'')+(x.now?'<span class="tag now">BEFORE / AFTER</span>':'')+'</div>':'')+'</div></div>';});
+      ((x.now||isNew(x.t))?'<div class="tags">'+(x.locked?'<span class="tag mem">EARLY ACCESS</span>':'')+(isNew(x.t)&&!isSeen(x,false)?'<span class="tag new">NEW</span>':'')+(x.now&&isNew(x.now.t)&&!isSeen(x,true)?'<span class="tag new">NEW AFTER</span>':'')+(x.now?'<span class="tag now">BEFORE / AFTER</span>':'')+'</div>':'')+'</div></div>';});
   var wl=document.getElementById('wire');wl.innerHTML=h;
-  [].forEach.call(wl.querySelectorAll('.item'),function(e){e.onkeydown=function(ev){if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();e.click();}};e.onclick=function(){state.sel=+e.getAttribute('data-id');state.tf=null;state.mode='note';var nn=note(state.sel);try{history.replaceState(null,'','#note/'+nn.key);}catch(_){}render();if(innerWidth<=960)window.scrollTo({top:0,behavior:'smooth'});};});
+  [].forEach.call(wl.querySelectorAll('.item'),function(e){e.onkeydown=function(ev){if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();e.click();}};e.onclick=function(){state.sel=+e.getAttribute('data-id');state.tf=null;state.mode='note';var nn=note(state.sel);markSeen(nn,false);try{history.replaceState(null,'','#note/'+nn.key);}catch(_){}render();if(innerWidth<=960)window.scrollTo({top:0,behavior:'smooth'});};});
   document.getElementById('count').textContent=('0'+NOTES.length).slice(-2)+' notes';
   var first=NOTES[0].t,last=NOTES[NOTES.length-1].t;
   document.getElementById('range').textContent='Notes '+dm(first)+(first.slice(0,10)!==last.slice(0,10)?' – '+dm(last):'');
@@ -451,7 +456,7 @@ function render(){
   // the newest thing on the desk: a new note, or a new After chart on an older note
   var nn=NOTES[NOTES.length-1],ev={n:nn,t:last,ba:false};
   NOTES.forEach(function(x){if(x.now&&!x.locked&&x.now.t>ev.t)ev={n:x,t:x.now.t,ba:true};});
-  if(isNew(ev.t)){var en=ev.n,here=state.sel===en.id&&(ev.ba?state.mode==='now':state.mode!=='now');
+  if(isNew(ev.t)&&!isSeen(ev.n,ev.ba)){var en=ev.n,here=state.sel===en.id&&(ev.ba?state.mode==='now':state.mode!=='now');
     up.className='upd new'+(here?' here':'');
     var lbl=ev.ba?'NEW BEFORE / AFTER':'NEW NOTE',what=ev.ba?' · '+esc(en.title):'';
     up.innerHTML='<a href="/#note/'+esc(en.key)+(ev.ba?'/ba':'')+'" class="upd-go"><b class="dot"></b><b>'+lbl+'</b>'+what+' · '+ago(ev.t)+
@@ -514,7 +519,7 @@ function route(){
   // old links like sbdesk.com/#method/double-top move to the new addresses
   if(path===''&&OLD[h.split('/')[0]]){var o=h.split('/');try{history.replaceState(null,'',PATH[OLD[o[0]]]+(o[1]?'#'+o[1]:''));}catch(_){}return route();}
   var p=PAGES.hasOwnProperty(path)?PAGES[path]:'desk',sub=p==='method'&&h?h:null;
-  if(p==='desk'&&h.indexOf('note/')===0){var k=h.slice(5),ba=/\/ba$/.test(k);if(ba)k=k.slice(0,-3);var nk=byKey(k);if(nk){state.sel=nk.id;state.tf=null;state.mode=ba&&nk.now?'now':'note';}}
+  if(p==='desk'&&h.indexOf('note/')===0){var k=h.slice(5),ba=/\/ba$/.test(k);if(ba)k=k.slice(0,-3);var nk=byKey(k);if(nk){state.sel=nk.id;state.tf=null;state.mode=ba&&nk.now?'now':'note';markSeen(nk,state.mode==='now');}}
   drawGloss(sub);
   var TT={desk:'SB Desk · NQ research desk',archive:'Archive · SB Desk',gallery:'Before / After · SB Desk',method:'Method · SB Desk',about:'About · SB Desk',suggest:'Suggestions · SB Desk',privacy:'Privacy · SB Desk'};document.title=TT[p];
   ['desk','archive','gallery','method','about','suggest','privacy'].forEach(function(x){document.getElementById('p-'+x).hidden=x!==p;});
