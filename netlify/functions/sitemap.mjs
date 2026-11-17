@@ -5,7 +5,7 @@ export default async () => {
   const store = notesStore();
   const { blobs } = await store.list();
   const notes = (await Promise.all(blobs.map((b) => store.get(b.key, { type: 'json' })))).filter(Boolean);
-  const urls = [['https://sbdesk.com/', null], ...['archive', 'before-after', 'method', 'about'].map((p) => [`https://sbdesk.com/${p}`, null]), ['https://sbdesk.com/pristup.html', null]];
+  const urls = [['https://sbdesk.com/', null], ...['archive', 'before-after', 'method', 'about'].map((p) => [`https://sbdesk.com/${p}/`, null]), ['https://sbdesk.com/pristup.html', null]];
   notes.filter((n) => isOpen(n))
     .sort((a, b) => (a.t < b.t ? 1 : -1))
     .forEach((n) => urls.push([`https://sbdesk.com/n/${n.id}`, n.t.slice(0, 10)]));

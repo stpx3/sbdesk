@@ -25,7 +25,7 @@ const PAGES = [
 const src = readFileSync('public/index.html', 'utf8');
 const swap = (s, a, b) => { if (!s.includes(a)) throw new Error('page build: missing ' + a); return s.split(a).join(b); };
 for (const [slug, sec, title, desc] of PAGES) {
-  const url = `https://sbdesk.com/${slug}`;
+  const url = `https://sbdesk.com/${slug}/`;
   let h = src;
   h = swap(h, '<title>SB Desk · NQ research desk</title>', `<title>${title}</title>`);
   h = h.replace(/<meta name="description" content="[^"]*">/, `<meta name="description" content="${desc}">`);

@@ -3,7 +3,7 @@
 
 
 ## 2026-11-17 (16): own addresses, archive search, Before / After page
-- Every section has its own address: `/archive`, `/before-after`, `/method`, `/about`, `/suggestions`, `/privacy` (own title, description and canonical; generated from `index.html` by `build.mjs`, not kept in git). Old links like `/#method/double-top` move to `/method#double-top`. In-site links change the address without reloading.
+- Every section has its own address: `/archive/`, `/before-after/`, `/method/`, `/about/`, `/suggestions/`, `/privacy/` (with the trailing slash, as Netlify serves them) (own title, description and canonical; generated from `index.html` by `build.mjs`, not kept in git). Old links like `/#method/double-top` move to `/method/#double-top`. In-site links change the address without reloading.
 - Archive: search (all words must match: title, text, type, author, timeframe), timeframe and type filters, "Before / After only".
 - New **Before / After** page: every note with a later chart, Before and After side by side (click to enlarge), the After text, a link to the note page; replaced Afters are mentioned.
 - Sitemap lists the new pages. Note pages and the early-access page link to the new addresses.
