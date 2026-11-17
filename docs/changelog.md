@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-11-17 (3)
+- New logo (chosen by Stipe: design canvas "SB Desk logo", board 8): round seal "NQ RESEARCH DESK" around "SB / DESK", fine ticks, six timeframe colours as separate marks along the bottom (never touching, so it does not read as a rainbow). Wordmark "SB DESK" in Libre Caslon Display, tagline "SPLIT · CROATIA".
+- Logo on the site: small mark + wordmark in the header, full seal on About (light and dark versions), favicon `public/img/favicon.svg` on every page, mark on the login page.
+- Decided: the logo carries no personal names (names stay on About).
+
 ## 2026-11-17 (2)
 - Author shown on every note: in the reading header, the Research Wire and the Archive.
 - Suggestions: small form (footer link → #suggest), max 5 per hour per visitor, hidden bot field. Read and delete on the admin page.
