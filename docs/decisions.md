@@ -4,6 +4,8 @@ Every important decision, newest first. If it is not written here, it is not dec
 
 | Date | Decision | Why | By |
 |---|---|---|---|
+| 2026-11-17 | **The 24 h lock stays.** The main goal is purchases on Candor; SB Desk builds the credibility. Locked notes now also link straight to Candor (tagged `utm_source=sbdesk`). | Early access must stay a real reason to buy through the code. | Stipe |
+| 2026-11-17 | **SB Desk is both**: a public archive + method that builds credibility, and a tool traders open every day. The daily-tool side is developed further. | Archive alone gives no reason to come back daily. | Stipe |
 | 2026-11-17 | After ChatGPT's review: notes cannot be back-dated, After replacements are kept, the 24 h lock is exact, the build runs tests. | Trust must be checkable, not only promised. | Claude, from ChatGPT's review |
 | 2026-11-17 | Method page states the core idea: **waves made objective** (Elliott is subjective, MACD decides where a wave starts and ends). | Stipe: this is what people should find when they search; it is the key difference. | Stipe |
 | 2026-11-17 | Context docs for AI assistants in this repo (`AGENTS.md`, `docs/`), like Candor. | Stipe asks ChatGPT for a second opinion through GitHub. | Stipe |

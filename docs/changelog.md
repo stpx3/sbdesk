@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-11-17 (14): 24 h lock kept, Candor link
+- Decided: keep the 24 h lock; SB Desk is both archive and daily tool.
+- Locked notes (Desk and `/n/` page) and the early-access page link to Candor with `utm_source=sbdesk`.
+
 ## 2026-11-17 (13): After, one field per timeframe
 - Posting an After: every timeframe has its own link field (like a new note). Switching 1m <-> 1H shows that timeframe's own field; links are kept per timeframe; the button publishes the selected one ("Objavi After · 1m"). Picking another note empties the fields.
 

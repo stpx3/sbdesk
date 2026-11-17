@@ -43,6 +43,8 @@ Written by Claude, 17 Nov 2026; updated after ChatGPT's review the same day (see
 
 ## Open questions for Stipe
 
+0. The rules behind "objective" waves, plus one marked chart for Method (only Stipe can write them).
+
 1. Which partner firms allow the buyer extra (waiting for emails)?
 2. Email notifications (points 4 and 5): yes?
 3. Before / After gallery page: yes?
@@ -64,12 +66,12 @@ Fixed the same day:
 - Checked: registration is **Open** in Netlify (it was switched from invite-only on 17 Nov).
 
 Agreed, but needs Stipe:
-- **The 24 h lock can push new visitors away**, and approval "within 24 hours" can mean a buyer gets access only when the note is already public. Options: shorter lock (for example until the New York close), a public title + first lines with charts in early access, faster approvals. Stipe decides; real visitor data would help (needs stats).
+- **24 h lock**: Stipe decided to keep it (17 Nov): Candor purchases come first. Added: locked notes link straight to Candor. Keep approvals fast so buyers do not get access only after a note is public.
 - **"Objective" must be shown, not only claimed**: the Method page needs the rules (what starts a wave, what ends it, what happens in unclear cases, same rules on every timeframe) with one marked chart. If some parts stay discretionary, say so.
 - **Method, About, Archive as their own pages** (own address and title) instead of `#method` sections: better for search. Planned.
 - **On the phone, latest notes above the chart** (compact strip), and later **archive search / filters**.
 - **A rhythm** (for example before the New York open + after the session) and Before / After posts that also show misses.
-- **Strategic question**: SB Desk mainly as a public archive that builds reputation, or a tool traders open every trading day? The 24 h lock pushes it towards an archive for normal visitors.
+- **Strategic question, decided (17 Nov)**: both, archive + method for credibility and a daily tool for traders. Next: a posting rhythm and the daily-tool features below.
 - **Email to early-access users about new notes**: hold until the prop firm question is clear (ChatGPT's point, agreed).
 
 Not agreed / different view:
