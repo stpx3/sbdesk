@@ -8,6 +8,16 @@
   directory = "netlify/functions"
   node_bundler = "esbuild"
 
+# Basic security for every page
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "SAMEORIGIN"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Strict-Transport-Security = "max-age=31536000"
+
 # Admin and login pages stay out of search engines.
 [[headers]]
   for = "/admin.html"
@@ -26,3 +36,9 @@
   for = "/api/*"
   [headers.values]
     Cache-Control = "no-store"
+
+# Images and icons change rarely
+[[headers]]
+  for = "/img/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"

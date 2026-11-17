@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SB Desk · Free early access</title>
 <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<meta name="theme-color" content="#050505">
 <meta name="description" content="Every SB Desk note is free. Bought your prop firm challenge through our Candor code? See new NQ notes as soon as they are posted.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=IBM+Plex+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
@@ -43,7 +45,7 @@ a.btn{display:inline-block;margin-top:14px;padding:12px 18px;background:var(--go
 </style>
 </head>
 <body>
-<div class="wrap">
+<main class="wrap">
   <div class="top"><a href="index.html" aria-label="SB Desk"><img src="img/favicon.svg" width="34" height="34" alt="">SB DESK</a><a class="back" href="index.html">← Desk</a></div>
 
   <h1>Free early access</h1>
@@ -117,7 +119,7 @@ a.btn{display:inline-block;margin-top:14px;padding:12px 18px;background:var(--go
   </div>
 
   <p class="fine">Analysis only: no entries, stops, targets or signals. Not financial advice. <a href="index.html#privacy">Privacy</a></p>
-</div>
+</main>
 <script src="js/auth.js"></script>
 <script>
 (function(){
@@ -142,6 +144,7 @@ $('useEmail').onclick=function(){$('emailBox').hidden=false;this.hidden=true;};
 function refresh(){
   return A.me().then(function(m){
     if(!m.loggedIn){show('cAuth');steps(0);return;}
+    if(m.admin){location.replace('admin.html');return;}
     if(m.member){$('who2').textContent=m.email||'';show('cMem');steps(3);return;}
     if(m.pending){show('cWait');steps(2);return;}
     $('who1').textContent=m.email||'';show('cReq');steps(2);

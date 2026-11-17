@@ -1,9 +1,24 @@
-// GET /n/<id> -> a page for one note with its own share preview (X, WhatsApp, ...),
-// which sends people straight on to the note on the Desk.
+// GET /n/<id> -> a real page for one note: readable by Google and by people,
+// with its own share preview (X, WhatsApp, ...). New notes (early access) show only that a note exists.
 import { notesStore, nyNow, minutesBetween, LOCK_HOURS, TFS } from '../lib/desk.mjs';
 
-const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const SITE = 'https://sbdesk.com';
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const snap = (u) => { const m = /tradingview\.com\/x\/([A-Za-z0-9]+)/.exec(u || ''); return m ? `https://s3.tradingview.com/snapshots/${m[1].charAt(0).toLowerCase()}/${m[1]}.png` : null; };
+const day = (t) => new Date(t.slice(0, 10) + 'T12:00:00Z').toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+// New York wall time -> ISO with offset (EST/EDT) for structured data
+function isoNY(t) {
+  const guess = new Date(t + ':00Z');
+  const ny = new Date(guess.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+  const off = Math.round((guess - ny) / 3600000);
+  return t + ':00' + (off >= 0 ? '-' : '+') + String(Math.abs(off)).padStart(2, '0') + ':00';
+}
+
+function chart(tf, link) {
+  const img = snap(link);
+  if (img) return `<figure><figcaption><span class="tf tf-${tf}">${tf}</span><a href="${esc(link)}" rel="noopener" target="_blank">open on TradingView</a></figcaption><img src="${esc(img)}" alt="NQ ${tf} chart" width="1200" height="675" loading="lazy" decoding="async"></figure>`;
+  return `<figure><figcaption><span class="tf tf-${tf}">${tf}</span><a href="${esc(link)}" rel="noopener" target="_blank">interactive chart on TradingView</a></figcaption></figure>`;
+}
 
 export default async (req) => {
   const id = decodeURIComponent(new URL(req.url).pathname.split('/')[2] || '');
@@ -14,33 +29,73 @@ export default async (req) => {
   const age = minutesBetween(n.t, nyNow());
   const open = age >= LOCK_HOURS * 60;
   const tfs = TFS.filter((x) => n.ideas && n.ideas[x]);
-  let title, desc, image = SITE + '/img/og.png';
+  const url = `${SITE}/n/${id}`;
+  let title, desc, image = SITE + '/img/og.png', main, robots = 'index,follow', ld = '';
+
   if (open) {
-    title = `${n.title} · SB Desk`;
+    title = `${n.title} · NQ ${tfs.join(' · ')} · SB Desk`;
     desc = String(n.body || '').replace(/\s+/g, ' ').slice(0, 180);
-    const tf = tfs[tfs.length - 1];
-    const m = tf && /tradingview\.com\/x\/([A-Za-z0-9]+)/.exec(n.ideas[tf]);
-    if (m) image = `https://s3.tradingview.com/snapshots/${m[1].charAt(0).toLowerCase()}/${m[1]}.png`;
+    const last = tfs[tfs.length - 1];
+    image = snap(n.ideas[last]) || image;
+    main = `<p class="meta">${esc(n.kind)} · ${esc(day(n.t))} · ${esc(n.t.slice(11, 16))} ET${n.by ? ' · ' + esc(n.by) : ''}</p>
+<h1>${esc(n.title)}</h1>
+<p class="body">${esc(n.body)}</p>
+${tfs.map((x) => chart(x, n.ideas[x])).join('\n')}
+${n.now ? `<section class="after"><h2>After · ${esc(day(n.now.t))} ${esc(n.now.t.slice(11, 16))} ET</h2>${n.now.body ? `<p>${esc(n.now.body)}</p>` : ''}${chart(n.now.tf, n.now.link)}</section>` : ''}`;
+    ld = `<script type="application/ld+json">${JSON.stringify({
+      '@context': 'https://schema.org', '@type': 'AnalysisNewsArticle', headline: n.title, description: desc,
+      datePublished: isoNY(n.t), url, image: [image], inLanguage: 'en',
+      author: n.by ? { '@type': 'Person', name: n.by } : { '@type': 'Organization', name: 'SB Desk' },
+      publisher: { '@type': 'Organization', name: 'SB Desk', logo: { '@type': 'ImageObject', url: SITE + '/img/apple-touch-icon.png' } },
+    }).replace(/</g, '\\u003c')}</script>`;
   } else {
     const h = Math.max(1, Math.round((LOCK_HOURS * 60 - age) / 60));
     title = `New NQ note (${tfs.join(' · ')}) · SB Desk`;
     desc = `Public in about ${h} h. Traders who bought their challenge through our Candor code see it now, free.`;
+    robots = 'noindex,follow';
+    main = `<p class="meta">${esc(n.kind)} · ${esc(day(n.t))} · ${esc(n.t.slice(11, 16))} ET${n.by ? ' · ' + esc(n.by) : ''}</p>
+<h1>New note · public in about ${h} h</h1>
+<p class="body">Every SB Desk note is free. Traders who bought their challenge through our Candor code see new notes as soon as we post them.</p>
+<p><a class="btn gold" href="/pristup.html">See it now: free early access</a></p>`;
   }
-  const target = `${SITE}/#note/${id}`;
-  const html = `<!doctype html><html lang="en"><head><meta charset="utf-8">
+
+  const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${esc(title)}</title>
-<meta name="description" content="${esc(desc)}">
+<meta name="description" content="${esc(desc)}"><meta name="robots" content="${robots}">
+<link rel="canonical" href="${url}"><link rel="icon" href="/img/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<meta name="theme-color" content="#050505">
 <meta property="og:type" content="article"><meta property="og:site_name" content="SB Desk">
 <meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(desc)}">
-<meta property="og:url" content="${SITE}/n/${id}"><meta property="og:image" content="${esc(image)}">
+<meta property="og:url" content="${url}"><meta property="og:image" content="${esc(image)}">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${esc(title)}">
 <meta name="twitter:description" content="${esc(desc)}"><meta name="twitter:image" content="${esc(image)}">
-<link rel="canonical" href="${SITE}/n/${id}">
-<meta http-equiv="refresh" content="0;url=${target}">
-</head><body style="background:#050505;color:#ece6d6;font-family:Georgia,serif">
-<p><a style="color:#ffb000" href="${target}">Open the note on SB Desk</a></p>
-<script>location.replace(${JSON.stringify(target)});</script>
-</body></html>`;
+${ld}
+<style>
+body{margin:0;background:#050505;color:#d8d8d8;font:16px/1.6 Tahoma,Verdana,sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:18px 18px 60px}
+header{display:flex;align-items:center;gap:10px;padding-bottom:16px;border-bottom:1px solid #2a2a2a;margin-bottom:22px}
+header a.brand{display:flex;align-items:center;gap:10px;color:#ece6d6;text-decoration:none;font:22px Georgia,serif;letter-spacing:.05em}
+header .r{margin-left:auto;display:flex;gap:14px;font-size:14px}header .r a{color:#bdb6a6}
+.meta{font:13px Consolas,'Courier New',monospace;color:#8f8f8f;margin:0 0 6px;text-transform:uppercase;letter-spacing:.04em}
+h1{font:700 28px/1.25 Georgia,serif;color:#fff;margin:0 0 12px}
+h2{font:700 18px Georgia,serif;color:#22d34a;margin:0 0 8px}
+.body{white-space:pre-wrap;margin:0 0 22px}
+figure{margin:0 0 18px;border:1px solid #2a2a2a}figure img{display:block;width:100%;height:auto}
+figcaption{display:flex;gap:12px;align-items:center;padding:6px 10px;background:#141414;font-size:13px}figcaption a{color:#ffb000}
+.tf{font:700 12px Consolas,monospace;border:1px solid #2a2a2a;border-left:4px solid #888;padding:1px 6px}
+.tf-5m{border-left-color:#fdd835}.tf-15m{border-left-color:#9c27b0}.tf-1H{border-left-color:#4fc3f7}.tf-4H{border-left-color:#1e40af}
+.after{margin-top:26px;padding-top:16px;border-top:2px solid #22d34a}
+.btn{display:inline-block;padding:12px 18px;border-radius:3px;font-weight:700;text-decoration:none;margin:6px 8px 0 0}
+.btn.gold{background:#ffb000;color:#000}.btn.line{border:1px solid #333;color:#ece6d6}
+footer{margin-top:34px;font-size:12px;color:#7d776d;border-top:1px solid #2a2a2a;padding-top:12px}
+</style></head><body><div class="wrap">
+<header><a class="brand" href="/"><img src="/img/favicon.svg" width="34" height="34" alt="">SB DESK</a><nav class="r"><a href="/">Desk</a><a href="/#archive">Archive</a><a href="/#method">Method</a></nav></header>
+<main>
+${main}
+<p><a class="btn line" href="/#note/${esc(id)}">Open on the Desk</a><a class="btn line" href="/#archive">All notes</a></p>
+</main>
+<footer>SB Desk publishes market analysis for information only. No entries, stops or targets; not financial advice. Futures trading carries substantial risk.</footer>
+</div></body></html>`;
   return new Response(html, { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=300' } });
 };
 

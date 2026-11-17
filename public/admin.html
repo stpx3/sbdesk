@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<meta name="theme-color" content="#050505">
 <title>SB Desk · Admin</title>
 <style>
 :root{--navy:#0b2f5c;--ink:#0f1a24;--muted:#5d6b78;--line:#d6dde6;--soft:#f3f6fa;--card:#fff;--bg:#e9edf2;--up:#0a7a2f;--gold:#f5c542;--mono:"Courier New",Courier,monospace;--ui:Verdana,Geneva,Tahoma,sans-serif;--serif:Georgia,"Times New Roman",serif}
@@ -50,7 +52,7 @@ body.wait .page{visibility:hidden}
 <div class="page">
   <header class="top"><b>SB Desk</b><small>ADMIN</small><a href="index.html">Desk →</a></header>
   <div class="wrap">
-    <div class="who"><span id="who"></span><button type="button" id="out">Odjava</button></div>
+    <div class="who"><span id="who"></span><span><button type="button" id="bak">Backup objava</button> <button type="button" id="out">Odjava</button></span></div>
     <div class="mig" id="mig" hidden></div>
     <a class="new" href="objavi.html">+ Nova analiza</a>
     <h2>Zahtjevi za pristup <span id="reqN"></span></h2>
@@ -74,6 +76,11 @@ try{if(localStorage.getItem('sbdesk-theme')!=='light')document.body.classList.ad
 function esc(v){return String(v==null?'':v).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
 var TFS=['5m','15m','1H','4H'],el=document.getElementById('list');
 document.getElementById('out').onclick=function(){SBAuth.signOut();};
+// download every note (with After charts) as one file, as a backup
+document.getElementById('bak').onclick=function(){SBAuth.notes().then(function(n){
+  var b=new Blob([JSON.stringify({saved:new Date().toISOString(),notes:n},null,2)],{type:'application/json'}),a=document.createElement('a');
+  a.href=URL.createObjectURL(b);a.download='sbdesk-backup-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();a.remove();
+},function(e){alert(e.message);});};
 SBAuth.requireAdmin().then(function(m){if(!m)return;
   document.body.classList.remove('wait');
   document.getElementById('who').textContent='Prijavljen: '+m.name;

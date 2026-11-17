@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-11-17 (6): site check and phone fixes
+- **One status line** at the top of the Desk instead of three pieces: a gold "NEW NOTE · time · how long ago" bar (with "See it now →" for visitors when it is in early access) when the newest note is under 24 h old; otherwise one quiet "Updated X ago · notes dd.mm. – dd.mm.". The bar is there from the first paint, so nothing jumps when notes load.
+- **"Log in"** link in the header for everyone not logged in (→ `pristup.html`); admins who log in there go straight to the Admin page.
+- **About**: Bernard Pupačić presented as founder & owner (large card), Stipe Pupačić as co-founder.
+- **Note pages** `/n/<id>` are now real pages (title, text, charts, After, author, structured data `AnalysisNewsArticle`) that Google can read, with their own share preview; new notes are `noindex` until public. Archive links point to them.
+- **Sitemap** is generated (`/sitemap.xml`: Desk, early access page, every public note).
+- SEO / quality: `<main>` landmark and an `<h1>` on the Desk, page title per section, Organization + WebSite structured data, theme colour, Apple touch icon, web manifest and app icons, `noscript` notice, 404 page, chart images with size + lazy iframes, keyboard access to the Research Wire, NEW tag readable (contrast).
+- Security and caching headers (nosniff, referrer policy, frame options, HSTS, permissions policy; images cached a week).
+- Admin: "Backup objava" downloads every note as one JSON file.
+
 ## 2026-11-17 (5)
 - Wording (Stipe): early access must not look paid or push people away. "Members" → **free early access**; every note is free, Candor-code traders just see new notes 24 h earlier. Locked note: "Public in X h · every note is free", button "See it now: free early access".
 - **Google login** (Netlify Identity, Google provider with Netlify's default app) as the main way in on `pristup.html`; email stays as a small "Use email instead" option. Google's return link (`#access_token=`) is forwarded to `pristup.html`.
