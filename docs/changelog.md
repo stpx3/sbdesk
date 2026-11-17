@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-11-17 (5)
+- Wording (Stipe): early access must not look paid or push people away. "Members" → **free early access**; every note is free, Candor-code traders just see new notes 24 h earlier. Locked note: "Public in X h · every note is free", button "See it now: free early access".
+- **Google login** (Netlify Identity, Google provider with Netlify's default app) as the main way in on `pristup.html`; email stays as a small "Use email instead" option. Google's return link (`#access_token=`) is forwarded to `pristup.html`.
+- **Own link per note with its own share preview**: `sbdesk.com/n/<id>` (function `share`): public notes show their title, text and chart image on X / WhatsApp; new (early access) notes show only "New NQ note, public in about X h" and the SB Desk image. "Copy link" gives this link.
+
 ## 2026-11-17 (3)
 - New logo (chosen by Stipe: design canvas "SB Desk logo", board 8): round seal "NQ RESEARCH DESK" around "SB / DESK", fine ticks, six timeframe colours as separate marks along the bottom (never touching, so it does not read as a rainbow). Wordmark "SB DESK" in Libre Caslon Display. Top text "NQ RESEARCH DESK" and bottom text "SPLIT" sit in the middle of the ring band; "SB / DESK" in the centre.
 - Logo on the site: small mark + wordmark in the header, full seal on About (light and dark versions), favicon `public/img/favicon.svg` on every page, mark on the login page.
