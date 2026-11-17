@@ -1,3 +1,9 @@
 node_modules/
 public/js/auth.js
 .netlify/
+public/archive/
+public/before-after/
+public/method/
+public/about/
+public/suggestions/
+public/privacy/

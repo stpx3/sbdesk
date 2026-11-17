@@ -98,10 +98,10 @@ figcaption{display:flex;gap:12px;align-items:center;padding:6px 10px;background:
 .btn.gold{background:#ffb000;color:#000}.btn.line{border:1px solid #333;color:#ece6d6}
 footer{margin-top:34px;font-size:12px;color:#7d776d;border-top:1px solid #2a2a2a;padding-top:12px}
 </style></head><body><div class="wrap">
-<header><a class="brand" href="/"><img src="/img/favicon.svg" width="34" height="34" alt="">SB DESK</a><nav class="r"><a href="/">Desk</a><a href="/#archive">Archive</a><a href="/#method">Method</a></nav></header>
+<header><a class="brand" href="/"><img src="/img/favicon.svg" width="34" height="34" alt="">SB DESK</a><nav class="r"><a href="/">Desk</a><a href="/archive">Archive</a><a href="/before-after">Before / After</a><a href="/method">Method</a></nav></header>
 <main>
 ${main}
-<p><a class="btn line" href="/#note/${esc(id)}">Open on the Desk</a><a class="btn line" href="/#archive">All notes</a></p>
+<p><a class="btn line" href="/#note/${esc(id)}">Open on the Desk</a><a class="btn line" href="/archive">All notes</a></p>
 </main>
 <footer>SB Desk publishes market analysis for information only. No entries, stops or targets; not financial advice. Futures trading carries substantial risk.</footer>
 </div></body></html>`;
