@@ -1,5 +1,7 @@
 # SB Desk (sbdesk.com)
 
+> AI assistants and reviewers: start with `AGENTS.md`, then `docs/status.md`.
+
 NQ market analysis by Bernard and Stipe Pupačić. Public site in English, admin pages in Croatian.
 
 ## How it works

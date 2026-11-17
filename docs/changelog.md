@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-11-17 (8)
+- Method page: "Waves, made objective" (Stipe's words: Elliott Wave is subjective, ten people count ten ways; MACD decides where a wave starts and ends). Site description mentions it for search.
+- Contact hello@sbdesk.com on Privacy, footer, early access page and structured data.
+- Docs for AI assistants and reviewers, like Candor: `AGENTS.md`, `docs/vision.md`, `docs/decisions.md`, `docs/must-keep.md`, `docs/roadmap.md`, `docs/status.md` (what is built, what is missing, risks, open questions).
+
 ## 2026-11-17 (7)
 - Light theme uses the same fonts as the dark theme (Stipe: fonts looked different).
 - **Automatic backup**: scheduled function `backup` saves every note, the early-access list and open requests each day into Blobs store `backups` (last 60 days). Admin page: "Backup" section with download links (`/api/backups`).
