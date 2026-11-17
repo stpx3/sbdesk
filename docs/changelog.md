@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-11-17 (11): After timeframe switch
+- Posting an After: switching the timeframe (e.g. 1H -> 1m) now empties the link field and its preview, so a 1H chart can no longer end up saved as the 1m After.
+
 ## 2026-11-17 (10): 1m charts
 - 1m added as a timeframe (Stipe: to show a 1m double top). Posting page has a fifth link row (1m), the Desk shows a 1m tab and the live chart has 1m; After charts can be 1m too. Method page and meta description list 1m.
 
