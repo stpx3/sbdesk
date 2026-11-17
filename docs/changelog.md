@@ -1,7 +1,7 @@
 # Changelog
 
 ## 2026-11-17 (3)
-- New logo (chosen by Stipe: design canvas "SB Desk logo", board 8): round seal "NQ RESEARCH DESK" around "SB / DESK", fine ticks, six timeframe colours as separate marks along the bottom (never touching, so it does not read as a rainbow). Wordmark "SB DESK" in Libre Caslon Display. Top text sits in the middle of the ring band; "SPLIT" under SB.
+- New logo (chosen by Stipe: design canvas "SB Desk logo", board 8): round seal "NQ RESEARCH DESK" around "SB / DESK", fine ticks, six timeframe colours as separate marks along the bottom (never touching, so it does not read as a rainbow). Wordmark "SB DESK" in Libre Caslon Display. Top text "NQ RESEARCH DESK" and bottom text "SPLIT" sit in the middle of the ring band; "SB / DESK" in the centre.
 - Logo on the site: small mark + wordmark in the header, full seal on About (light and dark versions), favicon `public/img/favicon.svg` on every page, mark on the login page.
 - Decided: the logo carries no personal names (names stay on About).
 
