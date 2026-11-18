@@ -317,7 +317,7 @@ footer.f{border-top:1px solid var(--line);padding:14px 18px;font-size:12px;color
   <h2>In your browser</h2>
   <p>Your light or dark choice is saved in your own browser. When you log in, a login cookie keeps you logged in. We use no advertising or tracking cookies.</p>
   <h2>Who handles it</h2>
-  <p>SB Desk is run by Bernard and Stipe Pupačić in Split, Croatia. The site and its data are hosted by Netlify. We do not sell or share your data.</p>
+  <p>SB Desk is run by Bernard and Stipe Pupačić in Split, Croatia. The site and its data are hosted by Netlify; an encrypted daily copy is kept on GitHub so nothing is lost. We do not sell or share your data.</p>
   <h2>Delete your data</h2>
   <p>Write to <a href="mailto:hello@sbdesk.com">hello@sbdesk.com</a> (or use <a href="/suggestions/">Suggestions</a>) and we delete your account and everything linked to it.</p>
   <h2>Contact</h2>
@@ -457,8 +457,9 @@ function render(){
   var nn=NOTES[NOTES.length-1],ev={n:nn,t:last,ba:false};
   NOTES.forEach(function(x){if(x.now&&!x.locked&&x.now.t>ev.t)ev={n:x,t:x.now.t,ba:true};});
   // browser tab: "(1) New note · SB Desk" while something new is not opened yet
-  var unseen=0;NOTES.forEach(function(x){if(isNew(x.t)&&!isSeen(x,false))unseen++;if(x.now&&!x.locked&&isNew(x.now.t)&&!isSeen(x,true))unseen++;});
-  var baseT=document.title.replace(/^\(\d+\) New [^·]*· /,'');document.title=unseen?'('+unseen+') '+(unseen>1?'New notes':'New note')+' · '+baseT:baseT;
+  // only the newest event counts (Stipe: not older notes the visitor did not open)
+  var unseen=(isNew(ev.t)&&!isSeen(ev.n,ev.ba))?1:0;
+  var baseT=document.title.replace(/^\(\d+\) New [^·]*· /,'');document.title=unseen?'(1) '+(ev.ba?'New Before / After':'New note')+' · '+baseT:baseT;
   if(isNew(ev.t)&&!isSeen(ev.n,ev.ba)){var en=ev.n,here=state.sel===en.id&&(ev.ba?state.mode==='now':state.mode!=='now');
     up.className='upd new'+(here?' here':'');
     var lbl=ev.ba?'NEW BEFORE / AFTER':'NEW NOTE',what=en.title?' · '+esc(en.title):'';

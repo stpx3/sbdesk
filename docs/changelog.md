@@ -11,6 +11,11 @@
 
 
 
+
+## 2026-11-18 (26): launch fixes, backup outside Netlify
+- Early access: no time promise after a request ("as soon as it is confirmed").
+- Browser tab shows "(1) New note" only for the newest note (or newest After) not opened yet.
+- **Backup outside Netlify:** `/api/export` gives an encrypted copy (AES-256-GCM, passphrase in env `BACKUP_KEY`, kept by Stipe); the GitHub Action `backup.yml` saves it every day on branch `backups`. Open with `node tools/decrypt-backup.mjs`. The repo is public, so only the encrypted file is stored. Privacy page says so.
 ## 2026-11-18 (25): tab shows new notes, title in the NEW bar
 - Browser tab reads "(1) New note · SB Desk" while a new note or After is not opened yet.
 - The NEW NOTE bar shows the note's title (for locked notes only the time, as before).

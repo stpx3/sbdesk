@@ -1,0 +1,27 @@
+name: Backup outside Netlify
+# Every day: download the ENCRYPTED export from sbdesk.com/api/export and keep it on the
+# branch `backups` of this repository (one file per day, history kept by git).
+on:
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the encrypted export
+        run: |
+          curl -fsS --retry 3 --max-time 60 https://sbdesk.com/api/export -o export.json
+          python3 -c "import json;d=json.load(open('export.json'));assert d.get('v')==1 and d.get('data') and d.get('tag'), 'not an encrypted export'; print('notes', d['counts']['notes'], d['saved'])"
+      - name: Save it on the backups branch
+        run: |
+          DAY=$(date -u +%F)
+          git init -q b && cd b
+          git remote add origin "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git"
+          if git fetch -q --depth 1 origin backups; then git checkout -q -b backups FETCH_HEAD; else git checkout -q --orphan backups; fi
+          mkdir -p backups && cp ../export.json "backups/$DAY.json"
+          printf 'Encrypted daily copies of SB Desk data (notes, members, requests, suggestions).\nOpen one with: node tools/decrypt-backup.mjs backups/<day>.json (passphrase: BACKUP_KEY, kept by Stipe).\n' > README.md
+          git config user.name "SB Desk backup"; git config user.email "noreply@github.com"
+          git add -A && git commit -q -m "Backup $DAY" && git push -q origin HEAD:backups || echo "nothing new"
