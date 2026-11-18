@@ -55,7 +55,7 @@ export default async (req) => {
   if (v.member) return json({ ok: true, member: true });
   const firm = clip(d.firm, 60), order = clip(d.order, 80);
   if (!firm) return fail('Choose the firm.');
-  if (order.length < 3) return fail('Enter your order number.');
+  if (order.length < 3) return fail('Enter your order number or the email you bought with.');
   const note = clip(d.note, 300), t = nyNow();
   await reqs.setJSON(v.email, { email: v.email, firm, order, note, at: new Date().toISOString(), t });
   await notifyAdmins(req, { email: v.email, firma: firm, narudzba: order, napomena: note, vrijeme: t.replace('T', ' ') + ' NY' });

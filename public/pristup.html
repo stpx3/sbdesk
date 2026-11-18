@@ -76,13 +76,13 @@ a.btn{display:inline-block;margin-top:14px;padding:12px 18px;background:var(--go
   <ol class="steps">
     <li id="s1"><span>Buy your Earn2Trade challenge through <a href="https://propfirmcandor.com/?utm_source=sbdesk&amp;utm_medium=early_access" target="_blank" rel="noopener">Candor</a> with code <span class="code">CANDOR</span>.</span></li>
     <li id="s2"><span>Log in below with Google (or email).</span></li>
-    <li id="s3"><span>Send us the firm and your order number. We find the order in our partner account and switch on early access.</span></li>
+    <li id="s3"><span>Send us the firm, your order number and the email you bought with. We find the purchase in our partner account and switch on early access.</span></li>
   </ol>
 
   <h2 class="sec">Why is it free?</h2>
   <div class="why">
     <p>Candor is our comparison site for futures prop firms. When you buy a challenge through it, the firm pays us a commission. Your price is the same, or lower with the code.</p>
-    <p>That commission pays for the desk, so we give buyers the notes first. Your order number is only used to find your purchase.</p>
+    <p>That commission pays for the desk, so we give buyers the notes first. Your order number and email are only used to find your purchase.</p>
   </div>
 
   <!-- not logged in -->
@@ -131,7 +131,7 @@ a.btn{display:inline-block;margin-top:14px;padding:12px 18px;background:var(--go
     <p class="sub">Logged in as <b id="who1"></b>. We only use this to check that you bought through our Candor code.</p>
     <form id="fReq">
       <label for="rFirm">Prop firm</label><input id="rFirm" maxlength="60" required list="firms" placeholder="Earn2Trade" autocomplete="off"><datalist id="firms"><option value="Earn2Trade"></datalist>
-      <label for="rOrd">Order number</label><input id="rOrd" maxlength="80" required>
+      <label for="rOrd">Order number and the email you bought with</label><input id="rOrd" maxlength="80" required placeholder="e.g. 123456 · name@gmail.com">
       <label for="rNote">Anything else (optional)</label><textarea id="rNote" maxlength="300"></textarea>
       <button class="go" type="submit">Send</button>
     </form>
@@ -142,7 +142,7 @@ a.btn{display:inline-block;margin-top:14px;padding:12px 18px;background:var(--go
   <!-- waiting -->
   <div class="card state" id="cWait" hidden>
     <h2>We are checking your order</h2>
-    <p>Thanks. We check your order number and switch on early access, usually within 24 hours. Until then you see every note like everyone else.</p>
+    <p>Thanks. We check your purchase and switch on early access, usually within 24 hours. Until then you see every note like everyone else.</p>
     <button class="link" type="button" data-out>Log out</button>
   </div>
 
