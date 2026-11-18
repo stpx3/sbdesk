@@ -65,8 +65,9 @@ a.btn{display:inline-block;margin-top:14px;padding:12px 18px;background:var(--go
   <h1>Early access for Candor users</h1>
   <p class="lede">Bought your prop firm challenge through Candor? Then you see new SB Desk notes the moment we post them. Free, nothing to pay. Everyone else sees every note 24 hours later.</p>
   <p class="firms">Early access works for: <b>Earn2Trade</b>. More partner firms soon.</p>
-  <p style="margin:-10px 0 22px"><a href="#login">Already a Candor user? Log in ↓</a></p>
+  <p id="toLogin" style="margin:-10px 0 22px"><a href="#login">Already a Candor user? Log in ↓</a></p>
 
+  <div id="intro">
   <div class="cmp">
     <div><h3>Everyone</h3><p>New notes <b>24 hours</b> after we post them. Archive and Before / After always open.</p></div>
     <div><h3>Candor users</h3><p>New notes <b>as soon as</b> we post them. Same desk, same notes, just earlier.</p></div>
@@ -83,6 +84,7 @@ a.btn{display:inline-block;margin-top:14px;padding:12px 18px;background:var(--go
   <div class="why">
     <p>Candor is our comparison site for futures prop firms. When you buy a challenge through it, the firm pays us a commission. Your price is the same, or lower with the code.</p>
     <p>That commission pays for the desk, so we give buyers the notes first. Your order number and email are only used to find your purchase.</p>
+  </div>
   </div>
 
   <!-- not logged in -->
@@ -177,8 +179,10 @@ $('google').onclick=function(){say($('mAuth'),'Opening Google…');A.oauthLogin(
 $('useEmail').onclick=function(){$('emailBox').hidden=false;this.hidden=true;};
 [].forEach.call(document.querySelectorAll('[data-out]'),function(b){b.onclick=function(){A.signOut('/pristup.html');};});
 
+// once logged in, the next step is the first thing on the screen (no scrolling to find it)
+function top(on){$('intro').hidden=on;$('toLogin').hidden=on;if(on)window.scrollTo(0,0);}
 function refresh(){
-  return A.me().then(function(m){
+  return A.me().then(function(m){top(!!m.loggedIn);
     if(!m.loggedIn){show('cAuth');steps(0);return;}
     if(m.admin){$('who3').textContent=m.email||'';show('cAdm');steps(3);return;}
     if(m.member){$('who2').textContent=m.email||'';show('cMem');steps(3);return;}

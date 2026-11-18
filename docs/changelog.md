@@ -9,6 +9,11 @@
 
 
 
+
+## 2026-11-18 (24): next step on top, phone alert, less Candor push
+- Early-access page: once logged in, the explanation is hidden and the next step (your purchase / waiting / on) is right under the title; no scrolling.
+- New request also sends a phone push through ntfy (topic in env `NTFY_TOPIC`; admins subscribe in the ntfy app).
+- Stipe: SB Desk must not push Candor (most people come from Candor). Removed "No challenge yet? Compare … on Candor" from locked notes.
 ## 2026-11-17 (23): early access names Earn2Trade only
 - Earn2Trade is the only firm that confirmed early access is allowed; the early-access page says so ("More partner firms soon") and the firm field suggests only Earn2Trade.
 ## 2026-11-17 (22): NEW goes away once seen
