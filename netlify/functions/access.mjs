@@ -18,15 +18,6 @@ const notifyAdmins = async (req, f) => {
     const body = new URLSearchParams({ 'form-name': 'novi-zahtjev', ...f, odobri: origin + '/admin.html' });
     await fetch(origin + '/obavijest-forma.html', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: body.toString() });
   } catch (e) { console.log('notify failed', e && e.message); }
-  // push to the admins' phones: ntfy app, subscribed to the topic in NTFY_TOPIC
-  const topic = process.env.NTFY_TOPIC;
-  if (topic) {
-    try {
-      const origin = process.env.URL || new URL(req.url).origin;
-      await fetch('https://ntfy.sh/' + topic, { method: 'POST', body: `${f.email} · ${f.firma} · ${f.narudzba}`,
-        headers: { Title: 'SB Desk: new early-access request', Click: origin + '/admin.html', Tags: 'bell' } });
-    } catch (e) { console.log('ntfy failed', e && e.message); }
-  }
 };
 
 export default async (req) => {

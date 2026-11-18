@@ -456,9 +456,12 @@ function render(){
   // the newest thing on the desk: a new note, or a new After chart on an older note
   var nn=NOTES[NOTES.length-1],ev={n:nn,t:last,ba:false};
   NOTES.forEach(function(x){if(x.now&&!x.locked&&x.now.t>ev.t)ev={n:x,t:x.now.t,ba:true};});
+  // browser tab: "(1) New note · SB Desk" while something new is not opened yet
+  var unseen=0;NOTES.forEach(function(x){if(isNew(x.t)&&!isSeen(x,false))unseen++;if(x.now&&!x.locked&&isNew(x.now.t)&&!isSeen(x,true))unseen++;});
+  var baseT=document.title.replace(/^\(\d+\) New [^·]*· /,'');document.title=unseen?'('+unseen+') '+(unseen>1?'New notes':'New note')+' · '+baseT:baseT;
   if(isNew(ev.t)&&!isSeen(ev.n,ev.ba)){var en=ev.n,here=state.sel===en.id&&(ev.ba?state.mode==='now':state.mode!=='now');
     up.className='upd new'+(here?' here':'');
-    var lbl=ev.ba?'NEW BEFORE / AFTER':'NEW NOTE',what=ev.ba?' · '+esc(en.title):'';
+    var lbl=ev.ba?'NEW BEFORE / AFTER':'NEW NOTE',what=en.title?' · '+esc(en.title):'';
     up.innerHTML='<a href="/#note/'+esc(en.key)+(ev.ba?'/ba':'')+'" class="upd-go"><b class="dot"></b><b>'+lbl+'</b>'+what+' · '+ago(ev.t)+
       (en.locked&&!IS_MEMBER?' · public '+opensTxt(en)+'</a><a class="upd-early" href="/pristup.html">Candor user? See it now →</a>':(here?' · showing below ↓</a>':' →</a>'));
   } else {
@@ -505,7 +508,8 @@ function drawLocked(n){
   document.getElementById('chart').innerHTML='<div class="lockbox"><div class="lockbg"></div><div class="lockin">'+
     '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="1.5"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>'+
     '<h3>Public '+opensTxt(n)+'</h3><p>'+tfsOf(n).join(' · ')+' · every note is free</p>'+
-    '<div class="row"><a class="bgold" href="/pristup.html">Candor user? See it now</a><a class="bline" href="/pristup.html">Log in</a></div>'+'</div></div>';
+    '<div class="row"><a class="bgold" href="/pristup.html">Candor user? See it now</a><a class="bline" href="/pristup.html">Log in</a></div>'+
+    '<p class="lockc">No challenge yet? <a href="https://propfirmcandor.com/?utm_source=sbdesk&amp;utm_medium=locked_note" target="_blank" rel="noopener">Compare futures prop firms on Candor</a></p></div></div>';
   document.getElementById('fnote').textContent='Traders who bought their challenge through our Candor code see new notes early. Free.';
   document.getElementById('reading').innerHTML='<div class="k">'+esc(n.kind)+' · NQ · '+dayLabel(n.t)+' '+hm(n.t)+' ET'+(n.by?' · <span class="author">'+esc(n.by)+'</span>':'')+'</div><h3>New note</h3><p>Posted '+ago(n.t)+'. Public '+opensTxt(n)+'.</p><div class="by">SB Desk<button type="button" class="copy" id="copyLink">Copy link</button></div>';
 }

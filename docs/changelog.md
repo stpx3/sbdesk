@@ -10,6 +10,11 @@
 
 
 
+
+## 2026-11-18 (25): tab shows new notes, title in the NEW bar
+- Browser tab reads "(1) New note · SB Desk" while a new note or After is not opened yet.
+- The NEW NOTE bar shows the note's title (for locked notes only the time, as before).
+- Stipe: keep "No challenge yet? Compare … on Candor" on locked notes (put back). No ntfy app: alerts stay email only (removed).
 ## 2026-11-18 (24): next step on top, phone alert, less Candor push
 - Early-access page: once logged in, the explanation is hidden and the next step (your purchase / waiting / on) is right under the title; no scrolling.
 - New request also sends a phone push through ntfy (topic in env `NTFY_TOPIC`; admins subscribe in the ntfy app).
