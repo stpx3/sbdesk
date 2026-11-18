@@ -13,6 +13,10 @@
 
 
 
+## 2026-11-18 (28): visitor stats
+
+GoatCounter counts public pages, note pages and pages opened inside the site, on Candor's existing counter (candor.goatcounter.com), with addresses starting `sbdesk.com/`. No cookies. Admin pages are not counted. Privacy page says so.
+
 ## 2026-11-18 (27): eligible partner firms
 - Early-access page: "Eligible partner firms now: Earn2Trade"; buyers through Candor at another partner firm can send a request too and get access when that firm becomes eligible (Stipe). Firm field suggests all Candor partners.
 ## 2026-11-18 (26): launch fixes, backup outside Netlify

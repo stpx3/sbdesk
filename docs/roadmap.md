@@ -12,7 +12,6 @@ One list of what we work on, in order. New ideas go to "Ideas" until Stipe picks
 
 - Email to early-access users when a new note is posted; email to admins on new access requests and suggestions.
 - Before / After gallery page.
-- Visitor stats (GoatCounter).
 - RSS feed of public notes.
 - "Correction" line under a note (original kept).
 - Weekly offsite backup.

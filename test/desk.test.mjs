@@ -1,6 +1,7 @@
 // Basic checks of the shared rules (run: npm test)
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { cleanLink, nyToEpoch, ageMinutes, isOpen, nyNow, LOCK_HOURS } from '../netlify/lib/desk.mjs';
 
 test('only TradingView chart images and published ideas are accepted', () => {
@@ -27,4 +28,10 @@ test('24 h lock is exact across the clock change (1 Nov 2026)', () => {
 
 test('server time format', () => {
   assert.match(nyNow(), /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/);
+});
+
+test('visit counter is on public pages and never on admin pages', () => {
+  const has = (f) => readFileSync(f, 'utf8').includes('data-goatcounter=');
+  for (const f of ['public/index.html', 'public/pristup.html', 'public/404.html', 'netlify/functions/share.mjs']) assert.ok(has(f), f);
+  for (const f of ['public/admin.html', 'public/objavi.html', 'public/prijava.html', 'public/obavijest-forma.html']) assert.ok(!has(f), f);
 });

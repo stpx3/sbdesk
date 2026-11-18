@@ -26,7 +26,7 @@ Written by Claude, 17 Nov 2026; updated after ChatGPT's review the same day (see
 4. **Notify early-access users of a new note** (email). Without it, early access is weak: people must check the site to benefit. Needs an email service (for example Resend, free tier) and an unsubscribe link.
 5. **Notify admins** when someone asks for early access or sends a suggestion (same email service). Today Stipe must open the Admin page to see it.
 6. **Before / After gallery page**: all notes that have an After, as a grid. The strongest proof page for X visitors. No new data needed.
-7. **Visitor stats** (GoatCounter like Candor, no cookie banner). Today there is no way to know if anyone comes.
+7. **Visitor stats:** done 18 Nov (GoatCounter, candor.goatcounter.com, addresses starting `sbdesk.com/`).
 8. **RSS feed** of public notes (cheap; some traders and tools follow feeds; helps discovery).
 9. **Corrections without editing**: notes cannot be edited (on purpose). A typo or a wrong chart link can only be fixed by a new note. Proposal: an admin "Correction" line added under a note with its own timestamp, original kept.
 10. **Offsite backup**: daily backups live in Netlify too. A weekly copy to GitHub or email would protect against losing the Netlify account.
@@ -48,7 +48,7 @@ Written by Claude, 17 Nov 2026; updated after ChatGPT's review the same day (see
 1. Which partner firms allow the buyer extra (waiting for emails)?
 2. Email notifications (points 4 and 5): yes?
 3. Before / After gallery page: yes?
-4. Visitor stats with GoatCounter: yes? (needs a site on his GoatCounter account)
+4. Visitor stats with GoatCounter: done 18 Nov.
 5. Branded Google login needs Netlify Identity Pro (paid): keep "Netlify Identity" on Google's screen for now?
 6. When does Candor get CFD and perp firms (Stipe, 17 Nov: later)?
 

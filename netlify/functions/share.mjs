@@ -96,7 +96,10 @@ figcaption{display:flex;gap:12px;align-items:center;padding:6px 10px;background:
 .btn{display:inline-block;padding:12px 18px;border-radius:3px;font-weight:700;text-decoration:none;margin:6px 8px 0 0}
 .btn.gold{background:#ffb000;color:#000}.btn.line{border:1px solid #333;color:#ece6d6}
 footer{margin-top:34px;font-size:12px;color:#7d776d;border-top:1px solid #2a2a2a;padding-top:12px}
-</style></head><body><div class="wrap">
+</style>
+<script>window.goatcounter={path:function(p){return 'sbdesk.com'+p;}};</script>
+<script data-goatcounter="https://candor.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</head><body><div class="wrap">
 <header><a class="brand" href="/"><img src="/img/favicon.svg" width="34" height="34" alt="">SB DESK</a><nav class="r"><a href="/">Desk</a><a href="/archive/">Archive</a><a href="/before-after/">Before / After</a><a href="/method/">Method</a></nav></header>
 <main>
 ${main}

@@ -210,6 +210,8 @@ footer.f{border-top:1px solid var(--line);padding:14px 18px;font-size:12px;color
 .upd.here{opacity:.75}
 .gpair iframe{display:block;width:100%;height:320px;border:1px solid var(--line)}
 </style>
+<script>window.goatcounter={path:function(p){return 'sbdesk.com'+p;}};</script>
+<script data-goatcounter="https://candor.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </head>
 <body>
 <script>try{if(localStorage.getItem('sbdesk-theme')!=='light')document.body.classList.add('dark');}catch(_){document.body.classList.add('dark');}</script>
@@ -316,6 +318,8 @@ footer.f{border-top:1px solid var(--line);padding:14px 18px;font-size:12px;color
   <p>If you send a suggestion we keep the text, and a name and contact only if you write them. We read them to improve the desk.</p>
   <h2>In your browser</h2>
   <p>Your light or dark choice is saved in your own browser. When you log in, a login cookie keeps you logged in. We use no advertising or tracking cookies.</p>
+  <h2>Visit counter</h2>
+  <p>To see how many people visit and where they come from we use GoatCounter, a small open-source counter. It records the page you opened, the page or link you came from, and your browser, screen size and country. It sets no cookies and does not identify you.</p>
   <h2>Who handles it</h2>
   <p>SB Desk is run by Bernard and Stipe Pupačić in Split, Croatia. The site and its data are hosted by Netlify; an encrypted daily copy is kept on GitHub so nothing is lost. We do not sell or share your data.</p>
   <h2>Delete your data</h2>
@@ -518,6 +522,9 @@ var PAGES={'':'desk','archive':'archive','before-after':'gallery','method':'meth
 var PATH={desk:'/',archive:'/archive/',gallery:'/before-after/',method:'/method/',about:'/about/',suggest:'/suggestions/',privacy:'/privacy/'};
 var OLD={archive:'archive',method:'method',about:'about',suggest:'suggest',privacy:'privacy',desk:'desk'};
 function go(u){try{history.pushState(null,'',u);}catch(_){location.href=u;return;}route();}
+// visit counter: pages opened inside the site are counted too (the first page is counted by GoatCounter itself)
+var countedPath=location.pathname;
+function countPage(){var p=location.pathname;if(p===countedPath)return;countedPath=p;if(window.goatcounter&&window.goatcounter.count)window.goatcounter.count({path:'sbdesk.com'+p,referrer:''});}
 function route(){
   var h=decodeURIComponent((location.hash||'').slice(1)),path=location.pathname.replace(/index\.html$/,'').replace(/^\/+|\/+$/g,'');
   // old links like sbdesk.com/#method/double-top move to the new addresses
@@ -527,7 +534,7 @@ function route(){
   drawGloss(sub);
   var TT={desk:'SB Desk · NQ research desk',archive:'Archive · SB Desk',gallery:'Before / After · SB Desk',method:'Method · SB Desk',about:'About · SB Desk',suggest:'Suggestions · SB Desk',privacy:'Privacy · SB Desk'};document.title=TT[p];
   ['desk','archive','gallery','method','about','suggest','privacy'].forEach(function(x){document.getElementById('p-'+x).hidden=x!==p;});
-  [].forEach.call(document.querySelectorAll('#nav a'),function(a){a.classList.toggle('on',a.getAttribute('href')===PATH[p]);});render();var g=sub&&document.getElementById('g-'+sub);if(g)g.scrollIntoView();else window.scrollTo(0,0);}
+  [].forEach.call(document.querySelectorAll('#nav a'),function(a){a.classList.toggle('on',a.getAttribute('href')===PATH[p]);});render();var g=sub&&document.getElementById('g-'+sub);if(g)g.scrollIntoView();else window.scrollTo(0,0);countPage();}
 // links between the pages change the address without reloading
 document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="/"]');if(!a||e.defaultPrevented||e.button||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey||a.target)return;
   var href=a.getAttribute('href'),pth=href.split('#')[0].replace(/^\/+|\/+$/g,'');if(!PAGES.hasOwnProperty(pth))return;e.preventDefault();go(href);});
