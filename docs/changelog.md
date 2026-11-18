@@ -12,6 +12,9 @@
 
 
 
+
+## 2026-11-18 (27): eligible partner firms
+- Early-access page: "Eligible partner firms now: Earn2Trade"; buyers through Candor at another partner firm can send a request too and get access when that firm becomes eligible (Stipe). Firm field suggests all Candor partners.
 ## 2026-11-18 (26): launch fixes, backup outside Netlify
 - Early access: no time promise after a request ("as soon as it is confirmed").
 - Browser tab shows "(1) New note" only for the newest note (or newest After) not opened yet.
