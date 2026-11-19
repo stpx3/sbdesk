@@ -43,7 +43,7 @@ body.dark .badge{background:var(--gold);color:#000}
 body.dark .theme{border-color:#3a3a3a}
 *{box-sizing:border-box}[hidden]{display:none!important}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-#chart{min-height:560px}@media(max-width:960px){#chart{min-height:380px}}
+#chart{min-height:560px}@media(max-width:960px){#chart{min-height:380px}}#chart:has(.pair){min-height:0}
 .item:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}
 body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.55 var(--ui)}
 a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}

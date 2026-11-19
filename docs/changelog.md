@@ -13,6 +13,9 @@
 
 
 
+
+## 2026-11-19 (28): no empty space under Before / After
+- The chart area kept its single-chart height (560 px) in Before / After view, leaving an empty band under the two charts. It now fits the two charts.
 ## 2026-11-18 (28): visitor stats
 
 GoatCounter counts public pages, note pages and pages opened inside the site, on Candor's existing counter (candor.goatcounter.com), with addresses starting `sbdesk.com/`. No cookies. Admin pages are not counted. Privacy page says so.
