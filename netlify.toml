@@ -1,3 +1,10 @@
+# old Croatian address of the early-access page (links already shared keep working)
+[[redirects]]
+  from = "/pristup.html"
+  to = "/early-access/"
+  status = 301
+  force = true
+
 # Netlify builds the site from this repository.
 # Push to main -> live on sbdesk.com.
 [build]

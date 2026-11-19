@@ -15,7 +15,7 @@ NQ market analysis by Bernard (founder & owner) and Stipe Pupačić, Split. Publ
 | Page | Who | What |
 |---|---|---|
 | `index.html` | everyone | Desk, Archive, Method, About, Suggestions, Privacy |
-| `pristup.html` | everyone | Free early access: Google / email login, purchase form, status |
+| `early-access/` (was `pristup.html`, redirects) | everyone | Free early access: Google / email login, purchase form, status |
 | `prijava.html` | admins | Admin login, invite and password links |
 | `admin.html` | admins | New note, After per note, picture for X, access requests, early-access list, suggestions, backups |
 | `objavi.html` | admins | Posting form (TradingView links per timeframe) and After form |

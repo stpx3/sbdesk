@@ -14,6 +14,9 @@
 
 
 
+
+## 2026-11-19 (29): English address for early access
+- The early-access page moved from `/pristup.html` to `/early-access/` (public address must be English). The old address redirects (301), so shared links and the OAuth return still work.
 ## 2026-11-19 (28): no empty space under Before / After
 - The chart area kept its single-chart height (560 px) in Before / After view, leaving an empty band under the two charts. It now fits the two charts.
 ## 2026-11-18 (28): visitor stats

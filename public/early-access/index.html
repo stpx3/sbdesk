@@ -180,7 +180,7 @@ function tab(log){$('tNew').setAttribute('aria-pressed',!log);$('tLog').setAttri
 $('tNew').onclick=function(){tab(false);};$('tLog').onclick=function(){tab(true);};
 $('google').onclick=function(){say($('mAuth'),'Opening Google…');A.oauthLogin('google');};
 $('useEmail').onclick=function(){$('emailBox').hidden=false;this.hidden=true;};
-[].forEach.call(document.querySelectorAll('[data-out]'),function(b){b.onclick=function(){A.signOut('/pristup.html');};});
+[].forEach.call(document.querySelectorAll('[data-out]'),function(b){b.onclick=function(){A.signOut('/early-access/');};});
 
 // once logged in, the next step is the first thing on the screen (no scrolling to find it)
 function top(on){$('intro').hidden=on;$('toLogin').hidden=on;if(on)window.scrollTo(0,0);}
@@ -215,7 +215,7 @@ $('forgot').onclick=function(){var em=$('lEm').value.trim();
 $('fPw').onsubmit=function(e){e.preventDefault();var f=this,a=$('p1').value,b=$('p2').value;
   if(a.length<8)return say($('mPw'),'At least 8 characters.','err');
   if(a!==b)return say($('mPw'),'The two passwords are not the same.','err');
-  busy(f,true);A.updateUser({password:a}).then(function(){say($('mPw'),'Saved.','ok');history.replaceState(null,'','pristup.html');setTimeout(refresh,500);},function(err){say($('mPw'),hr(err),'err');busy(f,false);});};
+  busy(f,true);A.updateUser({password:a}).then(function(){say($('mPw'),'Saved.','ok');history.replaceState(null,'','/early-access/');setTimeout(refresh,500);},function(err){say($('mPw'),hr(err),'err');busy(f,false);});};
 
 $('fReq').onsubmit=function(e){e.preventDefault();var f=this;busy(f,true);say($('mReq'),'Sending…');
   A.post('/api/access',{firm:$('rFirm').value,order:$('rOrd').value,note:$('rNote').value}).then(refresh,function(err){say($('mReq'),err.message,'err');busy(f,false);});};
@@ -223,8 +223,8 @@ $('fReq').onsubmit=function(e){e.preventDefault();var f=this;busy(f,true);say($(
 // links from our emails (confirm account, reset password) arrive here with a token
 A.handleAuthCallback().then(function(r){
   if(r&&r.type==='recovery'){show('cPw');return;}
-  if(r&&r.type==='invite'){location.replace('prijava.html'+location.hash);return;}
-  if(r)history.replaceState(null,'','pristup.html');
+  if(r&&r.type==='invite'){location.replace('/prijava.html'+location.hash);return;}
+  if(r)history.replaceState(null,'','/early-access/');
   return refresh();
 },function(err){show('cAuth');tab(true);say($('mAuth'),hr(err),'err');});
 })();

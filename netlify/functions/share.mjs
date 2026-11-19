@@ -63,7 +63,7 @@ ${n.now ? `<section class="after"><h2>After · ${esc(day(n.now.t))} ${esc(n.now.
     main = `<p class="meta">${esc(n.kind)} · ${esc(day(n.t))} · ${esc(n.t.slice(11, 16))} ET${n.by ? ' · ' + esc(n.by) : ''}</p>
 <h1>New note · public in about ${h} h</h1>
 <p class="body">Every SB Desk note is free. Traders who bought their challenge through our Candor code see new notes as soon as we post them.</p>
-<p><a class="btn gold" href="/pristup.html">Candor user? See it now</a></p>`;
+<p><a class="btn gold" href="/early-access/">Candor user? See it now</a></p>`;
   }
 
   const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
