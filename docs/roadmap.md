@@ -6,11 +6,11 @@ One list of what we work on, in order. New ideas go to "Ideas" until Stipe picks
 
 1. Method text in Stipe's words + one annotated chart (Stipe writes or tells; Claude lays it out).
 2. Bernard posts his first note himself (usability check).
-3. Candor card live (Candor PR #106) once partner firms confirm.
+3. Candor card "free daily NQ analysis" (Candor PR, 20 Nov), not tied to buying.
 
 ## Next (proposed by Claude, waiting for Stipe's yes)
 
-- Email to early-access users when a new note is posted; email to admins on new access requests and suggestions.
+- Email (or X post) for anyone who wants it when a new note is posted; email to admins on new suggestions.
 - Before / After gallery page.
 - RSS feed of public notes.
 - "Correction" line under a note (original kept).
@@ -26,5 +26,5 @@ One list of what we work on, in order. New ideas go to "Ideas" until Stipe picks
 
 ## Ideas (not decided)
 
-- Telegram or X channel that posts each public note automatically (after the 24 h, never live).
+- Telegram or X channel that posts each public note automatically (after posting, never live trades).
 - Weekly review note (Weekly review post type already exists).

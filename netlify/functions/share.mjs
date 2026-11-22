@@ -1,6 +1,6 @@
 // GET /n/<id> -> a real page for one note: readable by Google and by people,
-// with its own share preview (X, WhatsApp, ...). New notes (early access) show only that a note exists.
-import { notesStore, viewer, ageMinutes, LOCK_HOURS, TFS } from '../lib/desk.mjs';
+// with its own share preview (X, WhatsApp, ...). Every note is public at once.
+import { notesStore, TFS } from '../lib/desk.mjs';
 
 const SITE = 'https://sbdesk.com';
 const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -28,17 +28,11 @@ export default async (req) => {
   const n = await notesStore().get(id, { type: 'json' });
   if (!n) return Response.redirect(SITE + '/', 302);
 
-  const age = ageMinutes(n);
-  const isPublic = age >= LOCK_HOURS * 60;
-  // early-access users and admins see a new note in full here too; everyone else sees only that it exists
-  let v = null;
-  if (!isPublic) { try { v = await viewer(); } catch { v = null; } }
-  const open = isPublic || !!(v && v.member);
   const tfs = TFS.filter((x) => n.ideas && n.ideas[x]);
   const url = `${SITE}/n/${id}`;
-  let title, desc, image = SITE + '/img/og.png', main, robots = isPublic ? 'index,follow' : 'noindex,follow', ld = '';
+  let title, desc, image = SITE + '/img/og.png', main, ld = '';
 
-  if (open) {
+  {
     title = `${n.title} · NQ ${tfs.join(' · ')} · SB Desk`;
     desc = String(n.body || '').replace(/\s+/g, ' ').slice(0, 180);
     const last = tfs[tfs.length - 1];
@@ -48,27 +42,19 @@ export default async (req) => {
 <p class="body">${esc(n.body)}</p>
 ${tfs.map((x) => chart(x, n.ideas[x])).join('\n')}
 ${n.now ? `<section class="after"><h2>After · ${esc(day(n.now.t))} ${esc(n.now.t.slice(11, 16))} ET</h2>${n.now.body ? `<p>${esc(n.now.body)}</p>` : ''}${chart(n.now.tf, n.now.link)}${(n.nowHistory || []).length ? `<p class="hist">This After chart was replaced ${n.nowHistory.length} time${n.nowHistory.length > 1 ? 's' : ''}; earlier versions are kept in the record (first added ${esc(day(n.nowHistory[0].t))} ${esc(n.nowHistory[0].t.slice(11, 16))} ET).</p>` : ''}</section>` : ''}
-<p class="hist">Posted ${esc(n.t.slice(11, 16))} ET by the server clock. Notes are never edited or deleted.</p>`;
+<p class="hist">Posted ${esc(n.t.slice(11, 16))} ET by the server clock. Notes are never edited or deleted.</p>
+<p class="cand"><a href="https://propfirmcandor.com/?utm_source=sbdesk&amp;utm_medium=note" target="_blank" rel="noopener">We trade NQ at prop firms. Compare them and get our discount on PropFirmCandor →</a></p>`;
     ld = `<script type="application/ld+json">${JSON.stringify({
       '@context': 'https://schema.org', '@type': 'AnalysisNewsArticle', headline: n.title, description: desc,
       datePublished: isoNY(n.t), url, image: [image], inLanguage: 'en',
       author: n.by ? { '@type': 'Person', name: n.by } : { '@type': 'Organization', name: 'SB Desk' },
       publisher: { '@type': 'Organization', name: 'SB Desk', logo: { '@type': 'ImageObject', url: SITE + '/img/apple-touch-icon.png' } },
     }).replace(/</g, '\\u003c')}</script>`;
-  } else {
-    const h = Math.max(1, Math.round((LOCK_HOURS * 60 - age) / 60));
-    title = `New NQ note (${tfs.join(' · ')}) · SB Desk`;
-    desc = `Public in about ${h} h. Traders who bought their challenge through our Candor code see it now, free.`;
-    robots = 'noindex,follow';
-    main = `<p class="meta">${esc(n.kind)} · ${esc(day(n.t))} · ${esc(n.t.slice(11, 16))} ET${n.by ? ' · ' + esc(n.by) : ''}</p>
-<h1>New note · public in about ${h} h</h1>
-<p class="body">Every SB Desk note is free. Traders who bought their challenge through our Candor code see new notes as soon as we post them.</p>
-<p><a class="btn gold" href="/early-access/">Candor user? See it now</a></p>`;
   }
 
   const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${esc(title)}</title>
-<meta name="description" content="${esc(desc)}"><meta name="robots" content="${robots}">
+<meta name="description" content="${esc(desc)}"><meta name="robots" content="index,follow">
 <link rel="canonical" href="${url}"><link rel="icon" href="/img/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
 <meta name="theme-color" content="#050505">
 <meta property="og:type" content="article"><meta property="og:site_name" content="SB Desk">
@@ -94,7 +80,9 @@ figcaption{display:flex;gap:12px;align-items:center;padding:6px 10px;background:
 .after{margin-top:26px;padding-top:16px;border-top:2px solid #22d34a}
 .hist{font-size:12.5px;color:#7d776d}
 .btn{display:inline-block;padding:12px 18px;border-radius:3px;font-weight:700;text-decoration:none;margin:6px 8px 0 0}
-.btn.gold{background:#ffb000;color:#000}.btn.line{border:1px solid #333;color:#ece6d6}
+
+.cand{font-size:13px;margin:4px 0 0}.cand a{color:#9a9384;text-decoration:underline}
+.btn.line{border:1px solid #333;color:#ece6d6}
 footer{margin-top:34px;font-size:12px;color:#7d776d;border-top:1px solid #2a2a2a;padding-top:12px}
 </style>
 <script>window.goatcounter={path:function(p){return 'sbdesk.com'+p;}};</script>
@@ -105,11 +93,9 @@ footer{margin-top:34px;font-size:12px;color:#7d776d;border-top:1px solid #2a2a2a
 ${main}
 <p><a class="btn line" href="/#note/${esc(id)}">Open on the Desk</a><a class="btn line" href="/archive/">All notes</a></p>
 </main>
-<footer>SB Desk publishes market analysis for information only. No entries, stops or targets; not financial advice. Futures trading carries substantial risk.</footer>
+<footer>SB Desk publishes educational market analysis for information only. No entries, stops or targets; not financial advice. Each trader is responsible for their own trading decisions.<br><a href="https://propfirmcandor.com/?utm_source=sbdesk&amp;utm_medium=footer" target="_blank" rel="noopener" style="color:inherit">We trade NQ at prop firms. Compare them and get our discount on PropFirmCandor →</a> Candor earns affiliate commission from the firms listed there.</footer>
 </div></body></html>`;
-  // a page for a note under 24 h differs per person: never let a shared cache keep it
-  const cache = isPublic ? 'public, max-age=300' : 'private, no-store';
-  return new Response(html, { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': cache, Vary: 'Cookie' } });
+  return new Response(html, { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=300' } });
 };
 
 export const config = { path: '/n/*' };

@@ -1,7 +1,18 @@
-# old Croatian address of the early-access page (links already shared keep working)
+# The early-access page is gone (20 Nov 2026: every note is free for everyone).
+# Its old addresses go to the Desk, so links already shared keep working.
 [[redirects]]
   from = "/pristup.html"
-  to = "/early-access/"
+  to = "/"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/early-access"
+  to = "/"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/early-access/*"
+  to = "/"
   status = 301
   force = true
 
@@ -36,11 +47,6 @@
     X-Robots-Tag = "noindex, nofollow"
 [[headers]]
   for = "/prijava.html"
-  [headers.values]
-    X-Robots-Tag = "noindex, nofollow"
-
-[[headers]]
-  for = "/obavijest-forma.html"
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
 

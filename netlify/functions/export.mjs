@@ -1,11 +1,11 @@
-// GET /api/export -> an ENCRYPTED copy of everything SB Desk keeps (notes with After charts,
-// early-access members, open requests, suggestions). Fetched every day by the GitHub Action
+// GET /api/export -> an ENCRYPTED copy of everything SB Desk keeps (notes with After charts
+// and suggestions). Fetched every day by the GitHub Action
 // .github/workflows/backup.yml and kept on the repo's `backups` branch, so a copy exists
 // outside Netlify. Without the passphrase (env BACKUP_KEY, kept by Stipe) the file is unreadable.
 // Decrypt: node tools/decrypt-backup.mjs <file> (asks for the passphrase).
 import crypto from 'node:crypto';
 import { getStore } from '@netlify/blobs';
-import { notesStore, membersStore, requestsStore } from '../lib/desk.mjs';
+import { notesStore } from '../lib/desk.mjs';
 
 const all = async (store) => {
   const { blobs } = await store.list();
@@ -17,7 +17,7 @@ export default async () => {
   if (!pass || pass.length < 20) return new Response('Backup key not set.', { status: 503 });
   const data = {
     saved: new Date().toISOString(),
-    notes: await all(notesStore()), members: await all(membersStore()), requests: await all(requestsStore()),
+    notes: await all(notesStore()),
     suggestions: await all(getStore({ name: 'suggestions', consistency: 'strong' })),
   };
   const salt = crypto.randomBytes(16), iv = crypto.randomBytes(12);

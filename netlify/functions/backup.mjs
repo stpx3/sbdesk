@@ -1,7 +1,6 @@
-// Runs every day: saves a copy of every note (with After charts), the early-access list and
-// the open requests into the Blobs store "backups". Keeps the last 60 copies.
+// Runs every day: saves a copy of every note (with After charts) into the Blobs store "backups". Keeps the last 60 copies.
 import { getStore } from '@netlify/blobs';
-import { notesStore, membersStore, requestsStore } from '../lib/desk.mjs';
+import { notesStore } from '../lib/desk.mjs';
 
 const all = async (store) => {
   const { blobs } = await store.list();
@@ -11,7 +10,7 @@ const all = async (store) => {
 export default async () => {
   const backups = getStore({ name: 'backups', consistency: 'strong' });
   const day = new Date().toISOString().slice(0, 10);
-  const data = { saved: new Date().toISOString(), notes: await all(notesStore()), members: await all(membersStore()), requests: await all(requestsStore()) };
+  const data = { saved: new Date().toISOString(), notes: await all(notesStore()) };
   await backups.setJSON('sbdesk-' + day, data);
   const { blobs } = await backups.list();
   const keys = blobs.map((b) => b.key).sort();

@@ -21,9 +21,9 @@
 <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.webmanifest">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://sbdesk.com/#org","name":"SB Desk","url":"https://sbdesk.com/","logo":"https://sbdesk.com/img/apple-touch-icon.png","founder":[{"@type":"Person","name":"Bernard Pupačić"},{"@type":"Person","name":"Stipe Pupačić"}],"address":{"@type":"PostalAddress","addressLocality":"Split","addressCountry":"HR"},"email":"hello@sbdesk.com"},{"@type":"WebSite","name":"SB Desk","url":"https://sbdesk.com/","publisher":{"@id":"https://sbdesk.com/#org"}}]}</script>
-<script>/* links from Netlify emails (invite, password reset) go to the login page */
+<script>/* links from Netlify emails (invite, password reset) go to the admin login page */
 if(/invite_token=/.test(location.hash))location.replace('/prijava.html'+location.hash);
-else if(/(recovery|confirmation|email_change)_token=|access_token=|error_description=/.test(location.hash))location.replace('/early-access/'+location.hash);</script>
+else if(/(recovery|confirmation|email_change)_token=|access_token=|error_description=/.test(location.hash))location.replace('/prijava.html'+location.hash);</script>
 <title>SB Desk · NQ research desk</title>
 <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=IBM+Plex+Mono:wght@500;700&display=swap" rel="stylesheet">
@@ -57,21 +57,8 @@ a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
 .tr{margin-left:auto;display:flex;align-items:center;gap:12px}
 .clock{font:13px var(--mono);color:var(--gold)}
 .adm{font:12px var(--ui);color:#d5e2f3;border:1px solid #3c5a85;padding:4px 9px;border-radius:3px}
-.login{font:12.5px var(--ui);color:#d5e2f3!important;text-decoration:underline!important}
-.getacc{font:700 12.5px var(--ui);color:#000!important;background:var(--gold);padding:6px 11px;border-radius:3px;text-decoration:none!important}
-.memtag{font:700 11px var(--mono);letter-spacing:.08em;color:var(--gold);border:1px solid var(--gold);padding:3px 7px;border-radius:3px}
-/* members-only notes */
-.lockbox{position:relative;height:460px;border:1px solid var(--line);overflow:hidden;background:var(--soft)}
-.lockbg{position:absolute;inset:-30px;background:repeating-linear-gradient(115deg,transparent 0 38px,rgba(128,128,128,.18) 38px 40px),repeating-linear-gradient(25deg,transparent 0 70px,rgba(255,176,0,.12) 70px 73px);filter:blur(6px)}
-.lockin{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;gap:8px}
-.lockin h3{margin:6px 0 0;font:700 22px var(--serif)}.lockin p{margin:0;color:var(--muted)}
-.lockin .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:10px}
-.bgold{font:700 15px var(--ui);background:var(--gold);color:#000!important;padding:12px 18px;text-decoration:none!important;border-radius:3px}
-.bline{font:600 15px var(--ui);border:1px solid var(--line);color:var(--ink)!important;padding:11px 16px;text-decoration:none!important;border-radius:3px}
-.tag.mem{color:#000;background:var(--gold);border-color:var(--gold);font-weight:700}
 .upd{min-height:36px}
-.memb{display:flex;gap:8px 14px;flex-wrap:wrap;align-items:center;padding:8px 10px;margin-bottom:10px;border:1px solid var(--gold);font:12.5px var(--mono);color:var(--ink)}
-.memb a{font-weight:700}
+.cand{margin:10px 0 0;font-size:12.5px}.cand a{color:var(--muted);text-decoration:underline}
 .copy{margin-left:8px;font:12px var(--mono);background:none;border:1px solid var(--line);color:var(--muted);padding:3px 8px;cursor:pointer;border-radius:3px}
 .theme{background:none;border:1px solid #3c5a85;color:#d5e2f3;font:12px var(--ui);padding:5px 10px;border-radius:3px;cursor:pointer}
 /* desk */
@@ -162,7 +149,6 @@ table.arch{width:100%;border-collapse:collapse}
 .arow:hover .ati{text-decoration:underline}
 .arow .am{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:5px;font-size:13px;color:var(--muted)}
 .arow .tfp{font:600 11px var(--mono);padding:1px 6px 1px 5px;border:1px solid var(--line);border-left:3px solid;border-radius:2px;color:var(--ink)}
-.arow.lk .ati{color:var(--muted);font-weight:500}
 .badge{display:inline-block;font:600 10px var(--ui);letter-spacing:.06em;background:var(--navy);color:#fff;padding:2px 6px;border-radius:2px;margin-right:6px;vertical-align:1px}
 .smp{font:10px var(--mono);letter-spacing:.06em;color:var(--ne);border:1px solid var(--ne);padding:0 4px}
 .tag.now{color:var(--up);border-color:var(--up);font-weight:700}
@@ -176,7 +162,6 @@ table.arch{width:100%;border-collapse:collapse}
 .upd.new{background:var(--gold);border-color:var(--gold);color:#000;padding:10px 12px}
 .upd.new a{color:#000;text-decoration:none}.upd.new b{color:#000}
 .upd .upd-go{flex:1;min-width:0}
-.upd .upd-early{font-weight:700;margin-left:auto;text-decoration:underline!important;white-space:nowrap}
 .upd .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#000;margin-right:6px;vertical-align:1px;animation:blink 1.4s infinite}
 @keyframes blink{50%{opacity:.25}}
 @media(prefers-reduced-motion:reduce){.upd .dot{animation:none}}.upd .fresh{color:var(--dn);font-weight:700}
@@ -192,7 +177,6 @@ footer.f{border-top:1px solid var(--line);padding:14px 18px;font-size:12px;color
   .cbar .right{margin-left:0;width:100%}.tfs{display:flex;width:100%}.tfs button{flex:1;padding:10px 0}
   .people{grid-template-columns:1fr}.doc{padding:22px 16px 40px}
 }
-.lockc{margin:12px 0 0;font-size:13px;opacity:.85}.lockc a{color:inherit;text-decoration:underline}
 .afilt{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 6px}
 .afilt select{font:14px var(--ui);padding:8px 10px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:2px}
 .afilt .aba{font-size:13px;color:var(--muted);display:flex;gap:6px;align-items:center}
@@ -220,7 +204,7 @@ footer.f{border-top:1px solid var(--line);padding:14px 18px;font-size:12px;color
 <header class="top">
   <a class="brand" href="/" aria-label="SB Desk"><svg viewBox="0 0 260 260" width="58" height="58" role="img" aria-label="SB Desk seal" style="flex:none"><defs><path id="t-hdr" d="M 37,130 A 93,93 0 0 1 223,130"></path><path id="b-hdr" d="M 24,130 A 106,106 0 0 0 236,130"></path><path id="s-hdr" d="M 28,130 A 102,102 0 0 0 232,130"></path></defs><circle cx="130" cy="130" r="126" fill="none" stroke="#ece6d6" stroke-width="2.2"></circle><circle cx="130" cy="130" r="114" fill="none" stroke="#ece6d6" stroke-width="0.7"></circle><line x1="246.00" y1="130.00" x2="253.00" y2="130.00" stroke="#ece6d6" stroke-width="1.4"></line><line x1="247.55" y1="140.28" x2="252.53" y2="140.72" stroke="#ece6d6" stroke-width="0.7"></line><line x1="246.21" y1="150.49" x2="251.13" y2="151.36" stroke="#ece6d6" stroke-width="0.7"></line><line x1="243.98" y1="160.54" x2="248.81" y2="161.83" stroke="#ece6d6" stroke-width="0.7"></line><line x1="240.88" y1="170.36" x2="245.58" y2="172.07" stroke="#ece6d6" stroke-width="0.7"></line><line x1="236.94" y1="179.87" x2="241.48" y2="181.98" stroke="#ece6d6" stroke-width="0.7"></line><line x1="230.46" y1="188.00" x2="236.52" y2="191.50" stroke="#ece6d6" stroke-width="1.4"></line><line x1="226.66" y1="197.68" x2="230.76" y2="200.55" stroke="#ece6d6" stroke-width="0.7"></line><line x1="220.39" y1="205.85" x2="224.22" y2="209.06" stroke="#ece6d6" stroke-width="0.7"></line><line x1="213.44" y1="213.44" x2="216.97" y2="216.97" stroke="#ece6d6" stroke-width="0.7"></line><line x1="205.85" y1="220.39" x2="209.06" y2="224.22" stroke="#ece6d6" stroke-width="0.7"></line><line x1="197.68" y1="226.66" x2="200.55" y2="230.76" stroke="#ece6d6" stroke-width="0.7"></line><line x1="188.00" y1="230.46" x2="191.50" y2="236.52" stroke="#ece6d6" stroke-width="1.4"></line><line x1="179.87" y1="236.94" x2="181.98" y2="241.48" stroke="#ece6d6" stroke-width="0.7"></line><line x1="170.36" y1="240.88" x2="172.07" y2="245.58" stroke="#ece6d6" stroke-width="0.7"></line><line x1="160.54" y1="243.98" x2="161.83" y2="248.81" stroke="#ece6d6" stroke-width="0.7"></line><line x1="150.49" y1="246.21" x2="151.36" y2="251.13" stroke="#ece6d6" stroke-width="0.7"></line><line x1="140.28" y1="247.55" x2="140.72" y2="252.53" stroke="#ece6d6" stroke-width="0.7"></line><line x1="130.00" y1="246.00" x2="130.00" y2="253.00" stroke="#ece6d6" stroke-width="1.4"></line><line x1="119.72" y1="247.55" x2="119.28" y2="252.53" stroke="#ece6d6" stroke-width="0.7"></line><line x1="109.51" y1="246.21" x2="108.64" y2="251.13" stroke="#ece6d6" stroke-width="0.7"></line><line x1="99.46" y1="243.98" x2="98.17" y2="248.81" stroke="#ece6d6" stroke-width="0.7"></line><line x1="89.64" y1="240.88" x2="87.93" y2="245.58" stroke="#ece6d6" stroke-width="0.7"></line><line x1="80.13" y1="236.94" x2="78.02" y2="241.48" stroke="#ece6d6" stroke-width="0.7"></line><line x1="72.00" y1="230.46" x2="68.50" y2="236.52" stroke="#ece6d6" stroke-width="1.4"></line><line x1="62.32" y1="226.66" x2="59.45" y2="230.76" stroke="#ece6d6" stroke-width="0.7"></line><line x1="54.15" y1="220.39" x2="50.94" y2="224.22" stroke="#ece6d6" stroke-width="0.7"></line><line x1="46.56" y1="213.44" x2="43.03" y2="216.97" stroke="#ece6d6" stroke-width="0.7"></line><line x1="39.61" y1="205.85" x2="35.78" y2="209.06" stroke="#ece6d6" stroke-width="0.7"></line><line x1="33.34" y1="197.68" x2="29.24" y2="200.55" stroke="#ece6d6" stroke-width="0.7"></line><line x1="29.54" y1="188.00" x2="23.48" y2="191.50" stroke="#ece6d6" stroke-width="1.4"></line><line x1="23.06" y1="179.87" x2="18.52" y2="181.98" stroke="#ece6d6" stroke-width="0.7"></line><line x1="19.12" y1="170.36" x2="14.42" y2="172.07" stroke="#ece6d6" stroke-width="0.7"></line><line x1="16.02" y1="160.54" x2="11.19" y2="161.83" stroke="#ece6d6" stroke-width="0.7"></line><line x1="13.79" y1="150.49" x2="8.87" y2="151.36" stroke="#ece6d6" stroke-width="0.7"></line><line x1="12.45" y1="140.28" x2="7.47" y2="140.72" stroke="#ece6d6" stroke-width="0.7"></line><line x1="14.00" y1="130.00" x2="7.00" y2="130.00" stroke="#ece6d6" stroke-width="1.4"></line><line x1="12.45" y1="119.72" x2="7.47" y2="119.28" stroke="#ece6d6" stroke-width="0.7"></line><line x1="13.79" y1="109.51" x2="8.87" y2="108.64" stroke="#ece6d6" stroke-width="0.7"></line><line x1="16.02" y1="99.46" x2="11.19" y2="98.17" stroke="#ece6d6" stroke-width="0.7"></line><line x1="19.12" y1="89.64" x2="14.42" y2="87.93" stroke="#ece6d6" stroke-width="0.7"></line><line x1="23.06" y1="80.13" x2="18.52" y2="78.02" stroke="#ece6d6" stroke-width="0.7"></line><line x1="29.54" y1="72.00" x2="23.48" y2="68.50" stroke="#ece6d6" stroke-width="1.4"></line><line x1="33.34" y1="62.32" x2="29.24" y2="59.45" stroke="#ece6d6" stroke-width="0.7"></line><line x1="39.61" y1="54.15" x2="35.78" y2="50.94" stroke="#ece6d6" stroke-width="0.7"></line><line x1="46.56" y1="46.56" x2="43.03" y2="43.03" stroke="#ece6d6" stroke-width="0.7"></line><line x1="54.15" y1="39.61" x2="50.94" y2="35.78" stroke="#ece6d6" stroke-width="0.7"></line><line x1="62.32" y1="33.34" x2="59.45" y2="29.24" stroke="#ece6d6" stroke-width="0.7"></line><line x1="72.00" y1="29.54" x2="68.50" y2="23.48" stroke="#ece6d6" stroke-width="1.4"></line><line x1="80.13" y1="23.06" x2="78.02" y2="18.52" stroke="#ece6d6" stroke-width="0.7"></line><line x1="89.64" y1="19.12" x2="87.93" y2="14.42" stroke="#ece6d6" stroke-width="0.7"></line><line x1="99.46" y1="16.02" x2="98.17" y2="11.19" stroke="#ece6d6" stroke-width="0.7"></line><line x1="109.51" y1="13.79" x2="108.64" y2="8.87" stroke="#ece6d6" stroke-width="0.7"></line><line x1="119.72" y1="12.45" x2="119.28" y2="7.47" stroke="#ece6d6" stroke-width="0.7"></line><line x1="130.00" y1="14.00" x2="130.00" y2="7.00" stroke="#ece6d6" stroke-width="1.4"></line><line x1="140.28" y1="12.45" x2="140.72" y2="7.47" stroke="#ece6d6" stroke-width="0.7"></line><line x1="150.49" y1="13.79" x2="151.36" y2="8.87" stroke="#ece6d6" stroke-width="0.7"></line><line x1="160.54" y1="16.02" x2="161.83" y2="11.19" stroke="#ece6d6" stroke-width="0.7"></line><line x1="170.36" y1="19.12" x2="172.07" y2="14.42" stroke="#ece6d6" stroke-width="0.7"></line><line x1="179.87" y1="23.06" x2="181.98" y2="18.52" stroke="#ece6d6" stroke-width="0.7"></line><line x1="188.00" y1="29.54" x2="191.50" y2="23.48" stroke="#ece6d6" stroke-width="1.4"></line><line x1="197.68" y1="33.34" x2="200.55" y2="29.24" stroke="#ece6d6" stroke-width="0.7"></line><line x1="205.85" y1="39.61" x2="209.06" y2="35.78" stroke="#ece6d6" stroke-width="0.7"></line><line x1="213.44" y1="46.56" x2="216.97" y2="43.03" stroke="#ece6d6" stroke-width="0.7"></line><line x1="220.39" y1="54.15" x2="224.22" y2="50.94" stroke="#ece6d6" stroke-width="0.7"></line><line x1="226.66" y1="62.32" x2="230.76" y2="59.45" stroke="#ece6d6" stroke-width="0.7"></line><line x1="230.46" y1="72.00" x2="236.52" y2="68.50" stroke="#ece6d6" stroke-width="1.4"></line><line x1="236.94" y1="80.13" x2="241.48" y2="78.02" stroke="#ece6d6" stroke-width="0.7"></line><line x1="240.88" y1="89.64" x2="245.58" y2="87.93" stroke="#ece6d6" stroke-width="0.7"></line><line x1="243.98" y1="99.46" x2="248.81" y2="98.17" stroke="#ece6d6" stroke-width="0.7"></line><line x1="246.21" y1="109.51" x2="251.13" y2="108.64" stroke="#ece6d6" stroke-width="0.7"></line><line x1="247.55" y1="119.72" x2="252.53" y2="119.28" stroke="#ece6d6" stroke-width="0.7"></line><circle cx="130" cy="130" r="80" fill="none" stroke="#ece6d6" stroke-width="0.7"></circle><circle cx="130" cy="130" r="76" fill="none" stroke="#ece6d6" stroke-width="1.6"></circle><text font-family="Libre Caslon Text, serif" font-size="12.5" letter-spacing="3.4" fill="#ece6d6" text-anchor="middle"><textPath href="#t-hdr" startOffset="50%">NQ RESEARCH DESK</textPath></text><path d="M 30,126 l 4,4 l -4,4 l -4,-4 z" fill="#ffb000"></path><path d="M 230,126 l 4,4 l -4,4 l -4,-4 z" fill="#ffb000"></path><text x="130" y="143" font-family="Libre Caslon Display, serif" font-size="64" fill="#ece6d6" text-anchor="middle" letter-spacing="1">SB</text><line x1="104" y1="156" x2="156" y2="156" stroke="#ffb000" stroke-width="1.2"></line><text x="131" y="174" font-family="IBM Plex Mono, monospace" font-weight="700" font-size="9.5" letter-spacing="6" fill="#ece6d6" text-anchor="middle">DESK</text><line x1="33.01" y1="186.00" x2="19.15" y2="194.00" stroke="#f23645" stroke-width="5" stroke-linecap="butt"></line><line x1="64.17" y1="220.61" x2="54.76" y2="233.55" stroke="#fdd835" stroke-width="5" stroke-linecap="butt"></line><line x1="106.71" y1="239.55" x2="103.39" y2="255.20" stroke="#9c27b0" stroke-width="5" stroke-linecap="butt"></line><line x1="153.29" y1="239.55" x2="156.61" y2="255.20" stroke="#4fc3f7" stroke-width="5" stroke-linecap="butt"></line><line x1="195.83" y1="220.61" x2="205.24" y2="233.55" stroke="#1e40af" stroke-width="5" stroke-linecap="butt"></line><line x1="226.99" y1="186.00" x2="240.85" y2="194.00" stroke="#ff9800" stroke-width="5" stroke-linecap="butt"></line><text font-family="Libre Caslon Text, serif" font-size="12.5" letter-spacing="3.4" fill="#ece6d6" text-anchor="middle"><textPath href="#s-hdr" startOffset="50%">SPLIT</textPath></text></svg><span>SB DESK</span></a>
   <nav class="nav" id="nav"><a href="/">Desk</a><a href="/archive/">Archive</a><a href="/before-after/">Before / After</a><a href="/method/">Method</a><a href="/about/">About</a></nav>
-  <div class="tr"><a class="adm" id="adm" href="/admin.html" hidden>Admin</a><span class="memtag" id="memtag" hidden>Early access</span><a class="login" id="login" href="/early-access/">Log in</a><a class="getacc" id="getacc" href="/early-access/">Early access</a><span class="clock" id="clock">NY --:--:--</span><button class="theme" id="theme">☾ Dark</button></div>
+  <div class="tr"><a class="adm" id="adm" href="/admin.html" hidden>Admin</a><span class="clock" id="clock">NY --:--:--</span><button class="theme" id="theme">☾ Dark</button></div>
 </header>
 
 <!-- DESK -->
@@ -312,18 +296,18 @@ footer.f{border-top:1px solid var(--line);padding:14px 18px;font-size:12px;color
 <!-- PRIVACY -->
 <section id="p-privacy" hidden><div class="doc">
   <h1>Privacy</h1><p class="lede">What SB Desk keeps, and why.</p>
-  <h2>Accounts</h2>
-  <p>If you create an account (with Google or with email) we keep your email address, so you can log in; with email we also keep a protected password. If you ask for early access we also keep the prop firm and order number you send, only to check that you bought through our Candor code.</p>
+  <h2>No account needed</h2>
+  <p>Every note is open to everyone. You do not need an account to read SB Desk, and we do not ask for your email. Only the two of us who write the notes have a login.</p>
   <h2>Suggestions</h2>
   <p>If you send a suggestion we keep the text, and a name and contact only if you write them. We read them to improve the desk.</p>
   <h2>In your browser</h2>
-  <p>Your light or dark choice is saved in your own browser. When you log in, a login cookie keeps you logged in. We use no advertising or tracking cookies.</p>
+  <p>Your light or dark choice is saved in your own browser. We use no advertising or tracking cookies.</p>
   <h2>Visit counter</h2>
   <p>To see how many people visit and where they come from we use GoatCounter, a small open-source counter. It records the page you opened, the page or link you came from, and your browser, screen size and country. It sets no cookies and does not identify you.</p>
   <h2>Who handles it</h2>
   <p>SB Desk is run by Bernard and Stipe Pupačić in Split, Croatia. The site and its data are hosted by Netlify; an encrypted daily copy is kept on GitHub so nothing is lost. We do not sell or share your data.</p>
   <h2>Delete your data</h2>
-  <p>Write to <a href="mailto:hello@sbdesk.com">hello@sbdesk.com</a> (or use <a href="/suggestions/">Suggestions</a>) and we delete your account and everything linked to it.</p>
+  <p>Write to <a href="mailto:hello@sbdesk.com">hello@sbdesk.com</a> (or use <a href="/suggestions/">Suggestions</a>) and we delete anything you sent us.</p>
   <h2>Contact</h2>
   <p><a href="mailto:hello@sbdesk.com">hello@sbdesk.com</a></p>
 </div></section>
@@ -342,11 +326,11 @@ footer.f{border-top:1px solid var(--line);padding:14px 18px;font-size:12px;color
   </div>
   <p>Every note on the desk is signed by the one who wrote it.</p>
   <h2>Candor</h2>
-  <p>We also run <a href="https://propfirmcandor.com">Candor</a>, a comparison site for futures prop firms. Candor earns a commission when someone buys a challenge with our code. We trade with prop firms ourselves; that is why we built it.</p>
+  <p>We also run <a href="https://propfirmcandor.com">Candor</a>, a comparison site for futures prop firms. Candor earns an affiliate commission when someone buys a challenge through it. We trade NQ at prop firms ourselves; that is why we built it.</p>
 </div></section>
 </main>
 
-<footer class="f">SB Desk publishes market analysis for information only. No entries, stops or targets; not financial advice. Futures trading carries substantial risk. We own Candor (propfirmcandor.com) and earn affiliate commission from prop firms listed there. · <a href="/early-access/">Early access</a> · <a href="/suggestions/">Suggestions</a> · <a href="/privacy/">Privacy</a> · <a href="mailto:hello@sbdesk.com">hello@sbdesk.com</a></footer>
+<footer class="f">SB Desk publishes educational market analysis for information only. No entries, stops or targets; not financial advice. Each trader is responsible for their own trading decisions.<br><a href="https://propfirmcandor.com/?utm_source=sbdesk&amp;utm_medium=footer" target="_blank" rel="noopener">We trade NQ at prop firms. Compare them and get our discount on PropFirmCandor →</a> Candor earns affiliate commission from the firms listed there. · <a href="/suggestions/">Suggestions</a> · <a href="/privacy/">Privacy</a> · <a href="mailto:hello@sbdesk.com">hello@sbdesk.com</a></footer>
 </div>
 <div class="lb" id="lb"><img alt=""></div>
 
@@ -363,13 +347,10 @@ function key(n){return n.t+'|'+n.title;}
 // notes come from the server (/api/notes); loaded at the bottom
 var NOTES=[],loadErr='';
 var state={sel:0,tf:null,mode:'note',liv:'15'},liveKey='';
-var LOADED_AT=Date.now(),IS_MEMBER=false;
-function opensTxt(x){var m=Math.max(0,Math.round(x.opensIn-(Date.now()-LOADED_AT)/60000));if(m<60)return 'in '+Math.max(1,m)+' min';return 'in '+Math.round(m/60)+' h';}
-function setNotes(list){NOTES=(list||[]).filter(function(x){return x&&x.t&&(x.title||x.locked);});
+function setNotes(list){NOTES=(list||[]).filter(function(x){return x&&x.t&&x.title;});
   NOTES.sort(function(a,b){return a.t<b.t?-1:1;});
   NOTES.forEach(function(x,i){x.key=x.key||x.id;x.id=i+1;x.sym='NQ';x.posted=true;x.ideas=x.ideas||{};});
-  var open=NOTES.filter(function(x){return !x.locked;});
-  state.sel=open.length?open[open.length-1].id:(NOTES.length?NOTES[NOTES.length-1].id:0);}
+  state.sel=NOTES.length?NOTES[NOTES.length-1].id:0;}
 function byKey(k){return NOTES.filter(function(x){return x.key===k;})[0];}
 function hm(s){return s.slice(11,16);}
 function dayLabel(s){var d=new Date(s.slice(0,10)+'T12:00:00Z');return d.toLocaleDateString('en-GB',{weekday:'long',day:'2-digit',month:'short',timeZone:'UTC'});}
@@ -380,7 +361,7 @@ function mins(a,b){return Math.round((new Date(b.slice(0,16)+':00Z')-new Date(a.
 function ago(t){var m=mins(t,nyNow());if(m<1)return 'just now';if(m<60)return m+' min ago';if(m<24*60)return Math.round(m/60)+' h ago';var d=Math.round(m/1440);return d+(d===1?' day ago':' days ago');}
 // "NEW" disappears once this visitor has opened the note (or its After); remembered in this browser
 var SEEN={};try{SEEN=JSON.parse(localStorage.getItem('sbdesk-seen')||'{}')||{};}catch(_){SEEN={};}
-function seenKey(x,ba){return x.key+'|'+(ba&&x.now?x.now.t:x.t)+(x.locked?'|L':'');}
+function seenKey(x,ba){return x.key+'|'+(ba&&x.now?x.now.t:x.t);}
 function isSeen(x,ba){return !!SEEN[seenKey(x,ba)];}
 function markSeen(x,ba){if(!x||(ba&&!x.now))return;SEEN[seenKey(x,ba)]=1;try{var k=Object.keys(SEEN);if(k.length>300)k.slice(0,k.length-300).forEach(function(y){delete SEEN[y];});localStorage.setItem('sbdesk-seen',JSON.stringify(SEEN));}catch(_){}}
 function isNew(t){return mins(t,nyNow())<24*60;}
@@ -388,7 +369,7 @@ function dm(t){return t.slice(8,10)+'.'+t.slice(5,7)+'.';}
 function esc(v){return String(v==null?'':v).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
 function ideaId(u){var m=/\/chart\/[^\/]+\/([A-Za-z0-9]+)/.exec(u||'');return m?m[1]:null;}
 function snapImg(u){var m=/tradingview\.com\/x\/([A-Za-z0-9]+)/.exec(u||'');return m?'https://s3.tradingview.com/snapshots/'+m[1].charAt(0).toLowerCase()+'/'+m[1]+'.png':null;}
-function tfsOf(x){if(x.locked)return x.tfs||[];return x.posted?TFS.filter(function(t){return x.ideas[t];}):[x.tf];}
+function tfsOf(x){return x.posted?TFS.filter(function(t){return x.ideas[t];}):[x.tf];}
 function when(t){return new Date(t.slice(0,10)+'T12:00:00Z').toLocaleDateString('en-GB',{weekday:'short',day:'2-digit',month:'short',timeZone:'UTC'})+' '+hm(t)+' ET';}
 function gap(a,b){var m=Math.round((new Date(b+':00Z')-new Date(a+':00Z'))/60000);if(m<60)return m+' min later';if(m<48*60)return Math.round(m/60)+' h later';return Math.round(m/1440)+' days later';}
 var cache={};
@@ -406,7 +387,7 @@ function render(){
     document.getElementById('chart').innerHTML='<div class="empty" style="padding:60px 20px;text-align:center">'+(loadErr||'No notes yet.')+'</div>';document.getElementById('fnote').textContent='';
     document.getElementById('reading').innerHTML='<h3>First note coming soon.</h3>';document.getElementById('wire').innerHTML='<p class="empty" style="padding:18px">No notes yet.</p>';
     document.getElementById('count').textContent='00 notes';document.getElementById('upd').hidden=true;document.getElementById('archAll').innerHTML='<p class="empty">No notes yet.</p>';return;}
-  if(n.locked){drawLocked(n);}else{
+  {
   if(!state.tf)state.tf=n.tf;
   if(state.mode==='live'||(state.mode==='now'&&!n.now))state.mode='note';
   var modes=[['note','Analysis']];if(n.now)modes.push(['now','Before / After']);document.getElementById('mode').hidden=modes.length<2;
@@ -439,17 +420,17 @@ function render(){
   [].forEach.call(box.querySelectorAll('img'),function(im){im.onclick=function(){var lb=document.getElementById('lb');lb.querySelector('img').src=im.src;lb.classList.add('on');};});
   document.getElementById('reading').innerHTML='<div class="k">'+esc(n.kind)+' · NQ · '+dayLabel(n.t)+' '+hm(n.t)+' ET'+(n.by?' · <span class="author">'+esc(n.by)+'</span>':'')+'</div><h3>'+glossify(n.title)+'</h3><p style="white-space:pre-wrap">'+glossify(n.body)+'</p>'+
     (n.now?'<div class="nowtxt"><b>AFTER · '+when(n.now.t)+'</b>'+(n.now.body?'<br>'+glossify(n.now.body):'')+((n.nowHistory||[]).length?'<br><small>Replaced '+n.nowHistory.length+'×; earlier versions are kept.</small>':'')+(state.mode!=='now'?' <a href="/" id="seeNow">See Before / After →</a>':'')+'</div>':'')+
-    '<div class="by">'+esc(n.by||'SB Desk')+' · SB Desk<button type="button" class="copy" id="copyLink">Copy link</button></div>';
+    '<div class="by">'+esc(n.by||'SB Desk')+' · SB Desk<button type="button" class="copy" id="copyLink">Copy link</button></div>'+
+    '<p class="cand"><a href="https://propfirmcandor.com/?utm_source=sbdesk&amp;utm_medium=note" target="_blank" rel="noopener">We trade NQ at prop firms. Compare them and get our discount on PropFirmCandor →</a></p>';
   var sn=document.getElementById('seeNow');if(sn)sn.onclick=function(e){e.preventDefault();state.mode='now';markSeen(note(state.sel),true);render();};
   }
   var cl=document.getElementById('copyLink');if(cl)cl.onclick=function(){var u=location.origin+'/n/'+n.key;
     (navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(function(){cl.textContent='Copied';},function(){prompt('Link to this note:',u);});};
-  var locked=NOTES.filter(function(x){return x.locked;});
   // wire
   var list=NOTES.slice().reverse(),h='',lastDay='';
   list.forEach(function(x){var d=x.t.slice(0,10);if(d!==lastDay){h+='<div class="day">'+dayLabel(x.t)+'</div>';lastDay=d;}
-    h+='<div class="item'+(x.id===state.sel?' sel':'')+'" data-id="'+x.id+'" role="button" tabindex="0" aria-current="'+(x.id===state.sel?'true':'false')+'"><div class="t">'+hm(x.t)+'<small>ET</small>'+tfsOf(x).map(function(t){return '<span class="tfc tf-'+t+'">'+t+'</span>';}).join('')+'</div><div><div class="kind">Note '+('0'+x.id).slice(-2)+' · '+esc(x.kind)+(x.by?' · <span class="author">'+esc(x.by)+'</span>':'')+'</div><h4>'+(x.locked?'New note':esc(x.title))+'</h4><p>'+(x.locked?'Public '+opensTxt(x)+'.':esc(x.body))+'</p>'+
-      ((x.now||isNew(x.t))?'<div class="tags">'+(x.locked?'<span class="tag mem">EARLY ACCESS</span>':'')+(isNew(x.t)&&!isSeen(x,false)?'<span class="tag new">NEW</span>':'')+(x.now&&isNew(x.now.t)&&!isSeen(x,true)?'<span class="tag new">NEW AFTER</span>':'')+(x.now?'<span class="tag now">BEFORE / AFTER</span>':'')+'</div>':'')+'</div></div>';});
+    h+='<div class="item'+(x.id===state.sel?' sel':'')+'" data-id="'+x.id+'" role="button" tabindex="0" aria-current="'+(x.id===state.sel?'true':'false')+'"><div class="t">'+hm(x.t)+'<small>ET</small>'+tfsOf(x).map(function(t){return '<span class="tfc tf-'+t+'">'+t+'</span>';}).join('')+'</div><div><div class="kind">Note '+('0'+x.id).slice(-2)+' · '+esc(x.kind)+(x.by?' · <span class="author">'+esc(x.by)+'</span>':'')+'</div><h4>'+esc(x.title)+'</h4><p>'+esc(x.body)+'</p>'+
+      ((x.now||isNew(x.t))?'<div class="tags">'+(isNew(x.t)&&!isSeen(x,false)?'<span class="tag new">NEW</span>':'')+(x.now&&isNew(x.now.t)&&!isSeen(x,true)?'<span class="tag new">NEW AFTER</span>':'')+(x.now?'<span class="tag now">BEFORE / AFTER</span>':'')+'</div>':'')+'</div></div>';});
   var wl=document.getElementById('wire');wl.innerHTML=h;
   [].forEach.call(wl.querySelectorAll('.item'),function(e){e.onkeydown=function(ev){if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();e.click();}};e.onclick=function(){state.sel=+e.getAttribute('data-id');state.tf=null;state.mode='note';var nn=note(state.sel);markSeen(nn,false);try{history.replaceState(null,'','#note/'+nn.key);}catch(_){}render();if(innerWidth<=960)window.scrollTo({top:0,behavior:'smooth'});};});
   document.getElementById('count').textContent=('0'+NOTES.length).slice(-2)+' notes';
@@ -459,7 +440,7 @@ function render(){
   // one status line: a clear NEW NOTE bar when the newest note is under 24 h old, otherwise one quiet line
   // the newest thing on the desk: a new note, or a new After chart on an older note
   var nn=NOTES[NOTES.length-1],ev={n:nn,t:last,ba:false};
-  NOTES.forEach(function(x){if(x.now&&!x.locked&&x.now.t>ev.t)ev={n:x,t:x.now.t,ba:true};});
+  NOTES.forEach(function(x){if(x.now&&x.now.t>ev.t)ev={n:x,t:x.now.t,ba:true};});
   // browser tab: "(1) New note · SB Desk" while something new is not opened yet
   // only the newest event counts (Stipe: not older notes the visitor did not open)
   var unseen=(isNew(ev.t)&&!isSeen(ev.n,ev.ba))?1:0;
@@ -468,7 +449,7 @@ function render(){
     up.className='upd new'+(here?' here':'');
     var lbl=ev.ba?'NEW BEFORE / AFTER':'NEW NOTE',what=en.title?' · '+esc(en.title):'';
     up.innerHTML='<a href="/#note/'+esc(en.key)+(ev.ba?'/ba':'')+'" class="upd-go"><b class="dot"></b><b>'+lbl+'</b>'+what+' · '+ago(ev.t)+
-      (en.locked&&!IS_MEMBER?' · public '+opensTxt(en)+'</a><a class="upd-early" href="/early-access/">Candor user? See it now →</a>':(here?' · showing below ↓</a>':' →</a>'));
+      (here?' · showing below ↓</a>':' →</a>');
   } else {
     up.className='upd';
     up.innerHTML='<span>Updated '+ago(ev.t)+' · notes '+dm(first)+' – '+dm(last)+'</span>';
@@ -484,10 +465,10 @@ function drawArchive(){
   document.getElementById('acount').textContent=(tf||kd||ba)?list.length+' of '+all.length+' notes':all.length+' notes';
   var h='',day='';
   list.forEach(function(x){var d=x.t.slice(0,10);if(d!==day){day=d;h+='<div class="aday">'+dayLong(x.t)+'</div>';}
-    h+='<a class="arow'+(x.locked?' lk':'')+'" href="/n/'+esc(x.key)+'" data-key="'+esc(x.key)+'"><span class="at">'+hm(x.t)+'</span><span class="ab">'+
-      '<span class="ati">'+(x.locked?'New note · public '+opensTxt(x):esc(x.title))+'</span>'+
+    h+='<a class="arow" href="/n/'+esc(x.key)+'" data-key="'+esc(x.key)+'"><span class="at">'+hm(x.t)+'</span><span class="ab">'+
+      '<span class="ati">'+esc(x.title)+'</span>'+
       '<span class="am">'+tfsOf(x).map(function(t){return '<span class="tfp" style="border-left-color:var(--c'+t+')">'+t+'</span>';}).join('')+
-      '<span>'+esc(x.kind)+(x.by?' · '+esc(x.by):'')+'</span>'+(x.now?'<span class="tag now">BEFORE / AFTER</span>':'')+(x.locked?'<span class="tag mem">EARLY ACCESS</span>':'')+'</span></span></a>';});
+      '<span>'+esc(x.kind)+(x.by?' · '+esc(x.by):'')+'</span>'+(x.now?'<span class="tag now">BEFORE / AFTER</span>':'')+'</span></span></a>';});
   document.getElementById('archAll').innerHTML=h||'<p class="empty">No notes match these filters.</p>';
   [].forEach.call(document.querySelectorAll('#archAll a[data-key]'),function(a){a.onclick=function(ev){if(ev.metaKey||ev.ctrlKey)return;ev.preventDefault();go('/#note/'+a.getAttribute('data-key'));};});
 }
@@ -495,7 +476,7 @@ function drawArchive(){
   ['atf','akind','aba'].forEach(function(id){var e=document.getElementById(id);e.oninput=e.onchange=drawArchive;});})();
 function gFig(label,t,link,tf){var im=snapImg(link),id=ideaId(link);return '<figure>'+(id?'<iframe src="https://s.tradingview.com/embed/'+id+'/" title="NQ '+esc(tf)+' chart, '+label+'" loading="lazy" scrolling="no" allowtransparency="true"></iframe>':im?'<img src="'+esc(im)+'" alt="NQ '+esc(tf)+' chart, '+label+'" loading="lazy">':'<a class="gx" href="'+esc(link||'#')+'" target="_blank" rel="noopener">Open the '+esc(tf)+' chart on TradingView</a>')+'<figcaption><b>'+label+'</b> · '+esc(tf)+' · '+when(t)+'</figcaption></figure>';}
 function drawGallery(){
-  var list=NOTES.filter(function(x){return x.now&&!x.locked;}).reverse(),g=document.getElementById('gal');
+  var list=NOTES.filter(function(x){return x.now;}).reverse(),g=document.getElementById('gal');
   if(!list.length){g.innerHTML='<p class="empty">No Before / After yet. When we add a later chart to a note, it shows up here.</p>';return;}
   g.innerHTML=list.map(function(n){var w=n.now,thenTf=n.ideas[w.tf]?w.tf:tfsOf(n)[0];
     return '<article class="gcard"><div class="gh"><span>'+when(n.t)+'</span><span>'+esc(n.kind)+(n.by?' · '+esc(n.by):'')+'</span></div>'+
@@ -506,18 +487,6 @@ function drawGallery(){
   [].forEach.call(g.querySelectorAll('img'),function(im){im.onclick=function(){var lb=document.getElementById('lb');lb.querySelector('img').src=im.src;lb.classList.add('on');};});
 }
 function drawGloss(hit){document.getElementById('glossary').innerHTML=GLOSS.map(function(g){return '<div class="gterm'+(g.id===hit?' hit':'')+'" id="g-'+g.id+'"><h3>'+esc(g.term)+'</h3><p>'+esc(g.text)+'</p></div>';}).join('');}
-function drawLocked(n){
-  document.getElementById('mode').hidden=true;document.getElementById('tfs').hidden=true;
-  document.getElementById('cTitle').textContent='NQ · new note';
-  document.getElementById('cMeta').textContent='note '+('0'+n.id).slice(-2)+' · '+hm(n.t)+' ET';
-  document.getElementById('chart').innerHTML='<div class="lockbox"><div class="lockbg"></div><div class="lockin">'+
-    '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="1.5"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>'+
-    '<h3>Public '+opensTxt(n)+'</h3><p>'+tfsOf(n).join(' · ')+' · every note is free</p>'+
-    '<div class="row"><a class="bgold" href="/early-access/">Candor user? See it now</a><a class="bline" href="/early-access/">Log in</a></div>'+
-    '<p class="lockc">No challenge yet? <a href="https://propfirmcandor.com/?utm_source=sbdesk&amp;utm_medium=locked_note" target="_blank" rel="noopener">Compare futures prop firms on Candor</a></p></div></div>';
-  document.getElementById('fnote').textContent='Traders who bought their challenge through our Candor code see new notes early. Free.';
-  document.getElementById('reading').innerHTML='<div class="k">'+esc(n.kind)+' · NQ · '+dayLabel(n.t)+' '+hm(n.t)+' ET'+(n.by?' · <span class="author">'+esc(n.by)+'</span>':'')+'</div><h3>New note</h3><p>Posted '+ago(n.t)+'. Public '+opensTxt(n)+'.</p><div class="by">SB Desk<button type="button" class="copy" id="copyLink">Copy link</button></div>';
-}
 var PAGES={'':'desk','archive':'archive','before-after':'gallery','method':'method','about':'about','suggestions':'suggest','privacy':'privacy'};
 var PATH={desk:'/',archive:'/archive/',gallery:'/before-after/',method:'/method/',about:'/about/',suggest:'/suggestions/',privacy:'/privacy/'};
 var OLD={archive:'archive',method:'method',about:'about',suggest:'suggest',privacy:'privacy',desk:'desk'};
@@ -554,22 +523,19 @@ document.getElementById('sugForm').onsubmit=function(e){e.preventDefault();var f
    .then(function(r){return r.json().then(function(o){if(!r.ok)throw new Error(o.error||'Error');});})
    .then(function(){f.reset();m.className='sugmsg ok';m.textContent='Thank you. The desk will read it.';},function(err){m.className='sugmsg err';m.textContent=err.message;})
    .then(function(){b.disabled=false;});};
-// returning users: renew the login (tokens last 1 h) before asking for notes, so early access keeps working
+// notes are public: no login needed to read them
 function loadNotes(){
   document.getElementById('reading').innerHTML='<p class="by">Loading notes…</p>';
   return fetch('/api/notes',{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();})
-    .then(function(d){IS_MEMBER=!!d.member;setNotes(d.notes);},function(){loadErr='Notes could not be loaded. Refresh the page.';})
+    .then(function(d){setNotes(d.notes);},function(){loadErr='Notes could not be loaded. Refresh the page.';})
     .then(route);
 }
+loadNotes();
+// an admin who is logged in sees the Admin link (nothing changes for readers)
 var hasLogin=/(^|; )nf_jwt=/.test(document.cookie);try{hasLogin=hasLogin||!!localStorage.getItem('gotrue.user');}catch(_){}
 if(hasLogin){var sc=document.createElement('script');sc.src='/js/auth.js';
-  sc.onload=function(){window.SBAuth.me().then(function(m){
-    if(m.loggedIn){document.getElementById('login').hidden=true;
-      if(m.admin)document.getElementById('adm').hidden=false;
-      if(m.member){document.getElementById('getacc').hidden=true;if(!m.admin)document.getElementById('memtag').hidden=false;}}
-  }).then(loadNotes,loadNotes);};
-  sc.onerror=loadNotes;document.head.appendChild(sc);
-}else loadNotes();
+  sc.onload=function(){window.SBAuth.me().then(function(m){if(m.admin)document.getElementById('adm').hidden=false;},function(){});};
+  document.head.appendChild(sc);}
 })();
 </script>
 </body>

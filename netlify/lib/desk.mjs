@@ -24,22 +24,16 @@ export async function adminUser() {
 }
 
 export const notesStore = () => getStore({ name: 'notes', consistency: 'strong' });
-export const membersStore = () => getStore({ name: 'members', consistency: 'strong' });
-export const requestsStore = () => getStore({ name: 'access-requests', consistency: 'strong' });
 
-// New notes are for members (people who bought through the Candor code) for this many hours.
-export const LOCK_HOURS = 24;
-
-// Who is looking: { email, name, admin, member } or null for a visitor without an account.
+// Every note is public for everyone at once (decision 20 Nov 2026). Accounts exist only for the admins.
+// Who is looking: { email, name, admin } or null for a visitor without an account.
 export async function viewer() {
   let user = null;
   try { user = await getUser(); } catch { user = null; }
   if (!user || !user.email) return null;
   const email = String(user.email).toLowerCase();
   const name = admins()[email];
-  if (name) return { email, name, admin: true, member: true };
-  const m = await membersStore().get(email, { type: 'json' });
-  return { email, name: null, admin: false, member: !!(m && m.active) };
+  return { email, name: name || null, admin: !!name };
 }
 
 // minutes between two New York wall-clock times "YYYY-MM-DDTHH:MM" (display only)
@@ -58,11 +52,10 @@ export function nyToEpoch(t) {
   return ms;
 }
 
-// Minutes since a note was posted. Uses the server's own receipt time when it is the posting time.
+// Minutes since a note was posted.
 export function ageMinutes(n, nowMs = Date.now()) {
   return Math.floor((nowMs - nyToEpoch(n.t)) / 60000);
 }
-export const isOpen = (n, nowMs) => ageMinutes(n, nowMs) >= LOCK_HOURS * 60;
 
 export function json(data, status = 200) {
   return new Response(JSON.stringify(data), {

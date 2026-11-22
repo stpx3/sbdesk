@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-11-20 (30): SB Desk is free for everyone
+- Decision 20 Nov 2026 (Stipe): every note is visible to everyone at once. No 24 h lock, no login to read.
+- Removed: the early-access page (`/early-access/`, `/pristup.html` now redirect to the Desk), the access-request and approval function (`/api/access`), the request email form, "Requests" and "Members" on the Admin page, the "Log in" / "Early access" buttons, locked-note views on the Desk, the Archive and `/n/<id>` pages.
+- `/api/notes` sends every note in full (admin emails still never sent). `/n/<id>` pages are always full, indexable and cached normally. Sitemap lists every note, no early-access page.
+- New, small: under each note and in the footer, "We trade NQ at prop firms. Compare them and get our discount on PropFirmCandor →" (propfirmcandor.com, `utm_source=sbdesk`). No banners.
+- New disclaimer on the Desk and every note page: "SB Desk publishes educational market analysis for information only. No entries, stops or targets; not financial advice. Each trader is responsible for their own trading decisions."
+- Privacy: no account needed to read; only the two admins have a login. Backups now hold notes (and suggestions in the offsite copy) only.
+- Admin login for Stipe and Bernard is unchanged (`prijava.html`, `admin.html`). Password links from Netlify emails go to `prijava.html`.
+- Test: no early-access / lock wording in the public files, the new disclaimer is present.
+
 
 
 

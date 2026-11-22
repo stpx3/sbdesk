@@ -2,7 +2,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { cleanLink, nyToEpoch, ageMinutes, isOpen, nyNow, LOCK_HOURS } from '../netlify/lib/desk.mjs';
+import { cleanLink, nyToEpoch, ageMinutes, nyNow } from '../netlify/lib/desk.mjs';
 
 test('only TradingView chart images and published ideas are accepted', () => {
   assert.equal(cleanLink('https://www.tradingview.com/x/AbCd1234/'), 'https://www.tradingview.com/x/AbCd1234/');
@@ -18,12 +18,9 @@ test('New York time to real time, summer and winter', () => {
   assert.equal(new Date(nyToEpoch('2026-11-17T09:30')).toISOString(), '2026-11-17T14:30:00.000Z'); // EST, UTC-5
 });
 
-test('24 h lock is exact across the clock change (1 Nov 2026)', () => {
-  const n = { t: '2026-10-31T10:00' }; // EDT
-  const posted = nyToEpoch(n.t);
-  assert.equal(isOpen(n, posted + (LOCK_HOURS * 60 - 1) * 60000), false);
-  assert.equal(isOpen(n, posted + LOCK_HOURS * 60 * 60000), true);
-  assert.equal(ageMinutes(n, posted + 90 * 60000), 90);
+test('age of a note in minutes', () => {
+  const n = { t: '2026-10-31T10:00' };
+  assert.equal(ageMinutes(n, nyToEpoch(n.t) + 90 * 60000), 90);
 });
 
 test('server time format', () => {
@@ -32,6 +29,17 @@ test('server time format', () => {
 
 test('visit counter is on public pages and never on admin pages', () => {
   const has = (f) => readFileSync(f, 'utf8').includes('data-goatcounter=');
-  for (const f of ['public/index.html', 'public/early-access/index.html', 'public/404.html', 'netlify/functions/share.mjs']) assert.ok(has(f), f);
-  for (const f of ['public/admin.html', 'public/objavi.html', 'public/prijava.html', 'public/obavijest-forma.html']) assert.ok(!has(f), f);
+  for (const f of ['public/index.html', 'public/404.html', 'netlify/functions/share.mjs']) assert.ok(has(f), f);
+  for (const f of ['public/admin.html', 'public/objavi.html', 'public/prijava.html']) assert.ok(!has(f), f);
+});
+
+test('free for everyone: no early access, no lock, new disclaimer (20 Nov 2026)', () => {
+  const files = ['public/index.html', 'public/404.html', 'public/admin.html', 'netlify/functions/share.mjs',
+    'netlify/functions/notes.mjs', 'netlify/functions/sitemap.mjs', 'netlify/lib/desk.mjs', 'build.mjs'];
+  for (const f of files) {
+    const t = readFileSync(f, 'utf8');
+    assert.ok(!/early.access|candor code|code buyer|partner firm|locked|LOCK_HOURS/i.test(t), f);
+  }
+  const dis = 'SB Desk publishes educational market analysis for information only. No entries, stops or targets; not financial advice. Each trader is responsible for their own trading decisions.';
+  for (const f of ['public/index.html', 'netlify/functions/share.mjs']) assert.ok(readFileSync(f, 'utf8').includes(dis), f);
 });

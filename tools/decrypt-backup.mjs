@@ -1,6 +1,6 @@
 // Opens an encrypted SB Desk backup (branch `backups`, file backups/<day>.json).
 // Usage: node tools/decrypt-backup.mjs backups/2026-11-19.json > backup.json
-// It asks for the passphrase (the BACKUP_KEY Stipe keeps). Output: notes, members, requests, suggestions.
+// It asks for the passphrase (the BACKUP_KEY Stipe keeps). Output: notes and suggestions (older copies may also hold the retired early-access lists).
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import readline from 'node:readline';

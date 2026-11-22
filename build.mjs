@@ -20,7 +20,7 @@ const PAGES = [
   ['method', 'p-method', 'Method · SB Desk', 'How SB Desk reads NQ: waves made objective with MACD, one colour per timeframe, double tops and double bottoms.'],
   ['about', 'p-about', 'About · SB Desk', 'SB Desk is a father-and-son NQ research desk in Split, owned by Bernard Pupačić.'],
   ['suggestions', 'p-suggest', 'Suggestions · SB Desk', 'Tell SB Desk what to improve.'],
-  ['privacy', 'p-privacy', 'Privacy · SB Desk', 'What SB Desk keeps about visitors and early-access users.'],
+  ['privacy', 'p-privacy', 'Privacy · SB Desk', 'What SB Desk keeps about visitors. No account is needed to read the notes.'],
 ];
 const src = readFileSync('public/index.html', 'utf8');
 const swap = (s, a, b) => { if (!s.includes(a)) throw new Error('page build: missing ' + a); return s.split(a).join(b); };

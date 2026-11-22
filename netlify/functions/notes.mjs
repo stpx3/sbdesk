@@ -1,6 +1,6 @@
 // GET  /api/notes  -> every note (public)
 // POST /api/notes  -> publish a note (admins only)
-import { TFS, KINDS, adminUser, viewer, notesStore, json, fail, nyNow, cleanLink, clip, LOCK_HOURS, ageMinutes } from '../lib/desk.mjs';
+import { TFS, KINDS, adminUser, notesStore, json, fail, nyNow, cleanLink, clip } from '../lib/desk.mjs';
 
 export default async (req) => {
   const store = notesStore();
@@ -9,24 +9,11 @@ export default async (req) => {
     const { blobs } = await store.list();
     const notes = (await Promise.all(blobs.map((b) => store.get(b.key, { type: 'json' })))).filter(Boolean);
     notes.sort((a, b) => (a.t < b.t ? -1 : a.t > b.t ? 1 : 0));
-    const v = await viewer();
-    const full = !!(v && v.member);
-    const out = notes.map((n) => {
-      const age = ageMinutes(n);
-      if (full || age >= LOCK_HOURS * 60) {
-        const { postedBy, ...pub } = n; // never send admin emails to the page
-        return pub;
-      }
-      // locked for visitors: they see that a note exists, when, which timeframes, and when it opens
-      return {
-        id: n.id, t: n.t, sym: n.sym, kind: n.kind, tf: n.tf, by: n.by, locked: true,
-        tfs: TFS.filter((x) => n.ideas && n.ideas[x]),
-        opensIn: LOCK_HOURS * 60 - age,
-      };
-    });
-    const res = json({ notes: out, member: full, lockHours: LOCK_HOURS });
-    // Candor shows the latest public note in a small box: allow other sites to read the public list
-    if (!full) res.headers.set('Access-Control-Allow-Origin', '*');
+    // every note is public at once (20 Nov 2026); admin emails never go to the page
+    const out = notes.map(({ postedBy, ...pub }) => pub);
+    const res = json({ notes: out });
+    // Candor may show the latest note: allow other sites to read the public list
+    res.headers.set('Access-Control-Allow-Origin', '*');
     return res;
   }
 

@@ -22,6 +22,6 @@ jobs:
           git remote add origin "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git"
           if git fetch -q --depth 1 origin backups; then git checkout -q -b backups FETCH_HEAD; else git checkout -q --orphan backups; fi
           mkdir -p backups && cp ../export.json "backups/$DAY.json"
-          printf 'Encrypted daily copies of SB Desk data (notes, members, requests, suggestions).\nOpen one with: node tools/decrypt-backup.mjs backups/<day>.json (passphrase: BACKUP_KEY, kept by Stipe).\n' > README.md
+          printf 'Encrypted daily copies of SB Desk data (notes and suggestions).\nOpen one with: node tools/decrypt-backup.mjs backups/<day>.json (passphrase: BACKUP_KEY, kept by Stipe).\n' > README.md
           git config user.name "SB Desk backup"; git config user.email "noreply@github.com"
           git add -A && git commit -q -m "Backup $DAY" && git push -q origin HEAD:backups || echo "nothing new"
