@@ -7,7 +7,7 @@ Written by Claude, 17 Nov 2026; updated after ChatGPT's review the same day (see
 - **Desk**: chart of the selected note per timeframe (TradingView images or interactive published ideas), Before / After view, Research Wire (all notes, newest first, author, timeframe chips, NEW / BEFORE-AFTER tags), one status line (gold "NEW NOTE" bar when a note is under 24 h old).
 - **Archive, Method, About, Suggestions, Privacy** sections; dark default, light theme; glossary links (double top, double bottom).
 - **Note pages** `/n/<id>`: real pages Google can read, own share preview (title, text, chart image), structured data; every note public and indexable at once.
-- **Free for everyone** (20 Nov): every note visible at once, no login to read. One calm Candor link under each note and in the footer. Early access, requests and member lists removed.
+- **Free for everyone** (20 Nov): every note visible at once, no login to read. One calm Candor link in the footer. Early access, requests and member lists removed.
 - **Admin (Croatian)**: new note (paste TradingView links), After per note, "Slika za X" (Before / After PNG), suggestions, daily backups + instant download.
 - **Accounts**: Netlify Identity, admins only; only `ADMINS` can post.
 - **SEO / quality**: sitemap (all public notes), Search Console verified, Open Graph / X cards, Organization + WebSite data, 404, manifest and icons, security headers, keyboard access, no layout jump while loading.

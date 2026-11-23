@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-11-23 (36): Candor line only in the footer
+- Removed the Candor line under each note (Desk and `/n/<id>`), Stipe. It stays in the footer.
+
 ## 2026-11-23 (35): "Slika za X" goes to the phone's gallery
 - Admin: "Slika za X" now opens the picture with "Spremi u galeriju" (the phone's share menu: iPhone "Save Image" -> Photos), "Preuzmi kao datoteku" and "Zatvori". Before, the PNG went to Files (Stipe). Holding a finger on the picture also saves it.
 

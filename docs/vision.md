@@ -25,7 +25,7 @@ Prop traders. Most of the audience is "degen": they do not read analysis unless 
 Decided 20 Nov 2026 (replaces the earlier early-access model):
 
 - Every note is **free for everyone, at once**. No account, no waiting, nothing tied to buying.
-- Like a streamer whose content is free and whose code is in the description: SB Desk builds trust; a calm link under each note and in the footer points to Candor ("We trade NQ at prop firms. Compare them and get our discount on PropFirmCandor →"). Candor is where people buy. SB Desk itself never pushes buying.
+- Like a streamer whose content is free and whose code is in the description: SB Desk builds trust; a calm link in the footer points to Candor ("We trade NQ at prop firms. Compare them and get our discount on PropFirmCandor →"). Candor is where people buy. SB Desk itself never pushes buying.
 - Candor shows SB Desk as "free daily NQ analysis from the people behind Candor" (a card next to the home headline), never tied to buying.
 - No signals, no copy trading, no paid tier.
 - A buyer-only extra may come back later, only with an audience and written approval from the firms.

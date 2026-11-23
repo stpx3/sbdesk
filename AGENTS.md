@@ -11,7 +11,7 @@ SB Desk (sbdesk.com): NQ (Nasdaq 100 futures) market analysis by a father and so
 1. **No signals.** No entries, stops, targets, trade calls, live trades, trade notifications or copy trading. Prop firms ban signal services and copy trading, and Stipe trades at prop firms. SB Desk is analysis only.
 2. **No invented content.** No sample notes, no placeholders, no made-up stats, quotes or track record on the live site. Text about the method comes from Stipe; an assistant may lay it out and tidy the English, never invent it.
 3. **The method:** they read the market in **waves, with their own MACD-based method**. It is an **objective** way of reading waves: Elliott Wave is subjective (ten people, ten counts); MACD decides where a wave starts and ends. Never write generic commentary ("buyers defended the prior day high"), never Elliott ABC / 1-2-3-4-5 counts.
-4. **Every note is free for everyone, at once** (decision 20 Nov 2026). No lock, no login to read, nothing tied to buying through Candor. One calm Candor link under each note and in the footer; never push buying, never paid / premium / members-only.
+4. **Every note is free for everyone, at once** (decision 20 Nov 2026). No lock, no login to read, nothing tied to buying through Candor. One calm Candor link in the footer (not under notes, 23 Nov); never push buying, never paid / premium / members-only.
 5. **Notes are never edited or deleted** after publishing. Only the "After" chart (how it played out) can be added or replaced.
 6. **No prop firm logos or "official partners" on SB Desk.** Firms belong on Candor.
 7. **No secrets in the repository.** Admin emails live in the Netlify environment variable `ADMINS`.
