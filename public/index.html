@@ -456,7 +456,25 @@ function render(){
     up.className='upd';
     up.innerHTML='<span>Updated '+ago(ev.t)+' · notes '+dm(first)+' – '+dm(last)+'</span>';
   }
+  watchSeen(isNew(ev.t)&&!isSeen(ev.n,ev.ba)&&state.sel===ev.n.id&&(ev.ba?state.mode==='now':state.mode!=='now')?ev:null);
   drawArchive();drawGallery();
+}
+// Stipe 23 Nov: NEW goes away once you have seen the note, not only after a click.
+// Seen = the note's text (or chart) is on the screen for 2 seconds while the tab is open.
+var seenObs=null,seenTimer=null,seenEv=null;
+function watchSeen(ev){
+  seenEv=ev;clearTimeout(seenTimer);seenTimer=null;
+  if(seenObs){seenObs.disconnect();seenObs=null;}
+  if(!ev||!('IntersectionObserver' in window))return;
+  var vis={};
+  function check(){
+    var on=Object.keys(vis).some(function(k){return vis[k];})&&document.visibilityState==='visible';
+    if(on&&!seenTimer)seenTimer=setTimeout(function(){seenTimer=null;if(seenEv!==ev)return;markSeen(ev.n,ev.ba);render();},2000);
+    if(!on&&seenTimer){clearTimeout(seenTimer);seenTimer=null;}
+  }
+  seenObs=new IntersectionObserver(function(es){es.forEach(function(e){vis[e.target.id]=e.isIntersecting;});check();},{threshold:0.35});
+  ['reading','chart'].forEach(function(id){var el=document.getElementById(id);if(el)seenObs.observe(el);});
+  document.onvisibilitychange=check;
 }
 function dayLong(t){return new Date(t.slice(0,10)+'T12:00:00Z').toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:'UTC'});}
 function drawArchive(){

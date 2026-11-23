@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-11-23 (34): NEW goes away once seen
+- The NEW NOTE bar, the NEW tag and "(1) New note" in the tab go away when the new note has been on the screen for 2 seconds (open tab), not only after clicking it (Stipe). Remembered per browser, as before.
+
 ## 2026-11-23 (33): accounts for everyone, simple "Log in"
 - Stipe: logging in should work for normal users too, with a simple interface. Reading still needs no account.
 - Header: small "Log in" link; when logged in it shows "● <name>" (and "Admin" for the two admins).
