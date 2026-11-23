@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-11-23 (35): "Slika za X" goes to the phone's gallery
+- Admin: "Slika za X" now opens the picture with "Spremi u galeriju" (the phone's share menu: iPhone "Save Image" -> Photos), "Preuzmi kao datoteku" and "Zatvori". Before, the PNG went to Files (Stipe). Holding a finger on the picture also saves it.
+
 ## 2026-11-23 (34): NEW goes away once seen
 - The NEW NOTE bar, the NEW tag and "(1) New note" in the tab go away when the new note has been on the screen for 2 seconds (open tab), not only after clicking it (Stipe). Remembered per browser, as before.
 

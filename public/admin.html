@@ -49,6 +49,12 @@ body.wait .page{visibility:hidden}
 .rq button.yes{background:var(--up);border-color:var(--up);color:#000}
 @media(max-width:620px){.rq{grid-template-columns:1fr}}
 @media(max-width:620px){.row{grid-template-columns:1fr}.btn{text-align:center}}
+.picov{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;padding:14px;overflow:auto}
+.picbox{width:min(560px,100%);background:#0b0b0b;border:1px solid #333;padding:14px;display:flex;flex-direction:column;gap:10px}
+.picbox img{width:100%;height:auto;display:block;border:1px solid #333;-webkit-touch-callout:default}
+.picbox .btn{width:100%;text-align:center;justify-content:center;background:transparent;display:block;box-sizing:border-box;cursor:pointer}
+.picbox [data-a=share]{background:var(--up);color:#000}
+.picbox .hint{margin:0;font-size:13px;color:#999}
 </style>
 </head>
 <body class="wait">
@@ -102,6 +108,25 @@ function draw(notes){
   [].forEach.call(el.querySelectorAll('[data-x]'),function(b){b.onclick=function(){var n=notes.filter(function(y){return y.id===b.getAttribute('data-x');})[0];makeX(n,b);};});
 }
 // ---- Before / After picture for X (1600 x 900 PNG) ----
+// Slika za X: show the picture with buttons. "Spremi u galeriju" opens the phone's share menu
+// (iPhone: "Save Image" -> Photos; Android: Gallery / Photos). A plain download goes to Files.
+function showPic(blob,name){
+  var url=URL.createObjectURL(blob),file=null;
+  try{file=new File([blob],name,{type:'image/png'});}catch(_){}
+  var canShare=!!(file&&navigator.canShare&&navigator.canShare({files:[file]}));
+  var ov=document.createElement('div');ov.className='picov';
+  ov.innerHTML='<div class="picbox"><img alt="Slika za X" src="'+url+'">'+
+    (canShare?'<button type="button" class="btn" data-a="share">Spremi u galeriju</button>':'')+
+    '<a class="btn line" data-a="dl" href="'+url+'" download="'+name+'">Preuzmi kao datoteku</a>'+
+    '<p class="hint">Ili drži prst na slici → Spremi sliku / Save to Photos.</p>'+
+    '<button type="button" class="btn line" data-a="x">Zatvori</button></div>';
+  function close(){ov.remove();URL.revokeObjectURL(url);}
+  ov.onclick=function(e){var t=e.target.closest('[data-a]');if(e.target===ov)return close();if(!t)return;
+    var w=t.getAttribute('data-a');
+    if(w==='x')close();
+    if(w==='share')navigator.share({files:[file]}).catch(function(err){if(err&&err.name!=='AbortError')alert('Nije uspjelo: '+err.message+'. Drži prst na slici i spremi.');});};
+  document.body.appendChild(ov);
+}
 function snap(u){var m=/tradingview\.com\/x\/([A-Za-z0-9]+)/.exec(u||'');return m?'https://s3.tradingview.com/snapshots/'+m[1].charAt(0).toLowerCase()+'/'+m[1]+'.png':null;}
 // snapshot (tradingview.com/x/...) or published idea (tradingview.com/chart/.../ID-...) -> our image address
 function imgSrc(u){var s=snap(u);if(s)return '/api/img?u='+encodeURIComponent(s);var m=/\/chart\/[^\/]+\/([A-Za-z0-9]+)/.exec(u||'');return m?'/api/img?idea='+m[1]:null;}
@@ -129,7 +154,7 @@ function makeX(n,btn){
     g.fillStyle='#fff';g.font='bold 34px Georgia, serif';var t=n.title.length>70?n.title.slice(0,68)+'…':n.title;g.fillText(t,48,y+ph+56+62);
     g.fillStyle='#ffb000';g.font='24px Consolas, monospace';g.fillText('sbdesk.com/n/'+n.id,48,y+ph+56+102);
     g.fillStyle='#6f6a61';g.font='18px Consolas, monospace';g.textAlign='right';g.fillText('Analysis only · not a signal',W-48,y+ph+56+102);g.textAlign='left';
-    c.toBlob(function(b){var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='sbdesk-before-after-'+n.t.slice(0,10)+'.png';document.body.appendChild(a);a.click();a.remove();btn.disabled=false;btn.textContent='Slika za X';},'image/png');
+    c.toBlob(function(b){showPic(b,'sbdesk-before-after-'+n.t.slice(0,10)+'.png');btn.disabled=false;btn.textContent='Slika za X';},'image/png');
   }).catch(function(e){alert(e.message);btn.disabled=false;btn.textContent='Slika za X';});
 }
 function loadBaks(){var b=document.getElementById('baks');
