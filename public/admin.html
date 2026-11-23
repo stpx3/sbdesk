@@ -6,6 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800&family=IBM+Plex+Mono:wght@500;700&family=Libre+Caslon+Display&display=swap" rel="stylesheet">
 <meta name="theme-color" content="#050505">
 <title>SB Desk · Admin</title>
 <style>
@@ -138,22 +139,35 @@ function makeX(n,btn){
   var bs=imgSrc(bLink),as=imgSrc(n.now.link);
   if(!bs||!as){alert('Ne prepoznajem link grafa. Treba TradingView slika (kamera → Copy link) ili objavljena ideja.');return;}
   btn.disabled=true;btn.textContent='Radim sliku…';
-  Promise.all([loadImg(bs),loadImg(as),loadImg('img/apple-touch-icon.png')]).then(function(im){
-    var W=1600,H=900,c=document.createElement('canvas');c.width=W;c.height=H;var g=c.getContext('2d');
+  // the fonts must be loaded before drawing, or the phone falls back to a plain system font
+  var F=['500 20px "IBM Plex Mono"','700 20px "IBM Plex Mono"','700 20px Inter','800 20px Inter','500 20px Inter','20px "Libre Caslon Display"'];
+  var fontsReady=(document.fonts&&document.fonts.load)?Promise.all(F.map(function(f){return document.fonts.load(f);})).catch(function(){}):Promise.resolve();
+  Promise.all([loadImg(bs),loadImg(as),loadImg('img/apple-touch-icon.png'),fontsReady]).then(function(im){
+    // drawn at 2x (3200 px wide) so the charts stay sharp on X; the layout is in 1600-wide units
+    var S=2,W=1600,M=40,GAP=20,pw=(W-2*M-GAP)/2;
+    var ar=Math.max(im[0].width/im[0].height,im[1].width/im[1].height);
+    var ph=Math.round(Math.min(Math.max(pw/ar,380),620));
+    var top=128,head=52,H=top+head+ph+150;
+    var c=document.createElement('canvas');c.width=W*S;c.height=H*S;var g=c.getContext('2d');
+    g.scale(S,S);g.imageSmoothingEnabled=true;g.imageSmoothingQuality='high';
     g.fillStyle='#050505';g.fillRect(0,0,W,H);
-    g.drawImage(im[2],48,30,84,84);
-    g.fillStyle='#ece6d6';g.font='40px Georgia, serif';g.fillText('SB DESK',150,88);
-    g.fillStyle='#8f8f8f';g.font='22px Consolas, monospace';g.textAlign='right';g.fillText('NQ · '+tf,W-48,88);g.textAlign='left';
-    var y=140,pw=(W-48*2-24)/2,ph=540;
+    g.drawImage(im[2],M,30,72,72);
+    g.fillStyle='#ece6d6';g.font='44px "Libre Caslon Display", Georgia, serif';g.fillText('SB DESK',M+92,82);
+    g.fillStyle='#9a9a9a';g.font='500 22px "IBM Plex Mono", monospace';g.textAlign='right';g.fillText('NQ · '+tf,W-M,80);g.textAlign='left';
     [[0,'BEFORE',n.t,im[0],'#ffb000'],[1,'AFTER',n.now.t,im[1],'#22d34a']].forEach(function(p){
-      var x=48+p[0]*(pw+24);g.fillStyle='#111';g.fillRect(x,y,pw,ph+56);
-      g.fillStyle=p[4];g.font='bold 26px Consolas, monospace';g.fillText(p[1],x+18,y+38);
-      g.fillStyle='#bdb6a6';g.font='20px Consolas, monospace';g.textAlign='right';g.fillText(nyLabel(p[2]),x+pw-18,y+38);g.textAlign='left';
-      fit(g,p[3],x+8,y+56,pw-16,ph-8);
+      var x=M+p[0]*(pw+GAP),y=top;
+      g.fillStyle='#101010';g.fillRect(x,y,pw,head+ph);
+      g.fillStyle=p[4];g.fillRect(x,y,pw,4);
+      g.font='700 24px "IBM Plex Mono", monospace';g.fillText(p[1],x+16,y+36);
+      g.fillStyle='#b5b0a5';g.font='500 19px "IBM Plex Mono", monospace';g.textAlign='right';g.fillText(nyLabel(p[2]),x+pw-16,y+36);g.textAlign='left';
+      fit(g,p[3],x,y+head,pw,ph);
     });
-    g.fillStyle='#fff';g.font='bold 34px Georgia, serif';var t=n.title.length>70?n.title.slice(0,68)+'…':n.title;g.fillText(t,48,y+ph+56+62);
-    g.fillStyle='#ffb000';g.font='24px Consolas, monospace';g.fillText('sbdesk.com/n/'+n.id,48,y+ph+56+102);
-    g.fillStyle='#6f6a61';g.font='18px Consolas, monospace';g.textAlign='right';g.fillText('Analysis only · not a signal',W-48,y+ph+56+102);g.textAlign='left';
+    var fy=top+head+ph;
+    g.fillStyle='#fff';g.font='800 40px Inter, system-ui, sans-serif';
+    var t=n.title;while(g.measureText(t).width>W-2*M&&t.length>10)t=t.slice(0,-2);if(t!==n.title)t=t.replace(/\s*\S*$/,'')+'…';
+    g.fillText(t,M,fy+70);
+    g.fillStyle='#ffb000';g.font='500 24px "IBM Plex Mono", monospace';g.fillText('sbdesk.com',M,fy+116);
+    g.fillStyle='#777';g.font='500 20px Inter, system-ui, sans-serif';g.textAlign='right';g.fillText('Analysis only · not a signal',W-M,fy+116);g.textAlign='left';
     c.toBlob(function(b){showPic(b,'sbdesk-before-after-'+n.t.slice(0,10)+'.png');btn.disabled=false;btn.textContent='Slika za X';},'image/png');
   }).catch(function(e){alert(e.message);btn.disabled=false;btn.textContent='Slika za X';});
 }

@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-11-23 (37): sharper "Slika za X", proper fonts
+- The Before / After picture is drawn at 2x (3200 px wide), charts as large as their shape allows, no wasted space. Fonts are loaded first: Inter (title), IBM Plex Mono (labels), Libre Caslon Display (logo); before, phones fell back to Courier because Consolas / Georgia are Windows fonts (Stipe: bad chart quality, bad font).
+
 ## 2026-11-23 (36): Candor line only in the footer
 - Removed the Candor line under each note (Desk and `/n/<id>`), Stipe. It stays in the footer.
 
