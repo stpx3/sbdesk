@@ -1,4 +1,4 @@
-// GET /api/me -> who is logged in (only the admins have accounts).
+// GET /api/me -> who is logged in (any account; admin = may post).
 import { viewer, json } from '../lib/desk.mjs';
 
 export default async () => {

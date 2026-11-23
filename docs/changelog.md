@@ -1,7 +1,11 @@
 # Changelog
 
-## 2026-11-23 (33): admin link in the footer
-- Small "Admin" link at the end of the footer goes to the login page (Stipe asked where to log in).
+## 2026-11-23 (33): accounts for everyone, simple "Log in"
+- Stipe: logging in should work for normal users too, with a simple interface. Reading still needs no account.
+- Header: small "Log in" link; when logged in it shows "● <name>" (and "Admin" for the two admins).
+- `login.html` is now one English page for everyone: "Continue with Google", or email + password, "New here? Create an account", "Forgot password?". After login: your name, "Go to the Desk", "Log out" (admins also "Admin"). Admin pages still send admins back where they came from.
+- `/api/me` returns the account's name for every user (from Google or the account data). Privacy page: accounts section back.
+- The footer "Admin" link from (32b) is removed again (the header link replaces it).
 
 ## 2026-11-23 (32): admin login with Google, English page names
 - Login page has "Prijava s Googleom" again (it was only on the removed early-access page, so admins who used Google could not log in on a new device). Email + password stays below it.

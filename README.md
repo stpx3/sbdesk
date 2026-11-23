@@ -8,14 +8,14 @@ NQ market analysis by Bernard (founder & owner) and Stipe Pupačić, Split. Publ
 - **Netlify** builds this repo: push to `main` → live on sbdesk.com. The build runs the tests first (`npm test`); a failing test stops the deploy.
 - **Notes** are stored in Netlify Blobs (store `notes`), one entry per note. The server sets the time (New York); notes cannot be back-dated, edited or deleted. Replacing an After chart keeps the earlier one in `nowHistory`.
 - **Every note is public at once** (20 Nov 2026). Readers need no account.
-- **Accounts**: Netlify Identity, for the admins only. Only emails in the Netlify environment variable `ADMINS` (`email:Name,email:Name`) can post. Registration should be set to invite only in Netlify (no public sign-up needed any more).
+- **Accounts**: Netlify Identity, optional for everyone (Google or email, registration **Open**; reading never needs one). Only emails in the Netlify environment variable `ADMINS` (`email:Name,email:Name`) can post.
 - **Backups**: daily copy into Blobs store `backups` (last 60), downloadable on the Admin page.
 
 ## Pages (`public/`)
 | Page | Who | What |
 |---|---|---|
 | `index.html` | everyone | Desk, Archive, Method, About, Suggestions, Privacy |
-| `login.html` | admins | Admin login, invite and password links |
+| `login.html` | everyone | Log in / create account (Google or email), password links, log out |
 | `admin.html` | admins | New note, After per note, picture for X, suggestions, backups |
 | `publish.html` | admins | Posting form (TradingView links per timeframe) and After form |
 

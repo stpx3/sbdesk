@@ -62,7 +62,7 @@ Fixed the same day:
 - **Note page embeds published TradingView ideas** (interactive), not only a link.
 - **Tests**: `npm test` (link rules, time conversion, note age; since 20 Nov also: no early-access wording, disclaimer present); the Netlify build runs them first.
 - **README** brought up to date (open registration, no password screen, all functions).
-- Checked: registration is **Open** in Netlify (it was switched from invite-only on 17 Nov). *20 Nov: no longer needed; Stipe can set it back to invite only.*
+- Checked: registration is **Open** in Netlify (it was switched from invite-only on 17 Nov). *23 Nov: keep it Open (accounts for everyone).*
 
 Agreed, but needs Stipe:
 - **24 h lock**: kept on 17 Nov, **removed 20 Nov** (SB Desk free for everyone).

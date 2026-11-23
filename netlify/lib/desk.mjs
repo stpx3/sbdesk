@@ -25,7 +25,7 @@ export async function adminUser() {
 
 export const notesStore = () => getStore({ name: 'notes', consistency: 'strong' });
 
-// Every note is public for everyone at once (decision 20 Nov 2026). Accounts exist only for the admins.
+// Every note is public for everyone at once (decision 20 Nov 2026). Accounts are optional: reading never needs one.
 // Who is looking: { email, name, admin } or null for a visitor without an account.
 export async function viewer() {
   let user = null;
@@ -33,7 +33,7 @@ export async function viewer() {
   if (!user || !user.email) return null;
   const email = String(user.email).toLowerCase();
   const name = admins()[email];
-  return { email, name: name || null, admin: !!name };
+  return { email, name: name || (typeof user.name === 'string' && user.name) || null, admin: !!name };
 }
 
 // minutes between two New York wall-clock times "YYYY-MM-DDTHH:MM" (display only)
