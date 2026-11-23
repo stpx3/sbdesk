@@ -531,10 +531,10 @@ function loadNotes(){
     .then(route);
 }
 loadNotes();
-// an admin who is logged in sees the Admin link (nothing changes for readers)
+// an admin who is logged in sees a small "<Name> · Admin" link (nothing changes for readers)
 var hasLogin=/(^|; )nf_jwt=/.test(document.cookie);try{hasLogin=hasLogin||!!localStorage.getItem('gotrue.user');}catch(_){}
 if(hasLogin){var sc=document.createElement('script');sc.src='/js/auth.js';
-  sc.onload=function(){window.SBAuth.me().then(function(m){if(m.admin)document.getElementById('adm').hidden=false;},function(){});};
+  sc.onload=function(){window.SBAuth.me().then(function(m){if(m.admin){var ad=document.getElementById('adm');ad.textContent=(m.name||'Admin')+' · Admin';ad.title='Prijavljen: '+(m.name||m.email);ad.hidden=false;}},function(){});};
   document.head.appendChild(sc);}
 })();
 </script>

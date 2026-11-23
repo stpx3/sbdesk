@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-11-23 (31): name of the logged-in admin
+- On the Desk, a logged-in admin sees a small "Stipe · Admin" (or "Bernard · Admin") link in the header instead of just "Admin". Readers see nothing.
+
 ## 2026-11-20 (30): SB Desk is free for everyone
 - Decision 20 Nov 2026 (Stipe): every note is visible to everyone at once. No 24 h lock, no login to read.
 - Removed: the early-access page (`/early-access/`, `/pristup.html` now redirect to the Desk), the access-request and approval function (`/api/access`), the request email form, "Requests" and "Members" on the Admin page, the "Log in" / "Early access" buttons, locked-note views on the Desk, the Archive and `/n/<id>` pages.
