@@ -22,8 +22,8 @@
 <link rel="manifest" href="/manifest.webmanifest">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://sbdesk.com/#org","name":"SB Desk","url":"https://sbdesk.com/","logo":"https://sbdesk.com/img/apple-touch-icon.png","founder":[{"@type":"Person","name":"Bernard Pupačić"},{"@type":"Person","name":"Stipe Pupačić"}],"address":{"@type":"PostalAddress","addressLocality":"Split","addressCountry":"HR"},"email":"hello@sbdesk.com"},{"@type":"WebSite","name":"SB Desk","url":"https://sbdesk.com/","publisher":{"@id":"https://sbdesk.com/#org"}}]}</script>
 <script>/* links from Netlify emails (invite, password reset) go to the admin login page */
-if(/invite_token=/.test(location.hash))location.replace('/prijava.html'+location.hash);
-else if(/(recovery|confirmation|email_change)_token=|access_token=|error_description=/.test(location.hash))location.replace('/prijava.html'+location.hash);</script>
+if(/invite_token=/.test(location.hash))location.replace('/login.html'+location.hash);
+else if(/(recovery|confirmation|email_change)_token=|access_token=|error_description=/.test(location.hash))location.replace('/login.html'+location.hash);</script>
 <title>SB Desk · NQ research desk</title>
 <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=IBM+Plex+Mono:wght@500;700&display=swap" rel="stylesheet">

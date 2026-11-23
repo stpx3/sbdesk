@@ -30,7 +30,7 @@ test('server time format', () => {
 test('visit counter is on public pages and never on admin pages', () => {
   const has = (f) => readFileSync(f, 'utf8').includes('data-goatcounter=');
   for (const f of ['public/index.html', 'public/404.html', 'netlify/functions/share.mjs']) assert.ok(has(f), f);
-  for (const f of ['public/admin.html', 'public/objavi.html', 'public/prijava.html']) assert.ok(!has(f), f);
+  for (const f of ['public/admin.html', 'public/publish.html', 'public/login.html']) assert.ok(!has(f), f);
 });
 
 test('free for everyone: no early access, no lock, new disclaimer (20 Nov 2026)', () => {

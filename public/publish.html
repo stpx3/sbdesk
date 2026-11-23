@@ -213,7 +213,7 @@ function showDone(){document.getElementById('f').hidden=true;document.getElement
 var tabA=document.getElementById('tabA'),tabB=document.getElementById('tabB');
 function tab(b){tabA.setAttribute('aria-pressed',!b);tabB.setAttribute('aria-pressed',b);document.getElementById('f').hidden=b;document.getElementById('g').hidden=!b;}
 tabA.onclick=function(){tab(false);};tabB.onclick=function(){tab(true);};
-var want=location.hash.indexOf('#zavrsilo')===0?decodeURIComponent(location.hash.slice(9).replace(/^=/,'')):null;
+var want=location.hash.indexOf('#after')===0?decodeURIComponent(location.hash.slice(6).replace(/^=/,'')):null;
 if(want!==null){tab(true);document.querySelector('.top small').textContent='AFTER · NQ';document.getElementById('toAfter').style.display='none';}
 function esc(v){return String(v==null?'':v).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
 var all=[],nlinks={},nstate={},ntf=null,rows={};

@@ -15,9 +15,9 @@ NQ market analysis by Bernard (founder & owner) and Stipe Pupačić, Split. Publ
 | Page | Who | What |
 |---|---|---|
 | `index.html` | everyone | Desk, Archive, Method, About, Suggestions, Privacy |
-| `prijava.html` | admins | Admin login, invite and password links |
+| `login.html` | admins | Admin login, invite and password links |
 | `admin.html` | admins | New note, After per note, picture for X, suggestions, backups |
-| `objavi.html` | admins | Posting form (TradingView links per timeframe) and After form |
+| `publish.html` | admins | Posting form (TradingView links per timeframe) and After form |
 
 ## Server (`netlify/functions/`)
 | Function | Path | What |

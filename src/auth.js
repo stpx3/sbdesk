@@ -25,7 +25,7 @@ async function me() {
 
 function toLogin() {
   const here = location.pathname.replace(/^\//, '') + location.search + location.hash;
-  location.replace('prijava.html?next=' + encodeURIComponent(here || 'admin.html'));
+  location.replace('login.html?next=' + encodeURIComponent(here || 'admin.html'));
 }
 
 // Admin pages call this first. Not logged in -> login page.

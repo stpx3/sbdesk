@@ -19,7 +19,7 @@ SB Desk (sbdesk.com): NQ (Nasdaq 100 futures) market analysis by a father and so
 ## How we work
 
 - Talk to Stipe in short, simple Croatian. Be frank. He wants proposals: suggest every useful feature and let him judge; do not hold ideas back to keep the site small. "Simple" means easy to use, not few features.
-- The public site is in English; admin pages (`admin.html`, `objavi.html`, `prijava.html`) are in Croatian.
+- The public site is in English; admin pages (`admin.html`, `publish.html`, `login.html`) are in Croatian (the file names are English).
 - Claude pushes to `main` (this repo, agreed with Stipe); Netlify deploys `main` to sbdesk.com in about a minute. Every change gets a line in `docs/changelog.md`, every decision a line in `docs/decisions.md`.
 - Before pushing: build (`npm run build`), check desktop and phone (no JS errors, no horizontal overflow). Stipe mostly looks at the site on his phone.
 - Bernard is not comfortable on a PC: posting must stay near error-proof.

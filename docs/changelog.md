@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-11-23 (32): admin login with Google, English page names
+- Login page has "Prijava s Googleom" again (it was only on the removed early-access page, so admins who used Google could not log in on a new device). Email + password stays below it.
+- Admin pages renamed to English: `prijava.html` -> `login.html`, `objavi.html` -> `publish.html` (old addresses redirect). The After link uses `#after=` instead of `#zavrsilo=`. Page text stays Croatian.
+
 ## 2026-11-23 (31): name of the logged-in admin
 - On the Desk, a logged-in admin sees a small "Stipe · Admin" (or "Bernard · Admin") link in the header instead of just "Admin". Readers see nothing.
 

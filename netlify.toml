@@ -1,3 +1,15 @@
+# Admin pages got English names (23 Nov 2026); old addresses keep working.
+[[redirects]]
+  from = "/prijava.html"
+  to = "/login.html"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/objavi.html"
+  to = "/publish.html"
+  status = 301
+  force = true
+
 # The early-access page is gone (20 Nov 2026: every note is free for everyone).
 # Its old addresses go to the Desk, so links already shared keep working.
 [[redirects]]
@@ -42,11 +54,11 @@
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
 [[headers]]
-  for = "/objavi.html"
+  for = "/publish.html"
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
 [[headers]]
-  for = "/prijava.html"
+  for = "/login.html"
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
 

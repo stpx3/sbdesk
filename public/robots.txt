@@ -1,7 +1,7 @@
 User-agent: *
 Disallow: /admin.html
-Disallow: /objavi.html
-Disallow: /prijava.html
+Disallow: /publish.html
+Disallow: /login.html
 Disallow: /api/
 
 Sitemap: https://sbdesk.com/sitemap.xml
